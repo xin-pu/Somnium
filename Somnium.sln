@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Somnium", "Src\Somnium\Somnium.csproj", "{8A3F8244-5AAE-46A9-9AAC-DF4E010CF0D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Somnium.Tests", "Src\Somnium.Tests\Somnium.Tests.csproj", "{A562F40B-1C01-4EA2-B1CF-3717FC211362}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A3F8244-5AAE-46A9-9AAC-DF4E010CF0D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A3F8244-5AAE-46A9-9AAC-DF4E010CF0D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A3F8244-5AAE-46A9-9AAC-DF4E010CF0D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A3F8244-5AAE-46A9-9AAC-DF4E010CF0D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A562F40B-1C01-4EA2-B1CF-3717FC211362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A562F40B-1C01-4EA2-B1CF-3717FC211362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A562F40B-1C01-4EA2-B1CF-3717FC211362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A562F40B-1C01-4EA2-B1CF-3717FC211362}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E0335CB-43F5-4F6E-BAB4-A8C283EDA70E}
+	EndGlobalSection
+EndGlobal
