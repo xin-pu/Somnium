@@ -12,7 +12,7 @@ namespace Somnium.Tests
         [TestMethod]
         public void ActivationTest()
         {
-            var activations = new List<Func<double, double>> { Activation.sigmoid, Activation.tanh, Activation.max };
+            var activations = new List<Func<double, double>> { Activate.sigmoid, Activate.tanh, Activate.max };
             var res = activations.Select(a => a(0)).ToArray();
             Assert.AreEqual(0.5, res[0], 1E-4);
             Assert.AreEqual(0, res[1], 1E-4);
