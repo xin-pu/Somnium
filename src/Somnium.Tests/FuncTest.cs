@@ -1,8 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Somnium.Func;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Somnium.Tests
 {
@@ -12,11 +9,13 @@ namespace Somnium.Tests
         [TestMethod]
         public void ActivationTest()
         {
-            var activations = new List<Func<double, double>> { Activate.sigmoid, Activate.tanh, Activate.max };
-            var res = activations.Select(a => a(0)).ToArray();
-            Assert.AreEqual(0.5, res[0], 1E-4);
-            Assert.AreEqual(0, res[1], 1E-4);
-            Assert.AreEqual(0, res[2], 1E-4);
+
+            var res0 = Activate.sigmoid(0);
+            var res1 = Activate.max(0);
+            var res2 = Activate.tanh(0);
+            Assert.AreEqual(0.5, res0, 1E-4);
+            Assert.AreEqual(0, res1, 1E-4);
+            Assert.AreEqual(0, res2, 1E-4);
         }
     }
 }
