@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MathNet.Numerics.LinearAlgebra;
 
 namespace Somnium.Core.Double
 {
-    class LayerConvoltion
+    public class LayerConvoltion : Layer<double>
     {
+        public LayerConvoltion(Matrix<double> datas) : base(datas)
+        {
+        }
     }
 }
