@@ -1,6 +1,11 @@
-﻿namespace Somnium.Core.Double
+﻿using MathNet.Numerics.LinearAlgebra;
+
+namespace Somnium.Core.Double
 {
-    class LayerPooling
+    public class LayerPooling : Layer<double>
     {
+        public LayerPooling(Matrix<double> datas) : base(datas)
+        {
+        }
     }
 }
