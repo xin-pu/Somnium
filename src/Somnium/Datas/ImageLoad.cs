@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -32,6 +33,12 @@ namespace Somnium.Datas
                 var excepted = file.Name.Split('_').First();
                 return new InputLayer(matrix, double.Parse(excepted)) {Name = file.Name};
             }
+        }
+
+        public static IList<InputLayer> ReadLayerInputs(string path)
+        {
+            var files = new DirectoryInfo(path).GetFiles();
+            return files.Select(a => ReadLayerInput(a.FullName)).ToList();
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace Somnium.Core.Double
 {
     public class InputLayer : Layer<double>
     {
-
 
 
         public double ExpectVal { set; get; }
@@ -16,6 +16,11 @@ namespace Somnium.Core.Double
             
             DatasOutput = datas;
             ExpectVal = expectVal;
+        }
+
+        public InputLayer(DataSize dataSize)
+        {
+            DataSize = dataSize;
         }
     }
 }

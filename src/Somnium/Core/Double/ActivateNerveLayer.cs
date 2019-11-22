@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -38,6 +39,10 @@ namespace Somnium.Core.Double
             DatasOutput.SetRow(0, ActivateOuput.ToArray());
         }
 
+        public async Task ActivatedAsync(Matrix<double> datas)
+        {
+            await Task.Run(() => { Activated(datas); });
+        }
 
     }
 }

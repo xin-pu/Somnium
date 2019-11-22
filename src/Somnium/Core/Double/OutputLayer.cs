@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -12,10 +13,8 @@ namespace Somnium.Core.Double
 
         public ICollection<double> WeightedInput { set; get; }
         public ICollection<double> ActivateOuput { set; get; }
-        public IEnumerable<double> RightData { set; get; }
 
-        public double C { set; get; }
-
+        public ICollection<double> RightOuput { set; get; }
 
 
         public OutputLayer(int layIndex, int nerveCellCount, DataSize datasize)
@@ -41,5 +40,11 @@ namespace Somnium.Core.Double
             ActivateOuput = ActivateNerveCells.Select(a => a.Activated(datas)).ToList();
             DatasOutput.SetRow(0, ActivateOuput.ToArray());
         }
+
+        public async Task ActivatedAsync(Matrix<double> datas)
+        {
+            await Task.Run(() => { Activated(datas); });
+        }
+
     }
 }
