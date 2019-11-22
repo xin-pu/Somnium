@@ -1,35 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
+using Somnium.Func;
 
 namespace Somnium.Core.Double
 {
     public class ActivateNerveLayer : Layer<double>
     {
 
-        public IEnumerable<ActivateNerveCell> ActivateNerveCells { set; get; }
+        public ICollection<ActivateNerveCell> ActivateNerveCells { set; get; }
 
         public ICollection<double> WeightedInput { set; get; }
         public ICollection<double> ActivateOuput { set; get; }
 
-
-        public ActivateNerveLayer(int layIndex, int nerveCellCount,DataSize datasize)
+            
+        public ActivateNerveLayer(DataSize preLayerSize, int outputRows, ActivateFunc func = ActivateFunc.Sigmoid)
+            : base(new DataSize {RowCount = outputRows, ColumnCount = 1})
         {
-            LayerColumnIndex = layIndex;
-            LayerRowIndex = nerveCellCount;
-            ActivateNerveCells = Enumerable.Range(0, nerveCellCount)
-                .Select(i => new ActivateNerveCell(datasize));
-            DatasOutput=new DenseMatrix(1,nerveCellCount);
-        }
-
-        public ActivateNerveLayer(int layIndex, ICollection<ActivateNerveCell> activateNerveCell)
-        {
-            LayerColumnIndex = layIndex;
-            LayerRowIndex = activateNerveCell.Count;
-            ActivateNerveCells = activateNerveCell;
-            DatasOutput = new DenseMatrix(1, LayerRowIndex);
+            WeightedInput=new List<double>(outputRows);
+            ActivateOuput=new List<double>(outputRows);
+            ActivateNerveCells = Enumerable.Range(0, 20).ToList()
+                .Select(i => new ActivateNerveCell(preLayerSize)).ToList();
+            switch (func)
+            {
+                case ActivateFunc.Sigmoid:
+                    break;
+                case ActivateFunc.Tanh:
+                    break;
+                case ActivateFunc.Max:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(func), func, null);
+            }
         }
 
         public void Activated(Matrix<double> datas)
@@ -44,5 +48,6 @@ namespace Somnium.Core.Double
             await Task.Run(() => { Activated(datas); });
         }
 
+    
     }
 }

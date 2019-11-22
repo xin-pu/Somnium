@@ -12,4 +12,11 @@ namespace Somnium.Func
         public static double Max(double u) => u >= 0 ? u : 0;
 
     }
+
+    public enum ActivateFunc
+    {
+        Sigmoid,
+        Tanh,
+        Max
+    }
 }

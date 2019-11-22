@@ -16,23 +16,27 @@ namespace Somnium.Core.Double
 
         public ICollection<double> RightOuput { set; get; }
 
-
-        public OutputLayer(int layIndex, int nerveCellCount, DataSize datasize)
+        public OutputLayer(DataSize dataSize) : base(dataSize)
         {
-            LayerColumnIndex = layIndex;
-            LayerRowIndex = nerveCellCount;
-            ActivateNerveCells = Enumerable.Range(0, nerveCellCount)
-                .Select(i => new ActivateNerveCell(datasize));
-            DatasOutput = new DenseMatrix(1, nerveCellCount);
         }
 
-        public OutputLayer(int layIndex, ICollection<ActivateNerveCell> nerveCellCounts)
-        {
-            LayerColumnIndex = layIndex;
-            LayerRowIndex = nerveCellCounts.Count;
-            ActivateNerveCells = nerveCellCounts;
-            DatasOutput = new DenseMatrix(1, LayerRowIndex);
-        }
+
+        //        public OutputLayer(int layIndex, int nerveCellCount, DataSize datasize)
+        //        {
+        //            LayerColumnIndex = layIndex;
+        //            LayerRowIndex = nerveCellCount;
+        //            ActivateNerveCells = Enumerable.Range(0, nerveCellCount)
+        //                .Select(i => new ActivateNerveCell(datasize));
+        //            DatasOutput = new DenseMatrix(1, nerveCellCount);
+        //        }
+        //
+        //        public OutputLayer(int layIndex, ICollection<ActivateNerveCell> nerveCellCounts)
+        //        {
+        //            LayerColumnIndex = layIndex;
+        //            LayerRowIndex = nerveCellCounts.Count;
+        //            ActivateNerveCells = nerveCellCounts;
+        //            DatasOutput = new DenseMatrix(1, LayerRowIndex);
+        //        }
 
         public void Activated(Matrix<double> datas)
         {
@@ -46,5 +50,6 @@ namespace Somnium.Core.Double
             await Task.Run(() => { Activated(datas); });
         }
 
+   
     }
 }

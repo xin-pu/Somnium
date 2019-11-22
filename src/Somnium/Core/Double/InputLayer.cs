@@ -1,26 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using MathNet.Numerics.LinearAlgebra;
-
-namespace Somnium.Core.Double
+﻿namespace Somnium.Core.Double
 {
     public class InputLayer : Layer<double>
     {
 
-
         public double ExpectVal { set; get; }
 
-        public InputLayer(Matrix<double> datas, double expectVal)
+        
+        public InputLayer(DataSize dataSize, double expectedVal) : base(dataSize)
         {
-            LayerColumnIndex = 1;
-            
-            DatasOutput = datas;
-            ExpectVal = expectVal;
+            ExpectVal = expectedVal;
         }
 
-        public InputLayer(DataSize dataSize)
-        {
-            DataSize = dataSize;
-        }
     }
 }
