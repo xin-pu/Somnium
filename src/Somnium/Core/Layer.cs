@@ -9,17 +9,29 @@ namespace Somnium.Core
     public abstract class Layer<T> : ICloneable
         where T : struct, IEquatable<T>, IFormattable
     {
-        protected Layer(Matrix<T> datas)
-        {
-            DatasInput = datas;
-        }
+        private Matrix<T> datasOutput;
 
         public string Name { set; get; }
-        public Matrix<T> DatasInput { set; get; }
 
-        public int RowCount => DatasInput.RowCount;
-        public int ColumnCount => DatasInput.ColumnCount;
-        public int Levels => DatasInput.RowCount * DatasInput.ColumnCount;
+        public DataSize DataSize { set; get; }
+
+        public int LayerColumnIndex { set; get; }
+        public int LayerRowIndex { set; get; }
+
+        public Matrix<T> DatasOutput
+        {
+            set
+            {
+                datasOutput = value;
+                DataSize = new DataSize
+                {
+                    ColumnCount = value.ColumnCount,
+                    RowCount = value.RowCount
+                };
+            }
+            get { return datasOutput; }
+        }
+
 
         public object Clone()
         {

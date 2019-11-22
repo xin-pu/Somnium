@@ -8,12 +8,12 @@ namespace Somnium.Datas
 {
     public class ImageLoad
     {
-        public static LayerInput ReadLayerInput(string path, Func<string, LayerInput> func)
+        public static InputLayer ReadLayerInput(string path, Func<string, InputLayer> func)
         {
             return func(path);
         }
 
-        public static LayerInput ReadLayerInput(string path)
+        public static InputLayer ReadLayerInput(string path)
         {
             using (var streamRead = new StreamReader(path))
             {
@@ -30,7 +30,7 @@ namespace Somnium.Datas
                 });
                 var file = new FileInfo(path);
                 var excepted = file.Name.Split('_').First();
-                return new LayerInput(matrix, double.Parse(excepted)) {Name = file.Name};
+                return new InputLayer(matrix, double.Parse(excepted)) {Name = file.Name};
             }
         }
     }

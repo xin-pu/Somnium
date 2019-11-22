@@ -24,14 +24,24 @@ namespace Somnium.Core
 
         public abstract Func<T, double> DeltaActivateFuc { set; get; }
 
-        public int RowCount => Weight.RowCount;
-        public int ColumnCount => Weight.ColumnCount;
-        public int InputLevel=> Weight.RowCount * Weight.ColumnCount;
+        public DataSize DataSize { set; get; }
         public int OutputLevel { set; get; }
 
-        public abstract double ActivateNerveCell(Layer<T> inputLayer);
+        protected NerveCell(int column, int row)
+        {
+            DataSize = new DataSize {ColumnCount = column, RowCount = row};
+        }
+
+        protected NerveCell(DataSize datasize)
+        {
+            DataSize = datasize;
+        }
+
+        public abstract double Weighted(Matrix<T> datasInput);
+        public abstract double Activated(Matrix<T> datasInput);
 
 
+       
         public object Clone()
         {
             var BF = new XmlSerializer(GetType());
@@ -44,7 +54,14 @@ namespace Somnium.Core
 
     }
 
+    public struct DataSize
+    {
 
+        public int ColumnCount { set; get; }
+        public int RowCount { set; get; }
+
+        public int Level => ColumnCount * RowCount;
+    }
 
 
 

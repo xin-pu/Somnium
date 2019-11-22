@@ -7,18 +7,17 @@ namespace Somnium.Core
 {
     public class ContactLayers
     {
-        public static NerveCell<double> ContactLayerActivate(IEnumerable<Layer<double>> inputs,
-            IEnumerable<LayerActivate> outputs)
-        {
-            var inputTemplat = inputs.First();
-            var layerActivates = outputs as LayerActivate[] ?? outputs.ToArray();
-            var nerveCell = new NerveCellActivate(inputTemplat.RowCount, inputTemplat.ColumnCount)
-            {
-                OutputLevel = layerActivates.Count()
-            };
-            layerActivates.ToList().ForEach(output => output.NerveCell = nerveCell);
-            return nerveCell;
-        }
+//        public static NerveCell<double> ContactLayerActivate(IEnumerable<Layer<double>> inputs,
+//            IEnumerable<ActivateNerveLayer> outputs)
+//        {
+//            var inputTemplat = inputs.First();
+//            var layerActivates = outputs as ActivateNerveLayer[] ?? outputs.ToArray();
+//            var nerveCell = new ActivateNerveCell(inputTemplat.DataSize)
+//            {
+//                OutputLevel = layerActivates.Count()
+//            };
+//           
+//        }
 
     }
 }

@@ -2,6 +2,7 @@
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Somnium.Core;
 using Somnium.Core.Double;
 using Somnium.Func;
 
@@ -13,13 +14,12 @@ namespace Somnium.Tests
         [TestMethod]
         public void NerveCellTestTest()
         {
-            var d = new NerveCellActivate(1,5)
+            var d = new ActivateNerveCell(new DataSize {ColumnCount = 5, RowCount = 1})
             {
-                ActivateFuc = Activate.sigmoid
+                ActivateFuc = Activate.Sigmoid
             };
             var inputData = DenseMatrix.Create(1, 5, 1);
-            var layerIn = new LayerInput(inputData, 1);
-            var layout = d.ActivateNerveCell(layerIn);
+            var layout = d.Activated(inputData);
             Assert.AreEqual(0, layout, 1E-1);
         }
 
