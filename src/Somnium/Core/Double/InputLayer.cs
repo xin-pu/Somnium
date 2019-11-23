@@ -1,6 +1,6 @@
 ﻿namespace Somnium.Core.Double
 {
-    public class InputLayer : Layer<double>
+    public class InputLayer : StandLayer<double>
     {
 
         public double ExpectVal { set; get; }

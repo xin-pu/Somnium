@@ -8,13 +8,13 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace Somnium.Core
 {
-    public abstract class Layer<T> : ICloneable ,INotifyPropertyChanged
+    public abstract class StandLayer<T> : ICloneable ,INotifyPropertyChanged
         where T : struct, IEquatable<T>, IFormattable
     {
         private Matrix<T> datasOutput;
 
 
-        protected Layer(DataSize dataSize)
+        protected StandLayer(DataSize dataSize)
         {
             DataSizeOutput = DataSizeInput = dataSize;
         }
@@ -37,13 +37,15 @@ namespace Somnium.Core
             get { return datasOutput; }
         }
 
-        public bool LoadDatasOutput(Matrix<T> datas)
+        public virtual bool DatasCheckIn(Matrix<T> datas)
         {
             var equal = datas.RowCount == DataSizeOutput.RowCount && datas.ColumnCount == DataSizeOutput.ColumnCount;
             if (equal)
-                DatasOutput = datas;
+                DatasInput = datas;
             return equal;
         }
+
+     
 
         public object Clone()
         {

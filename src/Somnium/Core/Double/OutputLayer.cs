@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
@@ -6,8 +7,10 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Core.Double
 {
-    public class OutputLayer : Layer<double>
+    public class OutputLayer : StandLayer<double>
     {
+
+      
 
         public IEnumerable<ActivateNerveCell> ActivateNerveCells { set; get; }
 

@@ -7,7 +7,7 @@ using Somnium.Func;
 
 namespace Somnium.Core.Double
 {
-    public class ActivateNerveLayer : Layer<double>
+    public class ActivateNerveLayer : StandLayer<double>
     {
 
         public ICollection<ActivateNerveCell> ActivateNerveCells { set; get; }
