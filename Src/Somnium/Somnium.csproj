@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Core\Double\Layer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
   </ItemGroup>
 

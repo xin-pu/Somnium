@@ -3,49 +3,47 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
-using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 
 namespace Somnium.Core
 {
-    public abstract class StandLayer<T> : ICloneable ,INotifyPropertyChanged
-        where T : struct, IEquatable<T>, IFormattable
-    {
-        private Matrix<T> datasOutput;
+    public abstract class StandLayer : ICloneable, INotifyPropertyChanged
 
+    {
+        private Matrix datasOutput;
+        private Matrix datasInput;
 
         protected StandLayer(DataSize dataSize)
         {
-            DataSizeOutput = DataSizeInput = dataSize;
+            DataSizeInputFormat = dataSize;
         }
-
-        public DataSize DataSizeInput { get; }
-        public DataSize DataSizeOutput { get; }
+        public DataSize DataSizeInputFormat { get; }
+        public DataSize DataSizeOutputFormat { get; }
 
         public int LayerColumnIndex { set; get; }
         public int LayerRowIndex { set; get; }
 
-        public Matrix<T> DatasInput
+        public Matrix DatasInput
+        {
+            set { UpdateProperty(ref datasInput, value); }
+            get { return datasInput; }
+        }
+
+        public Matrix DatasOutput
         {
             set { UpdateProperty(ref datasOutput, value); }
             get { return datasOutput; }
         }
 
-        public Matrix<T> DatasOutput
+        public virtual bool DatasCheckIn(Matrix datas)
         {
-            set { UpdateProperty(ref datasOutput, value); }
-            get { return datasOutput; }
-        }
-
-        public virtual bool DatasCheckIn(Matrix<T> datas)
-        {
-            var equal = datas.RowCount == DataSizeOutput.RowCount && datas.ColumnCount == DataSizeOutput.ColumnCount;
+            var equal = datas.RowCount == DataSizeOutputFormat.RowCount && datas.ColumnCount == DataSizeOutputFormat.ColumnCount;
             if (equal)
                 DatasInput = datas;
             return equal;
         }
 
-     
 
         public object Clone()
         {

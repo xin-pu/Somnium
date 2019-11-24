@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
 
-namespace Somnium.Core.Double
+namespace Somnium.Core
 {
     public class ActivateNerveCell : NerveCell<double>
     {
@@ -20,7 +20,7 @@ namespace Somnium.Core.Double
         }
 
 
-        public sealed override Func<double, double> ActivateFuc
+        public Func<double, double> ActivateFuc
         {
             get { return activateFuc; }
             set
@@ -30,14 +30,14 @@ namespace Somnium.Core.Double
             }
         }
 
-        public override Func<double, double> DeltaActivateFuc { set; get; }
+        public Func<double, double> DeltaActivateFuc { set; get; }
 
-        public override double Weighted(Matrix<double> inputLayer)
+        public double Weighted(Matrix<double> inputLayer)
         {
-           return inputLayer.PointwiseMultiply(Weight).Enumerate().Sum();
+            return inputLayer.PointwiseMultiply(Weight).Enumerate().Sum();
         }
 
-        public override double Activated(Matrix<double> inputLayer)
+        public double Activated(Matrix<double> inputLayer)
         {
             return ActivateFuc(inputLayer.PointwiseMultiply(Weight).Enumerate().Sum() + Bias);
         }

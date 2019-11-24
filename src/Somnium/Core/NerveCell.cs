@@ -6,6 +6,14 @@ using System.Xml.Serialization;
 
 namespace Somnium.Core
 {
+
+    /// <summary>
+    /// Nervecell is a abstract class which fit different operate  
+    /// It Need dataSize to check the input data is corrret
+    /// It will Create a datasize according the different operate
+    /// NerverCell will Ouput double data as example
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public abstract class NerveCell<T> : ICloneable
         where T : struct, IEquatable<T>, IFormattable
@@ -20,12 +28,9 @@ namespace Somnium.Core
 
         public double DeltaBias { set; get; }
 
-        public abstract Func<T, double> ActivateFuc { set; get; }
-
-        public abstract Func<T, double> DeltaActivateFuc { set; get; }
-
+        
         public DataSize DataSize { set; get; }
-        public int OutputLevel { set; get; }
+        public DataSize OutputLevel { set; get; }
 
         protected NerveCell(int column, int row)
         {
@@ -37,9 +42,7 @@ namespace Somnium.Core
             DataSize = datasize;
         }
 
-        public abstract double Weighted(Matrix<T> datasInput);
-        public abstract double Activated(Matrix<T> datasInput);
-
+        
 
        
         public object Clone()
