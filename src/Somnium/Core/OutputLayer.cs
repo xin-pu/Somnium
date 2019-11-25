@@ -15,9 +15,7 @@ namespace Somnium.Core
         public int NerveCellCount { set; get; }
 
 
-
         public IList<ActivateNerveCell> ActivateNerveCells { set; get; }
-
         public double Variance { set; get; }
         public IList<double> RightOuput { set; get; }
         public IList<double> Probability { set; get; }
@@ -34,7 +32,7 @@ namespace Somnium.Core
         }
 
 
-        public bool DatasCheckIn(Matrix data,IList<double> expectedRes)
+        public bool DatasCheckIn(Matrix data, IList<double> expectedRes)
         {
             var equal = 1 == InputDataSizeFormat.DataCount
                         && data.RowCount == InputDataSizeFormat.RowCount
@@ -42,7 +40,7 @@ namespace Somnium.Core
             if (equal)
             {
                 InputData = data;
-                InputDatas = new List<Matrix> { data };
+                InputDatas = new List<Matrix> {data};
                 Activated(InputData);
                 Variance = GetVariance(expectedRes);
             }
