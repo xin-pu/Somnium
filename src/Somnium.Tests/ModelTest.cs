@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Somnium.Core;
 using Somnium.Datas;
 
 namespace Somnium.Tests
@@ -40,6 +41,14 @@ namespace Somnium.Tests
         [TestMethod]
         public void LoadBasicDeepLeaning()
         {
+            var path = new DirectoryInfo(@"E:\Document Code\Code Pensonal\Somnium\datas\trainingDigits\0_0.txt");
+            var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadLayerInput);
+
+            var fullConnectedLayer = new FullConnectedLayer(inputLayer.OutputDataSizeFormat, 20);
+            fullConnectedLayer.DatasCheckIn(inputLayer.OutputDatas);
+
+            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 10);
+            outputLayer.DatasCheckIn(fullConnectedLayer.OutputData, inputLayer.ExpectVal);
 
 
         }

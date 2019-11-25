@@ -16,14 +16,19 @@ namespace Somnium.Core
         public int NerveCellCount { set; get; }
         public IList<ActivateNerveCell> ActivateNerveCells { set; get; }
 
-        public FullConnectedLayer(DataSize inputDataSize,int nerveCellCount) : base(inputDataSize)
+        public FullConnectedLayer(DataSize inputDataSize, int nerveCellCount) : base(inputDataSize)
         {
             InputDataSizeFormat = inputDataSize;
-            OutputDataSizeFormat = new DataSize {DataCount = 1, ColumnCount = 1, RowCount = nerveCellCount };
-            OutputData=new DenseMatrix(nerveCellCount,1);
+            OutputDataSizeFormat = new DataSize {DataCount = 1, ColumnCount = 1, RowCount = nerveCellCount};
+            OutputData = new DenseMatrix(nerveCellCount, 1);
             NerveCellCount = nerveCellCount;
             ActivateNerveCells = Enumerable.Range(0, nerveCellCount)
-                .Select(a => new ActivateNerveCell(OutputDataSizeFormat)).ToList();
+                .Select(a => new ActivateNerveCell(new DataSize
+                {
+                    ColumnCount = 1,
+                    RowCount = inputDataSize.Level
+                }))
+                .ToList();
         }
 
 

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Core\Double\Layer.cs" />
+    <Compile Remove="Core\ActivateNerveLayer.cs" />
   </ItemGroup>
 
   <ItemGroup>
