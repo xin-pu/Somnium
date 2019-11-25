@@ -1,50 +1,42 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using System;
+﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 
 namespace Somnium.Core
 {
 
     /// <summary>
-    /// Nervecell is a abstract class which fit different operate  
-    /// It Need dataSize to check the input data is corrret
-    /// It will Create a datasize according the different operate
-    /// NerverCell will Ouput double data as example
+    /// Nerve cell is a abstract class which fit different operate  
+    /// It Need inputDataSize to check the input data is correct
+    /// It will Create a data size according the different operate
+    /// Nerve Cell will Output double data as example
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public abstract class NerveCell<T> : ICloneable
-        where T : struct, IEquatable<T>, IFormattable
+    public abstract class NerveCell : ICloneable
     {
 
 
-        public Matrix<T> Weight { set; get; }
+        public Matrix Weight { set; get; }
 
         public double Bias { set; get; }
 
-        public Matrix<T> DeltaWeight { set; get; }
+        public Matrix DeltaWeight { set; get; }
 
         public double DeltaBias { set; get; }
 
-        
+
         public DataSize DataSize { set; get; }
         public DataSize OutputLevel { set; get; }
 
-        protected NerveCell(int column, int row)
+        protected NerveCell(DataSize dataSize)
         {
-            DataSize = new DataSize {ColumnCount = column, RowCount = row};
+            DataSize = dataSize;
         }
 
-        protected NerveCell(DataSize datasize)
-        {
-            DataSize = datasize;
-        }
 
-        
-
-       
         public object Clone()
         {
             var BF = new XmlSerializer(GetType());
@@ -57,15 +49,14 @@ namespace Somnium.Core
 
     }
 
-    public struct DataSize
+    public class DataSize
     {
 
         public int ColumnCount { set; get; }
         public int RowCount { set; get; }
-
-        public int Level => ColumnCount * RowCount;
+        public int DataCount { set; get; } = 1;
+        public int Level => DataCount * ColumnCount * RowCount;
     }
-
 
 
 }

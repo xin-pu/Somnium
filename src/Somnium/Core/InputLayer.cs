@@ -1,4 +1,8 @@
-﻿namespace Somnium.Core.Double
+﻿using System.Collections.Generic;
+using System.Linq;
+using MathNet.Numerics.LinearAlgebra.Double;
+
+namespace Somnium.Core
 {
 
     /// <summary>
@@ -9,15 +13,22 @@
 
         public double[] ExpectVal { set; get; }
 
-
-        public void ConnectNextLayer(StandLayer nextLayer)
+        public InputLayer(DataSize inputDataSize) : base(inputDataSize)
         {
-
+            InputDataSizeFormat = OutputDataSizeFormat = inputDataSize;
         }
 
-        public InputLayer(DataSize dataSize, double[] expectedVal) : base(dataSize)
+        public  bool DatasCheckIn(Matrix data, double[] expectedVal)
         {
-            ExpectVal = expectedVal;
+            var equal = data.RowCount == InputDataSizeFormat.RowCount
+                        && data.ColumnCount == InputDataSizeFormat.ColumnCount;
+            if (equal)
+            {
+                InputDatas = OutputDatas = new List<Matrix> {data};
+                ExpectVal = expectedVal;
+            }
+
+            return equal;
         }
 
     }

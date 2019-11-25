@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -11,37 +13,30 @@ namespace Somnium.Core
     public abstract class StandLayer : ICloneable, INotifyPropertyChanged
 
     {
-        private Matrix datasOutput;
-        private Matrix datasInput;
+        private IList<Matrix> _outputDatas;
+        private IList<Matrix> _inputDatas;
 
-        protected StandLayer(DataSize dataSize)
+        protected StandLayer(DataSize inputDataSize)
         {
-            DataSizeInputFormat = dataSize;
+            InputDataSizeFormat = inputDataSize;
         }
-        public DataSize DataSizeInputFormat { get; }
-        public DataSize DataSizeOutputFormat { get; }
+
+        public DataSize InputDataSizeFormat { get; protected set; }
+        public DataSize OutputDataSizeFormat { get; protected set; }
 
         public int LayerColumnIndex { set; get; }
         public int LayerRowIndex { set; get; }
 
-        public Matrix DatasInput
+        public IList<Matrix> InputDatas
         {
-            set { UpdateProperty(ref datasInput, value); }
-            get { return datasInput; }
+            set { UpdateProperty(ref _inputDatas, value); }
+            get { return _inputDatas; }
         }
 
-        public Matrix DatasOutput
+        public IList<Matrix> OutputDatas
         {
-            set { UpdateProperty(ref datasOutput, value); }
-            get { return datasOutput; }
-        }
-
-        public virtual bool DatasCheckIn(Matrix datas)
-        {
-            var equal = datas.RowCount == DataSizeOutputFormat.RowCount && datas.ColumnCount == DataSizeOutputFormat.ColumnCount;
-            if (equal)
-                DatasInput = datas;
-            return equal;
+            set { UpdateProperty(ref _outputDatas, value); }
+            get { return _outputDatas; }
         }
 
 
@@ -54,6 +49,9 @@ namespace Somnium.Core
             memStream.Position = 0;
             return BF.Deserialize(memStream);
         }
+
+
+        #region
 
         public void UpdateProperty<T>(ref T properValue, T newValue, [CallerMemberName] string propertyName = "")
         {
@@ -74,6 +72,8 @@ namespace Somnium.Core
             PropertyChangedEventHandler handler = PropertyChanged;
             handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
 
     }
 

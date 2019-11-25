@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
 using MathNet.Numerics.Distributions;
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
 
 namespace Somnium.Core
 {
-    public class ActivateNerveCell : NerveCell<double>
+    public class ActivateNerveCell : NerveCell
     {
 
         private Func<double, double> activateFuc;
@@ -19,6 +18,8 @@ namespace Somnium.Core
             ActivateFuc = Activate.Sigmoid;
         }
 
+        public double WeightedInput { set; get; }
+        public double ActivateOuput { set; get; }
 
         public Func<double, double> ActivateFuc
         {
@@ -32,14 +33,17 @@ namespace Somnium.Core
 
         public Func<double, double> DeltaActivateFuc { set; get; }
 
-        public double Weighted(Matrix<double> inputLayer)
+        public void Activated(Matrix inputData)
         {
-            return inputLayer.PointwiseMultiply(Weight).Enumerate().Sum();
+            WeightedInput = inputData.PointwiseMultiply(Weight).Enumerate().Sum();
+            ActivateOuput = ActivateFuc(inputData.PointwiseMultiply(Weight).Enumerate().Sum() + Bias);
         }
 
-        public double Activated(Matrix<double> inputLayer)
+        public double GetActivated(Matrix inputData)
         {
-            return ActivateFuc(inputLayer.PointwiseMultiply(Weight).Enumerate().Sum() + Bias);
+            var weightedInput = inputData.PointwiseMultiply(Weight).Enumerate().Sum();
+            var activateOuput = ActivateFuc(weightedInput + Bias);
+            return activateOuput;
         }
     }
 }

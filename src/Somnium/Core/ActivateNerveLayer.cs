@@ -9,8 +9,7 @@ namespace Somnium.Core
     {
 
         public ICollection<ActivateNerveCell> ActivateNerveCells { set; get; }
-        public ICollection<double> WeightedInput { set; get; }
-        public ICollection<double> ActivateOuput { set; get; }
+
         
         public int NerveCellCount { set; get; }
 
@@ -25,14 +24,14 @@ namespace Somnium.Core
         public void CheckInNerveLayer(ActivateNerveCell activateNerveCell)
         {
             ActivateNerveCells = Enumerable.Range(0, NerveCellCount).ToList()
-                .Select(i => new ActivateNerveCell(DataSizeInputFormat)).ToList();
+                .Select(i => new ActivateNerveCell(InputDataSizeFormat)).ToList();
         }
 
         public void Activated(Matrix datas)
         {
             WeightedInput = ActivateNerveCells.Select(a => a.Weighted(datas)).ToList();
             ActivateOuput = ActivateNerveCells.Select(a => a.Activated(datas)).ToList();
-            DatasOutput.SetRow(0, ActivateOuput.ToArray());
+            OutputDatas.SetRow(0, ActivateOuput.ToArray());
         }
 
         public async Task ActivatedAsync(Matrix datas)

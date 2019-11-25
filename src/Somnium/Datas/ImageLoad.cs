@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
-using Somnium.Core.Double;
+using Somnium.Core;
 
 namespace Somnium.Datas
 {
@@ -20,7 +20,7 @@ namespace Somnium.Datas
             {
                 var allline = streamRead.ReadToEnd();
 
-                var lines = allline.Split(new []{'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                var lines = allline.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 var matrix = new DenseMatrix(lines.Count, lines.First().Length);
                 var rowIndex = 0;
                 lines.ForEach(line =>
@@ -31,7 +31,12 @@ namespace Somnium.Datas
                 });
                 var file = new FileInfo(path);
                 var excepted = file.Name.Split('_').First();
-                return new InputLayer(matrix, double.Parse(excepted)) {Name = file.Name};
+                var exceptedDatas = new double[10];
+                exceptedDatas[int.Parse(excepted)] = 1;
+                var inputLayer= new InputLayer(
+                    new DataSize { RowCount = matrix.RowCount, ColumnCount = matrix.ColumnCount });
+                inputLayer.DatasCheckIn(matrix, exceptedDatas);
+                return inputLayer;
             }
         }
 

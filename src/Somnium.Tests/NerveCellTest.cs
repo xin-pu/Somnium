@@ -1,9 +1,7 @@
-﻿using System;
-using MathNet.Numerics.Distributions;
+﻿
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Somnium.Core;
-using Somnium.Core.Double;
 using Somnium.Func;
 
 namespace Somnium.Tests
@@ -19,17 +17,10 @@ namespace Somnium.Tests
                 ActivateFuc = Activate.Sigmoid
             };
             var inputData = DenseMatrix.Create(1, 5, 1);
-            var layout = d.Activated(inputData);
-            Assert.AreEqual(0, layout, 1E-1);
+            var activated = d.GetActivated(inputData);
+            Assert.AreEqual(0.05, activated, 1);
         }
 
-        [TestMethod]
-        public void MatrixTest()
-        {
-           
-
-        }
-
-
+        
     }
 }

@@ -2,7 +2,7 @@
 {
     public class PoolingLayer : StandLayer
     {
-        public PoolingLayer(DataSize dataSize) : base(dataSize)
+        public PoolingLayer(DataSize inputDataSize) : base(inputDataSize)
         {
         }
     }
