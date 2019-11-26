@@ -61,7 +61,7 @@ namespace Somnium.Core
 
         }
 
-        public void Deviationed(IList<double> expectedVal)
+        public void Deviationed(IList<double> expectedVal,double gradient)
         {
             if (expectedVal.Count != OutputData.RowCount)
                 return;
@@ -73,9 +73,15 @@ namespace Somnium.Core
             ActivateNerveCells.ToList().ForEach(a =>
             {
                 a.Deviation = Deviations.ElementAt(i);
-                a.AddDeviation((Matrix) InputData.Multiply(a.Deviation), a.Deviation);
+                var gra = a.Deviation * gradient;
+                a.AddDeviation((Matrix) InputData.Multiply(gra), gra);
                 i++;
             });
+        }
+
+        public void UpdateWeight()
+        {
+           ActivateNerveCells.ToList().ForEach(a=>a.Updated());
         }
 
         public double GetVariance(IList<double> expectedVal)

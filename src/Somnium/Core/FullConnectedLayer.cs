@@ -77,7 +77,7 @@ namespace Somnium.Core
             OutputDatas = new List<Matrix> {OutputData};
         }
 
-        public void Deviationed(IList<ActivateNerveCell> cells)
+        public void Deviationed(IList<ActivateNerveCell> cells, double gradient)
         {
 
             var devNextLay = cells.Select((a, b) => a.Deviation * a.Weight.At(b, 0));
@@ -89,9 +89,15 @@ namespace Somnium.Core
             ActivateNerveCells.ToList().ForEach(a =>
             {
                 a.Deviation = Deviations.ElementAt(i);
-                a.AddDeviation((Matrix) InputData.Multiply(a.Deviation), a.Deviation);
+                var gra = a.Deviation * gradient;
+                a.AddDeviation((Matrix)InputData.Multiply(gra), gra);
                 i++;
             });
+        }
+
+        public void UpdateWeight()
+        {
+            ActivateNerveCells.ToList().ForEach(a => a.Updated());
         }
 
 
