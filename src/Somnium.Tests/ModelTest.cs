@@ -45,14 +45,18 @@ namespace Somnium.Tests
             var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadLayerInput);
 
             var fullConnectedLayer = new FullConnectedLayer(inputLayer.OutputDataSizeFormat, 20);
-            fullConnectedLayer.DatasCheckIn(inputLayer.OutputDatas);
-
             var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 10);
-            outputLayer.DatasCheckIn(fullConnectedLayer.OutputData, inputLayer.ExpectVal);
 
+
+
+
+            fullConnectedLayer.DatasCheckIn(inputLayer.OutputDatas);
+            outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
+
+            outputLayer.Deviationed(inputLayer.ExpectVal);
+            fullConnectedLayer.Deviationed(outputLayer.ActivateNerveCells);
 
         }
-
 
     }
 }

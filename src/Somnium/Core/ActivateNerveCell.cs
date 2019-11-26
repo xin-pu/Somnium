@@ -15,11 +15,14 @@ namespace Somnium.Core
         {
             Weight = DenseMatrix.CreateRandom(datasize.RowCount, datasize.ColumnCount, new ContinuousUniform());
             Bias = new ContinuousUniform().Median;
+            DeltaWeight = DenseMatrix.CreateDiagonal(datasize.RowCount, datasize.ColumnCount, 0);
+            DeltaBias = 0;
             ActivateFuc = Activate.Sigmoid;
         }
 
         public double WeightedInput { set; get; }
         public double ActivateOuput { set; get; }
+        public double Deviation { set; get; }
 
         public Func<double, double> ActivateFuc
         {
@@ -27,11 +30,11 @@ namespace Somnium.Core
             set
             {
                 activateFuc = value;
-                DeltaActivateFuc = MathNet.Numerics.Differentiate.FirstDerivativeFunc(ActivateFuc);
+                FirstDerivativeFunc = MathNet.Numerics.Differentiate.FirstDerivativeFunc(ActivateFuc);
             }
         }
 
-        public Func<double, double> DeltaActivateFuc { set; get; }
+        public Func<double, double> FirstDerivativeFunc { set; get; }
 
         public void Activated(Matrix inputData)
         {
@@ -44,6 +47,20 @@ namespace Somnium.Core
             var weightedInput = inputData.PointwiseMultiply(Weight).Enumerate().Sum();
             var activateOuput = ActivateFuc(weightedInput + Bias);
             return activateOuput;
+        }
+
+        public void Updated()
+        {
+            Weight = (Matrix) (Weight + DeltaWeight);
+            Bias += DeltaBias;
+            DeltaWeight.Clear();
+            DeltaBias = 0;
+        }
+
+        public void AddDeviation(Matrix devWeight, double devBias)
+        {
+            DeltaWeight = (Matrix) (DeltaWeight + devWeight);
+            DeltaBias = DeltaBias + devBias;
         }
     }
 }

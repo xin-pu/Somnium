@@ -16,10 +16,12 @@ namespace Somnium.Core
 
 
         public IList<ActivateNerveCell> ActivateNerveCells { set; get; }
-        public double Variance { set; get; }
-        public IList<double> RightOuput { set; get; }
+        public IList<double> WeightedInput { set; get; }
+        public IList<double> ActivatedOuput { set; get; }
         public IList<double> Probability { set; get; }
+        public IList<double> Deviations { set; get; }
 
+        public double Variance { set; get; }
 
         public OutputLayer(DataSize inputDataSize, int nerveCellCount) : base(inputDataSize)
         {
@@ -32,7 +34,7 @@ namespace Somnium.Core
         }
 
 
-        public bool DatasCheckIn(Matrix data, IList<double> expectedRes)
+        public bool DatasCheckIn(Matrix data)
         {
             var equal = 1 == InputDataSizeFormat.DataCount
                         && data.RowCount == InputDataSizeFormat.RowCount
@@ -42,28 +44,41 @@ namespace Somnium.Core
                 InputData = data;
                 InputDatas = new List<Matrix> {data};
                 Activated(InputData);
-                Variance = GetVariance(expectedRes);
             }
-
             return equal;
         }
+
 
         public void Activated(Matrix datas)
         {
             ActivateNerveCells.ToList().ForEach(a => { a.Activated(datas); });
-            var ActivateOuput = ActivateNerveCells.Select(a => a.ActivateOuput);
-            OutputData.SetColumn(0, ActivateOuput.ToArray());
+
+            WeightedInput = ActivateNerveCells.Select(a => a.WeightedInput).ToList();
+            ActivatedOuput = ActivateNerveCells.Select(a => a.ActivateOuput).ToList();
+
+            OutputData.SetColumn(0, ActivatedOuput.ToArray());
             OutputDatas = new List<Matrix> {OutputData};
-            Probability = GetLikelihoodRatio();
+
         }
 
-        public async Task ActivatedAsync(Matrix datas)
+        public void Deviationed(IList<double> expectedVal)
         {
-            await Task.Run(() => { Activated(datas); });
+            if (expectedVal.Count != OutputData.RowCount)
+                return;
+            Deviations = expectedVal.Select((a, b) =>
+                (OutputData[b, 0] - a) *
+                ActivateNerveCells[b].FirstDerivativeFunc(ActivateNerveCells[b].WeightedInput)).ToList();
+
+            var i = 0;
+            ActivateNerveCells.ToList().ForEach(a =>
+            {
+                a.Deviation = Deviations.ElementAt(i);
+                a.AddDeviation((Matrix) InputData.Multiply(a.Deviation), a.Deviation);
+                i++;
+            });
         }
 
-
-        private double GetVariance(IList<double> expectedVal)
+        public double GetVariance(IList<double> expectedVal)
         {
             if (expectedVal.Count != OutputData.RowCount)
                 return double.NaN;
@@ -71,7 +86,7 @@ namespace Somnium.Core
             return variance;
         }
 
-        private IList<double> GetLikelihoodRatio()
+        public IList<double> GetLikelihoodRatio()
         {
             return SoftMax.softMax(OutputData.Enumerate().ToList());
         }

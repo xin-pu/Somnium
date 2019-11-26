@@ -15,6 +15,9 @@ namespace Somnium.Core
         public Matrix OutputData { set; get; }
         public int NerveCellCount { set; get; }
         public IList<ActivateNerveCell> ActivateNerveCells { set; get; }
+        public IList<double> WeightedInput { set; get; }
+        public IList<double> ActivatedOuput { set; get; }
+        public IList<double> Deviations { set; get; }
 
         public FullConnectedLayer(DataSize inputDataSize, int nerveCellCount) : base(inputDataSize)
         {
@@ -66,10 +69,31 @@ namespace Somnium.Core
         public void Activated(Matrix datas)
         {
             ActivateNerveCells.ToList().ForEach(a => { a.Activated(datas); });
-            var ActivateOuput = ActivateNerveCells.Select(a => a.ActivateOuput);
-            OutputData.SetColumn(0, ActivateOuput.ToArray());
+
+            WeightedInput = ActivateNerveCells.Select(a => a.WeightedInput).ToList();
+            ActivatedOuput = ActivateNerveCells.Select(a => a.ActivateOuput).ToList();
+
+            OutputData.SetColumn(0, ActivatedOuput.ToArray());
             OutputDatas = new List<Matrix> {OutputData};
         }
+
+        public void Deviationed(IList<ActivateNerveCell> cells)
+        {
+
+            var devNextLay = cells.Select((a, b) => a.Deviation * a.Weight.At(b, 0));
+            Deviations = ActivateNerveCells.Select((a, b) =>
+                devNextLay.Sum() *
+                ActivateNerveCells[b].FirstDerivativeFunc(ActivateNerveCells[b].WeightedInput)).ToList();
+
+            var i = 0;
+            ActivateNerveCells.ToList().ForEach(a =>
+            {
+                a.Deviation = Deviations.ElementAt(i);
+                a.AddDeviation((Matrix) InputData.Multiply(a.Deviation), a.Deviation);
+                i++;
+            });
+        }
+
 
         public async Task ActivatedAsync(Matrix datas)
         {
