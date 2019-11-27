@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Core
@@ -11,6 +10,7 @@ namespace Somnium.Core
     public class InputLayer : StandLayer
     {
 
+        public string Label { set; get; }
         public double[] ExpectVal { set; get; }
 
         public InputLayer(DataSize inputDataSize) : base(inputDataSize)
@@ -26,6 +26,19 @@ namespace Somnium.Core
             {
                 InputDatas = OutputDatas = new List<Matrix> {data};
                 ExpectVal = expectedVal;
+            }
+            return equal;
+        }
+
+
+        public bool DatasCheckIn(Matrix data, string label)
+        {
+            var equal = data.RowCount == InputDataSizeFormat.RowCount
+                        && data.ColumnCount == InputDataSizeFormat.ColumnCount;
+            if (equal)
+            {
+                InputDatas = OutputDatas = new List<Matrix> {data};
+                Label = label;
             }
 
             return equal;
