@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -29,14 +28,14 @@ namespace Somnium.Core
 
         public IList<Matrix> InputDatas
         {
-            set { UpdateProperty(ref _inputDatas, value); }
-            get { return _inputDatas; }
+            set => UpdateProperty(ref _inputDatas, value);
+            get => _inputDatas;
         }
 
         public IList<Matrix> OutputDatas
         {
-            set { UpdateProperty(ref _outputDatas, value); }
-            get { return _outputDatas; }
+            set => UpdateProperty(ref _outputDatas, value);
+            get => _outputDatas;
         }
 
 

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Somnium", "Src\Somnium\Somn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Somnium.Tests", "Src\Somnium.Tests\Somnium.Tests.csproj", "{A562F40B-1C01-4EA2-B1CF-3717FC211362}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "src\Console\Console.csproj", "{855CC805-5C58-4AB7-9F67-CA09E63CC59A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A562F40B-1C01-4EA2-B1CF-3717FC211362}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A562F40B-1C01-4EA2-B1CF-3717FC211362}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A562F40B-1C01-4EA2-B1CF-3717FC211362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{855CC805-5C58-4AB7-9F67-CA09E63CC59A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{855CC805-5C58-4AB7-9F67-CA09E63CC59A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{855CC805-5C58-4AB7-9F67-CA09E63CC59A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{855CC805-5C58-4AB7-9F67-CA09E63CC59A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

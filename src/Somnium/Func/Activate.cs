@@ -8,7 +8,6 @@ namespace Somnium.Func
 
         public static double Tanh(double u) => (Math.Pow(Math.E, u) - Math.Pow(Math.E, -u)) /
                                                (Math.Pow(Math.E, u) + Math.Pow(Math.E, -u));
-
         public static double Max(double u) => u >= 0 ? u : 0;
 
     }

@@ -99,7 +99,7 @@ namespace Somnium.Tests.ModelTest
         [TestMethod]
         public void ExecuteAllLayByIte()
         {
-            var iterations = 1000;
+            var iterations = 500;
             var gradient = 0.1;
 
             var inputsLays = new DirectoryInfo(WorkFolder).GetFiles()
