@@ -1,14 +1,18 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Somnium.Core;
-using Somnium.Datas;
+using Somnium.Data;
 
 namespace Somnium.Tests
 {
     [TestClass]
     public class ModelTest
     {
+        public string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\smallDigits";
+
         [TestMethod]
         public void MatrixTest()
         {
@@ -18,14 +22,14 @@ namespace Somnium.Tests
         [TestMethod]
         public void LoadInputLay()
         {
-            var path = new DirectoryInfo(@"E:\Document Code\Code Pensonal\Somnium\datas\trainingDigits\0_0.txt");
+            var path = new FileInfo(Path.Combine(WorkFolder, "1_0.txt"));
             var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadLayerInput);
         }
 
         [TestMethod]
         public void LoadMultiInputLay()
         {
-            var dir = new DirectoryInfo(@"E:\Document Code\Code Pensonal\Somnium\datas\trainingDigits");
+            var dir = new DirectoryInfo(WorkFolder);
             var inputsLays = dir.GetFiles()
                 .Select((path, index) =>
                 {
@@ -41,11 +45,11 @@ namespace Somnium.Tests
         [TestMethod]
         public void LoadBasicDeepLeaning()
         {
-            var path = new DirectoryInfo(@"E:\Document Code\Code Pensonal\Somnium\datas\trainingDigits\0_0.txt");
+            var path = new FileInfo(Path.Combine(WorkFolder, "1_0.txt"));
             var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadLayerInput);
 
-            var fullConnectedLayer = new FullConnectedLayer(inputLayer.OutputDataSizeFormat, 20);
-            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 10);
+            var fullConnectedLayer = new FullConnectedLayer(inputLayer.OutputDataSizeFormat, 6);
+            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 3);
 
 
             fullConnectedLayer.DatasCheckIn(inputLayer.OutputDatas);
@@ -61,7 +65,7 @@ namespace Somnium.Tests
         public void ExecuteAllLayOnce()
         {
             var gradient = 0.1;
-            var dir = new DirectoryInfo(@"E:\Document Code\Code Pensonal\Somnium\datas\trainingDigits");
+            var dir = new DirectoryInfo(WorkFolder);
             var inputsLays = dir.GetFiles()
                 .Select((path, index) =>
                 {
@@ -72,8 +76,8 @@ namespace Somnium.Tests
                 }).ToList();
 
             var inputLayFormat = inputsLays.First();
-            var fullConnectedLayer = new FullConnectedLayer(inputLayFormat.OutputDataSizeFormat, 20);
-            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 10);
+            var fullConnectedLayer = new FullConnectedLayer(inputLayFormat.OutputDataSizeFormat, 6);
+            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 3);
 
             inputsLays.ForEach(lay =>
             {
@@ -93,9 +97,9 @@ namespace Somnium.Tests
         [TestMethod]
         public void ExecuteAllLayByIte()
         {
-            var iterations = 50;
+            var iterations = 500;
             var gradient = 0.1;
-            var dir = new DirectoryInfo(@"E:\Document Code\Code Pensonal\Somnium\datas\trainingDigits");
+            var dir = new DirectoryInfo(WorkFolder);
             var inputsLays = dir.GetFiles()
                 .Select((path, index) =>
                 {
@@ -106,9 +110,10 @@ namespace Somnium.Tests
                 }).ToList();
 
             var inputLayFormat = inputsLays.First();
-            var fullConnectedLayer = new FullConnectedLayer(inputLayFormat.OutputDataSizeFormat, 20);
-            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 10);
+            var fullConnectedLayer = new FullConnectedLayer(inputLayFormat.OutputDataSizeFormat, 18);
+            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, 3);
 
+            //Learning
             Enumerable.Range(0, iterations).ToList().ForEach(i =>
             {
                 inputsLays.ForEach(lay =>
@@ -123,6 +128,19 @@ namespace Somnium.Tests
 
                 outputLayer.UpdateWeight();
                 fullConnectedLayer.UpdateWeight();
+            });
+
+            //Save Learning
+
+            //Test Learning
+
+            var C = new List<int>();
+            inputsLays.ForEach(lay =>
+            {
+                fullConnectedLayer.DatasCheckIn(lay.OutputDatas);
+                outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
+                var likelihoodRatio = outputLayer.ActivatedOuput;
+                C.Add(likelihoodRatio.IndexOf(likelihoodRatio.Max()) + 1);
             });
 
         }

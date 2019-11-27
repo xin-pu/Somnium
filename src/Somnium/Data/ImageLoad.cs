@@ -5,7 +5,7 @@ using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
 
-namespace Somnium.Datas
+namespace Somnium.Data
 {
     public class ImageLoad
     {
@@ -31,8 +31,8 @@ namespace Somnium.Datas
                 });
                 var file = new FileInfo(path);
                 var excepted = file.Name.Split('_').First();
-                var exceptedDatas = new double[10];
-                exceptedDatas[int.Parse(excepted)] = 1;
+                var exceptedDatas = new double[3];
+                exceptedDatas[int.Parse(excepted) - 1] = 1;
                 var inputLayer= new InputLayer(
                     new DataSize { RowCount = matrix.RowCount, ColumnCount = matrix.ColumnCount });
                 inputLayer.DatasCheckIn(matrix, exceptedDatas);

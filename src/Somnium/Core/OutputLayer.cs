@@ -73,7 +73,7 @@ namespace Somnium.Core
             ActivateNerveCells.ToList().ForEach(a =>
             {
                 a.Deviation = Deviations.ElementAt(i);
-                var gra = a.Deviation * gradient;
+                var gra = -a.Deviation * gradient;
                 a.AddDeviation((Matrix) InputData.Multiply(gra), gra);
                 i++;
             });
