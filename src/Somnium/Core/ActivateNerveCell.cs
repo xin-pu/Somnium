@@ -8,7 +8,7 @@ namespace Somnium.Core
 {
     public class ActivateNerveCell : NerveCell
     {
-
+        private readonly object myLock = new object();
         private Func<double, double> activateFuc;
 
         public ActivateNerveCell(DataSize datasize) : base(datasize)
@@ -59,8 +59,11 @@ namespace Somnium.Core
 
         public void AddDeviation(Matrix devWeight, double devBias)
         {
-            DeltaWeight = (Matrix) (DeltaWeight + devWeight);
-            DeltaBias = DeltaBias + devBias;
+            lock (myLock)
+            {
+                DeltaWeight = (Matrix)(DeltaWeight + devWeight);
+                DeltaBias = DeltaBias + devBias;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Somnium.Core
     {
 
         public string Label { set; get; }
+        public string LabelEstimate { set; get; }
         public double[] ExpectVal { set; get; }
 
         public InputLayer(DataSize inputDataSize) : base(inputDataSize)
