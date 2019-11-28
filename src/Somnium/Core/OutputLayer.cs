@@ -7,6 +7,7 @@ using Somnium.Func;
 
 namespace Somnium.Core
 {
+    [Serializable]
     public class OutputLayer : StandLayer
     {
 
@@ -22,6 +23,11 @@ namespace Somnium.Core
         public IList<double> Deviations { set; get; }
 
         public double Variance { set; get; }
+
+        public OutputLayer()
+        {
+
+        }
 
         public OutputLayer(DataSize inputDataSize, int nerveCellCount) : base(inputDataSize)
         {

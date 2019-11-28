@@ -1,4 +1,5 @@
-﻿using MathNet.Numerics.LinearAlgebra.Double;
+﻿using System;
+using MathNet.Numerics.LinearAlgebra.Double;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Somnium.Core
     /// <summary>
     /// The input data of Full Connected Layer should be Matrix. we need dimensionality reduction.
     /// </summary>
+    [Serializable]
     public class FullConnectedLayer : StandLayer
     {
         public Matrix InputData { set; get; }
@@ -18,6 +20,11 @@ namespace Somnium.Core
         public IList<double> WeightedInput { set; get; }
         public IList<double> ActivatedOuput { set; get; }
         public IList<double> Deviations { set; get; }
+
+        public FullConnectedLayer()
+        {
+
+        }
 
         public FullConnectedLayer(DataSize inputDataSize, int nerveCellCount) : base(inputDataSize)
         {

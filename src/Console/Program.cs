@@ -1,9 +1,6 @@
 ﻿using Somnium.Data;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
 
 namespace Console
@@ -26,7 +23,7 @@ namespace Console
             var inputsLays = new DirectoryInfo(WorkFolder).GetFiles()
                 .Select((path, index) =>
                 {
-                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ReadLayerInput);
+                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
                     return inputLayer;
                 }).ToList();
 
@@ -78,7 +75,7 @@ namespace Console
             var inputsLays = new DirectoryInfo(WorkFolder).GetFiles()
                 .Select((path, index) =>
                 {
-                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ReadLayerInput);
+                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
                     return inputLayer;
                 }).ToList();
 
@@ -122,29 +119,6 @@ namespace Console
 
         }
 
-        #region
-        private static InputLayer ReadLayerInput(string path)
-        {
-            using (var streamRead = new StreamReader(path))
-            {
-                var allLine = streamRead.ReadToEnd();
-                var lines = allLine.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                var matrix = DenseMatrix.Create(lines.Count, lines.First().Length,0);
-                var rowIndex = 0;
-                lines.ForEach(line =>
-                {
-                    var lineData = line.ToCharArray().Select(a => double.Parse(a.ToString()));
-                    matrix.SetRow(rowIndex, lineData.ToArray());
-                    rowIndex++;
-                });
-                var excepted = new FileInfo(path).Name.Split('_').First();
-                var inputLayer = new InputLayer(
-                    new DataSize { RowCount = matrix.RowCount, ColumnCount = matrix.ColumnCount });
-                inputLayer.DatasCheckIn(matrix, excepted);
-                return inputLayer;
-            }
-            
-        }
-        #endregion
+
     }
 }

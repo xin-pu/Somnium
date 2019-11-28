@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Core
@@ -7,12 +8,18 @@ namespace Somnium.Core
     /// <summary>
     /// Input Layer is the first Layer which the input size and output size are same.
     /// </summary>
+    [Serializable]
     public class InputLayer : StandLayer
     {
 
         public string Label { set; get; }
         public string LabelEstimate { set; get; }
         public double[] ExpectVal { set; get; }
+
+        public InputLayer()
+        {
+
+        }
 
         public InputLayer(DataSize inputDataSize) : base(inputDataSize)
         {

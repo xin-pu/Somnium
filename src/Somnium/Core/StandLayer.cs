@@ -9,11 +9,19 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Core
 {
+
+    [Serializable]
     public abstract class StandLayer : ICloneable, INotifyPropertyChanged
 
     {
         private IList<Matrix> _outputDatas;
         private IList<Matrix> _inputDatas;
+
+
+        public StandLayer()
+        {
+
+        }
 
         protected StandLayer(DataSize inputDataSize)
         {
@@ -41,12 +49,12 @@ namespace Somnium.Core
 
         public object Clone()
         {
-            var BF = new XmlSerializer(GetType());
+            var bf = new XmlSerializer(GetType());
             var memStream = new MemoryStream();
-            BF.Serialize(memStream, this);
+            bf.Serialize(memStream, this);
             memStream.Flush();
             memStream.Position = 0;
-            return BF.Deserialize(memStream);
+            return bf.Deserialize(memStream);
         }
 
 

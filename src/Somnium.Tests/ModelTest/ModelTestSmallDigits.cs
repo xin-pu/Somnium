@@ -20,7 +20,7 @@ namespace Somnium.Tests.ModelTest
         public void LoadInputLay()
         {
             var path = new FileInfo(Path.Combine(WorkFolder, "1_0.txt"));
-            var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ReadLayerInput);
+            var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
             Assert.AreEqual("1", inputLayer.Label);
         }
 
@@ -31,7 +31,7 @@ namespace Somnium.Tests.ModelTest
             var inputsLays = dir.GetFiles()
                 .Select((path, index) =>
                 {
-                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ReadLayerInput);
+                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
                     inputLayer.LayerRowIndex = index;
                     inputLayer.LayerColumnIndex = 1;
                     return inputLayer;
@@ -44,7 +44,7 @@ namespace Somnium.Tests.ModelTest
         public void LoadOneInputDataAndActivate()
         {
             var path = new FileInfo(Path.Combine(WorkFolder, "1_0.txt"));
-            var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ReadLayerInput);
+            var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
             inputLayer.ExpectVal = new double[] {1, 0, 0};
 
             var fullConnectedLayer = new FullConnectedLayer(inputLayer.OutputDataSizeFormat, 6);
@@ -69,7 +69,7 @@ namespace Somnium.Tests.ModelTest
             var inputsLays = new DirectoryInfo(WorkFolder).GetFiles()
                 .Select((path, index) =>
                 {
-                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ReadLayerInput);
+                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
                     return inputLayer;
                 }).ToList();
 
@@ -99,13 +99,13 @@ namespace Somnium.Tests.ModelTest
         [TestMethod]
         public void ExecuteAllLayByIte()
         {
-            var iterations = 10000;
+            var iterations = 1000;
             var gradient = 0.1;
 
             var inputsLays = new DirectoryInfo(WorkFolder).GetFiles()
                 .Select((path, index) =>
                 {
-                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ReadLayerInput);
+                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
                     return inputLayer;
                 }).ToList();
 
@@ -151,27 +151,7 @@ namespace Somnium.Tests.ModelTest
         }
 
 
-        #region
-        private static InputLayer ReadLayerInput(string path)
-        {
-            using var streamRead = new StreamReader(path);
-            var allLine = streamRead.ReadToEnd();
-            var lines = allLine.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
-            var matrix = new DenseMatrix(lines.Count, lines.First().Length);
-            var rowIndex = 0;
-            lines.ForEach(line =>
-            {
-                var lineData = line.ToCharArray().Select(a => double.Parse(a.ToString()));
-                matrix.SetRow(rowIndex, lineData.ToArray());
-                rowIndex++;
-            });
-            var excepted = new FileInfo(path).Name.Split('_').First();
-            var inputLayer = new InputLayer(
-                new DataSize {RowCount = matrix.RowCount, ColumnCount = matrix.ColumnCount});
-            inputLayer.DatasCheckIn(matrix, excepted);
-            return inputLayer;
-        }
-        #endregion
+
 
     }
 }

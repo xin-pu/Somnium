@@ -20,6 +20,25 @@ namespace Somnium.Data
             return files.Select(a => ReadLayerInput(a.FullName, func)).ToList();
         }
 
+        public static InputLayer ReadDigitsAsInputLayer(string path)
+        {
+            using var streamRead = new StreamReader(path);
+            var allLine = streamRead.ReadToEnd();
+            var lines = allLine.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var matrix = new DenseMatrix(lines.Count, lines.First().Length);
+            var rowIndex = 0;
+            lines.ForEach(line =>
+            {
+                var lineData = line.ToCharArray().Select(a => double.Parse(a.ToString()));
+                matrix.SetRow(rowIndex, lineData.ToArray());
+                rowIndex++;
+            });
+            var excepted = new FileInfo(path).Name.Split('_').First();
+            var inputLayer = new InputLayer(
+                new DataSize { RowCount = matrix.RowCount, ColumnCount = matrix.ColumnCount });
+            inputLayer.DatasCheckIn(matrix, excepted);
+            return inputLayer;
+        }
 
     }
 }
