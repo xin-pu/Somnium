@@ -44,7 +44,7 @@ namespace Console
                     outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
 
                     //Cal Deviation Update Delta Weight and Bias
-                    outputLayer.Deviationed(lay.ExpectVal, gradient);
+                    outputLayer.Deviated(lay.ExpectVal, gradient);
                     fullConnectedLayer.Deviationed(outputLayer.ActivateNerveCells, gradient);
                 });
 
@@ -96,7 +96,7 @@ namespace Console
                     outputLayer.DatasCheckIn(fullConnectedLayer2.OutputData);
 
                     //Cal Deviation Update Delta Weight and Bias
-                    outputLayer.Deviationed(lay.ExpectVal, gradient);
+                    outputLayer.Deviated(lay.ExpectVal, gradient);
                     fullConnectedLayer2.Deviationed(outputLayer.ActivateNerveCells, gradient);
                 });
 

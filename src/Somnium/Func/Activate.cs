@@ -12,6 +12,7 @@ namespace Somnium.Func
 
     }
 
+    [Serializable]
     public enum ActivateFunc
     {
         Sigmoid,

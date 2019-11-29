@@ -1,8 +1,10 @@
 ﻿using System;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Somnium.Core
 {
@@ -78,7 +80,7 @@ namespace Somnium.Core
             ActivateNerveCells.ToList().ForEach(a => { a.Activated(datas); });
 
             WeightedInput = ActivateNerveCells.Select(a => a.WeightedInput).ToList();
-            ActivatedOuput = ActivateNerveCells.Select(a => a.ActivateOuput).ToList();
+            ActivatedOuput = ActivateNerveCells.Select(a => a.ActivateOutput).ToList();
 
             OutputData.SetColumn(0, ActivatedOuput.ToArray());
             OutputDatas = new List<Matrix> {OutputData};
@@ -122,5 +124,11 @@ namespace Somnium.Core
         }
 
 
+        public override void Save(string path)
+        {
+            using var fs = new FileStream(path, FileMode.Create);
+            var formatter = new XmlSerializer(typeof(FullConnectedLayer));
+            formatter.Serialize(fs, this);
+        }
     }
 }

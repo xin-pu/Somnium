@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Core
@@ -38,6 +40,12 @@ namespace Somnium.Core
             return equal;
         }
 
+        public override void Save(string path)
+        {
+            using var fs = new FileStream(path, FileMode.Create);
+            var formatter = new XmlSerializer(typeof(InputLayer));
+            formatter.Serialize(fs, this);
+        }
 
         public bool DatasCheckIn(Matrix data, string label)
         {

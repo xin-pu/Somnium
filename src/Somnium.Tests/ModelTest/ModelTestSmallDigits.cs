@@ -16,28 +16,7 @@ namespace Somnium.Tests.ModelTest
 
 
 
-        [TestMethod]
-        public void LoadInputLay()
-        {
-            var path = new FileInfo(Path.Combine(WorkFolder, "1_0.txt"));
-            var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
-            Assert.AreEqual("1", inputLayer.Label);
-        }
 
-        [TestMethod]
-        public void LoadMultiInputLay()
-        {
-            var dir = new DirectoryInfo(WorkFolder);
-            var inputsLays = dir.GetFiles()
-                .Select((path, index) =>
-                {
-                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
-                    inputLayer.LayerRowIndex = index;
-                    inputLayer.LayerColumnIndex = 1;
-                    return inputLayer;
-                }).ToList();
-            Assert.AreEqual(3, inputsLays.Select(a => a.Label).Distinct().Count());
-        }
 
 
         [TestMethod]
@@ -54,7 +33,7 @@ namespace Somnium.Tests.ModelTest
             fullConnectedLayer.DatasCheckIn(inputLayer.OutputDatas);
             outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
 
-            outputLayer.Deviationed(inputLayer.ExpectVal, 0.1);
+            outputLayer.Deviated(inputLayer.ExpectVal, 0.1);
             fullConnectedLayer.Deviationed(outputLayer.ActivateNerveCells, 0.1);
 
         }
@@ -86,7 +65,7 @@ namespace Somnium.Tests.ModelTest
                 fullConnectedLayer.DatasCheckIn(lay.OutputDatas);
                 outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
 
-                outputLayer.Deviationed(lay.ExpectVal, gradient);
+                outputLayer.Deviated(lay.ExpectVal, gradient);
                 fullConnectedLayer.Deviationed(outputLayer.ActivateNerveCells, gradient);
 
             });
@@ -126,7 +105,7 @@ namespace Somnium.Tests.ModelTest
                     outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
 
                     //Cal Deviation Update Delta Weight and Bias
-                    outputLayer.Deviationed(lay.ExpectVal, gradient);
+                    outputLayer.Deviated(lay.ExpectVal, gradient);
                     fullConnectedLayer.Deviationed(outputLayer.ActivateNerveCells, gradient);
                 });
 

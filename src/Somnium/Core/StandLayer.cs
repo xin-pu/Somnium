@@ -14,11 +14,10 @@ namespace Somnium.Core
     public abstract class StandLayer : ICloneable, INotifyPropertyChanged
 
     {
-        private IList<Matrix> _outputDatas;
-        private IList<Matrix> _inputDatas;
+        private List<Matrix> _outputDatas;
+        private List<Matrix> _inputDatas;
 
-
-        public StandLayer()
+        protected StandLayer()
         {
 
         }
@@ -28,23 +27,26 @@ namespace Somnium.Core
             InputDataSizeFormat = inputDataSize;
         }
 
-        public DataSize InputDataSizeFormat { get; protected set; }
-        public DataSize OutputDataSizeFormat { get; protected set; }
+        public DataSize InputDataSizeFormat { get;  set; }
+        public DataSize OutputDataSizeFormat { get; set; }
 
         public int LayerColumnIndex { set; get; }
         public int LayerRowIndex { set; get; }
 
-        public IList<Matrix> InputDatas
+        [XmlIgnore]
+        public List<Matrix> InputDatas
         {
             set => UpdateProperty(ref _inputDatas, value);
             get => _inputDatas;
         }
-
-        public IList<Matrix> OutputDatas
+        [XmlIgnore]
+        public List<Matrix> OutputDatas
         {
             set => UpdateProperty(ref _outputDatas, value);
             get => _outputDatas;
         }
+
+        public abstract void Save(string path);
 
 
         public object Clone()
