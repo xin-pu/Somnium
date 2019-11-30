@@ -13,7 +13,7 @@ namespace Somnium.Func
     }
 
     [Serializable]
-    public enum ActivateFunc
+    public enum ActivateMode
     {
         Sigmoid,
         Tanh,

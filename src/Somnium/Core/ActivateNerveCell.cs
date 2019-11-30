@@ -15,7 +15,7 @@ namespace Somnium.Core
     public class ActivateNerveCell 
     {
         private readonly object _myLock = new object();
-        private ActivateFunc _activateFuncMode;
+        private ActivateMode _activateModeMode;
         private List<double> _weightArray=new List<double>();
         private List<double> _deltaWeightArray=new List<double>();
 
@@ -54,7 +54,6 @@ namespace Somnium.Core
         public DataSize OutputLevel { set; get; }
 
 
-
         public ActivateNerveCell()
         {
 
@@ -69,22 +68,22 @@ namespace Somnium.Core
             DeltaWeight = DenseMatrix.CreateDiagonal(dataSize.RowCount, dataSize.ColumnCount, 0);
             DeltaWeightArray = ((DenseMatrix)DeltaWeight).Values.ToList();
             DeltaBias = 0;
-            ActivateMode = ActivateFunc.Sigmoid;
+            ActivateModeMode = Func.ActivateMode.Sigmoid;
         }
 
 
         public double WeightedInput { set; get; }
         public double ActivateOutput { set; get; }
         public double Deviation { set; get; }
-        public ActivateFunc ActivateMode
+        public ActivateMode ActivateModeMode
         {
             set
             {
-                _activateFuncMode = value;
+                _activateModeMode = value;
                 ActivateFuc = Activate.Sigmoid;
                 FirstDerivativeFunc = Differentiate.FirstDerivativeFunc(ActivateFuc);
             }
-            get { return _activateFuncMode; }
+            get { return _activateModeMode; }
         }
 
 
