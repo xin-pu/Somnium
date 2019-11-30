@@ -9,8 +9,10 @@ namespace Somnium.Kernel
     [Serializable]
     public abstract class Neure : ICloneable
     {
-        public uint Order { set; get; }
-        public NeureDegree Degree { set; get; }
+        
+        public int LayerIndex { set; get; }
+        public int Order { set; get; }
+        public NeureShape Shape { set; get; }
         public double[] Weight { set; get; }
         public double Offset { set; get; }
 
@@ -19,14 +21,14 @@ namespace Somnium.Kernel
 
         }
 
-        protected Neure(NeureDegree degree)
+        protected Neure(NeureShape shape)
         {
-            Initial(degree);
+            Initial(shape);
         }
 
         protected Neure(int rows, int columns)
         {
-            Initial(new NeureDegree {Rows = rows, Columns = columns});
+            Initial(new NeureShape {Rows = rows, Columns = columns});
         }
 
 
@@ -40,9 +42,9 @@ namespace Somnium.Kernel
             return bf.Deserialize(memStream);
         }
 
-        private void Initial(NeureDegree degree)
+        private void Initial(NeureShape shape)
         {
-            Weight = DenseMatrix.CreateRandom(degree.Rows, degree.Columns, new ContinuousUniform()).Values;
+            Weight = DenseMatrix.CreateRandom(shape.Rows, shape.Columns,new Normal()).Values;
             Offset = new ContinuousUniform().Median;
         }
     }

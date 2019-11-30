@@ -15,10 +15,22 @@ namespace Somnium.Kernel
             set
             {
                 _activateMode = value;
-                ActivateFuc = Activate.Sigmoid;
+                switch (value)
+                {
+                    case ActivateMode.Tanh:
+                        ActivateFuc = Activate.Tanh;
+                        break;
+                    case ActivateMode.Max:
+                        ActivateFuc = Activate.Max;
+                        break;
+                    default:
+                        ActivateFuc = Activate.Sigmoid;
+                        break;
+                }
+              
                 FirstDerivativeFunc = Differentiate.FirstDerivativeFunc(ActivateFuc);
             }
-            get { return _activateMode; }
+            get => _activateMode;
         }
 
         [XmlIgnore]
@@ -32,7 +44,7 @@ namespace Somnium.Kernel
 
         }
 
-        public Perceptron(NeureDegree degree):base(degree)
+        public Perceptron(NeureShape shape):base(shape)
         {
           
         }

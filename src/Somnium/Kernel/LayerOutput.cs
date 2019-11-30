@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Somnium.Kernel
+﻿namespace Somnium.Kernel
 {
-    class LayerOutput
+    public class LayerOutput
     {
     }
 }

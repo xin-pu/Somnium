@@ -1,27 +1,22 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
-using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
     public abstract class Layer : ICloneable
     {
-        public int NetIndex { set; get; }
+        public int LayerIndex { set; get; }
 
-        public DataDegree DegreeIn { set; get; }
-        public DataDegree DegreeOut { set; get; }
+        public DataShape ShapeIn { set; get; }
+        public DataShape ShapeOut { set; get; }
 
-        [XmlIgnore]
-        public DataFlow DataIn { set; get; }
-        [XmlIgnore]
-        public DataFlow DataOut { set; get; }
 
 
         public abstract void Save(string path);
         public abstract bool CheckInData(DataFlow dataFlow);
-        public abstract DataFlow CheckOutData();
+
 
 
         public object Clone()

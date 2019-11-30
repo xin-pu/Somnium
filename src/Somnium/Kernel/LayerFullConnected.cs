@@ -1,23 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
 
 namespace Somnium.Kernel
 {
-    public class LayerFullConnected:Layer
+    public class LayerFullConnected : Layer
     {
 
         public int NeureCount { set; get; }
+        [XmlIgnore]
+        public Matrix DataIn { set; get; }
+        [XmlIgnore]
+        public Matrix DataOut { set; get; }
+
         public Perceptron[] Perceptrons { set; get; }
 
-        public LayerFullConnected(DataDegree degree, int neureCount)
+        public LayerFullConnected(DataShape shape, int neureCount,int layerIndex)
         {
-            DegreeIn = degree;
-            DegreeOut = new DataDegree() {Rows = 1, Columns = neureCount, Layers = 1};
+            LayerIndex = layerIndex;
+            ShapeIn = shape;
+            ShapeOut = new DataShape {Rows = neureCount, Columns = 1, Layers = 1};
             Perceptrons = Enumerable.Range(0, neureCount)
-                .Select(a => new Perceptron(degree.Levels, 1))
+                .Select(a => new Perceptron(shape.Levels, 1)
+                {
+                    LayerIndex = layerIndex,
+                    Order = a
+                })
                 .ToArray();
 
         }
@@ -31,12 +43,31 @@ namespace Somnium.Kernel
 
         public override bool CheckInData(DataFlow dataFlow)
         {
-            throw new NotImplementedException();
+            var dataIn = dataFlow.Data;
+            var columns = dataIn.Select(a => a.ColumnCount).Distinct().ToArray();
+            var rows= dataIn.Select(a => a.RowCount).Distinct().ToArray();
+            if (columns.Length != 1 || rows.Length != 1) return false;
+            var equal = dataIn.Length == ShapeIn.Layers &&
+                        rows.First() == ShapeIn.Rows &&
+                        columns.First() == ShapeIn.Columns;
+            if (equal)
+            {
+                DataIn=
+                DataIn = DimensionalityReduction(dataIn);
+            }
+
+            return equal;
         }
 
-        public override DataFlow CheckOutData()
+
+        private Matrix DimensionalityReduction(Matrix[] datas)
         {
-            throw new NotImplementedException();
+            var datasArrays = datas.Select(a => a.Enumerate());
+            var datasOutput = new List<double>();
+            datasArrays.ToList().ForEach(a => datasOutput.AddRange(a));
+            return new DenseMatrix(datasOutput.Count, 1, datasOutput.ToArray());
         }
+
+
     }
 }

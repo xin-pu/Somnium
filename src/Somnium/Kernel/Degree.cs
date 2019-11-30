@@ -3,7 +3,7 @@
 namespace Somnium.Kernel
 {
     [Serializable]
-    public struct NeureDegree
+    public struct NeureShape
     {
         public int Rows;
         public int Columns;
@@ -11,7 +11,7 @@ namespace Somnium.Kernel
     }
 
     [Serializable]
-    public struct DataDegree
+    public struct DataShape
     {
         public int Rows;
         public int Columns;
