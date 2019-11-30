@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
 
@@ -15,27 +16,35 @@ namespace Somnium.Core
     {
         private readonly object _myLock = new object();
         private ActivateFunc _activateFuncMode;
-        private List<double> weightArray;
-        private List<double> deltaWeightArray;
+        private List<double> _weightArray=new List<double>();
+        private List<double> _deltaWeightArray=new List<double>();
 
         [XmlIgnore]
         public Func<double, double> ActivateFuc { set; get; }
         [XmlIgnore]
         public Func<double, double> FirstDerivativeFunc { set; get; }
         [XmlIgnore]
-        public Matrix Weight { set; get; }
+        public Matrix<double> Weight { set; get; }
         [XmlIgnore]
-        public Matrix DeltaWeight { set; get; }
+        public Matrix<double> DeltaWeight { set; get; }
         public List<double> WeightArray
         {
-            set { weightArray = value; }
-            get { return weightArray; }
+            set
+            {
+                _weightArray = value;
+                Weight=new DenseMatrix(DataSize.RowCount,DataSize.ColumnCount,value.ToArray());
+            }
+            get => _weightArray;
         }
 
         public List<double> DeltaWeightArray
         {
-            set { deltaWeightArray = value; }
-            get { return deltaWeightArray; }
+            set
+            {
+                _deltaWeightArray = value;
+                DeltaWeight = new DenseMatrix(DataSize.RowCount, DataSize.ColumnCount, value.ToArray());
+            }
+            get => _deltaWeightArray;
         }
 
         public double Bias { set; get; }
@@ -55,10 +64,10 @@ namespace Somnium.Core
         {
             DataSize = dataSize;
             Weight = DenseMatrix.CreateRandom(dataSize.RowCount, dataSize.ColumnCount, new ContinuousUniform());
-            WeightArray = Weight.AsRowMajorArray().ToList();
+            WeightArray = ((DenseMatrix)Weight).Values.ToList();
             Bias = new ContinuousUniform().Median;
             DeltaWeight = DenseMatrix.CreateDiagonal(dataSize.RowCount, dataSize.ColumnCount, 0);
-            DeltaWeightArray = DeltaWeight.AsRowMajorArray().ToList();
+            DeltaWeightArray = ((DenseMatrix)DeltaWeight).Values.ToList();
             DeltaBias = 0;
             ActivateMode = ActivateFunc.Sigmoid;
         }
