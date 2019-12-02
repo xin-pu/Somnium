@@ -8,6 +8,9 @@ namespace Somnium.Kernel
 {
     public class Perceptron : Neure
     {
+
+
+
         private ActivateMode _activateMode;
 
         public ActivateMode ActivateMode
@@ -37,8 +40,7 @@ namespace Somnium.Kernel
         public Func<double, double> ActivateFuc { set; get; }
         [XmlIgnore]
         public Func<double, double> FirstDerivativeFunc { set; get; }
-
-
+        
         public Perceptron()
         {
 

@@ -14,7 +14,7 @@ namespace Somnium.Kernel
 
         public void AddGradients(LayerOutput layer)
         {
-            
+            Gradients[layer.LayerIndex] = (Perceptron[])layer.Perceptrons.Clone();
         }
     }
 }

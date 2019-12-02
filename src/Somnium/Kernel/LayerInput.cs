@@ -9,10 +9,6 @@ namespace Somnium.Kernel
     public class LayerInput : Layer
     {
 
-        [XmlIgnore]
-        public Matrix[] DataIn { set; get; }
-        [XmlIgnore]
-        public Matrix[] DataOut { set; get; }
 
         public LayerInput()
         {
@@ -44,11 +40,6 @@ namespace Somnium.Kernel
             var data = dataIn.First();
             var equal = data.RowCount == ShapeIn.Rows
                         && data.ColumnCount == ShapeIn.Columns;
-            if (equal)
-            {
-                DataIn = DataOut = dataIn;
-            }
-
             return equal;
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -12,10 +11,7 @@ namespace Somnium.Kernel
     {
 
         public int NeureCount { set; get; }
-        [XmlIgnore]
-        public Matrix DataIn { set; get; }
-        [XmlIgnore]
-        public Matrix DataOut { set; get; }
+
 
         public Perceptron[] Perceptrons { set; get; }
 
@@ -31,7 +27,6 @@ namespace Somnium.Kernel
                     Order = a
                 })
                 .ToArray();
-
         }
 
         public override void Save(string path)
@@ -52,8 +47,7 @@ namespace Somnium.Kernel
                         columns.First() == ShapeIn.Columns;
             if (equal)
             {
-                DataIn=
-                DataIn = DimensionalityReduction(dataIn);
+               var DataIn = DimensionalityReduction(dataIn);
             }
 
             return equal;
@@ -67,6 +61,7 @@ namespace Somnium.Kernel
             datasArrays.ToList().ForEach(a => datasOutput.AddRange(a));
             return new DenseMatrix(datasOutput.Count, 1, datasOutput.ToArray());
         }
+
 
 
     }
