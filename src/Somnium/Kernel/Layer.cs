@@ -1,32 +1,48 @@
 ﻿using System;
 using System.IO;
-using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
     public abstract class Layer : ICloneable
     {
-        public int LayerIndex { set; get; }
-
-        public DataShape ShapeIn { set; get; }
-        public DataShape ShapeOut { set; get; }
-
+        public int LayerIndex { protected set; get; }
+        public DataShape ShapeIn { protected set; get; }
+        public DataShape ShapeOut { protected set; get; }
 
 
-        public abstract void Save(string path);
-        public abstract bool CheckInData(Array datas);
+        protected Layer(int rows, int columns, int layers,int layIndex)
+        {
+            var degreeIn = new DataShape { Rows = rows, Columns = columns, Layers = layers };
+            ShapeIn = ShapeOut = degreeIn;
+            LayerIndex = layIndex;
+        }
 
+        protected Layer(DataShape shape, int layerIndex)
+        {
+            ShapeIn = ShapeOut = shape;
+            LayerIndex = layerIndex;
+        }
+
+        public virtual void Save(string path)
+        {
+            using var fs = new FileStream(path, FileMode.Create);
+            var serializer = new BinaryFormatter();
+            serializer.Serialize(fs, this);
+        }
+
+        public abstract Array Activated(DataFlow dataFlow, Matrix datas);
+        public abstract Array Activated(DataFlow dataFlow, Array datas);
+        
         public object Clone()
         {
-            CheckInData(new[] { 1 });
-            CheckInData(new[,] { { 1, 1 }, { 1, 1 } });
-            var bf = new XmlSerializer(GetType());
+            var serializer = new BinaryFormatter();
             var memStream = new MemoryStream();
-            bf.Serialize(memStream, this);
+            serializer.Serialize(memStream, this);
             memStream.Flush();
             memStream.Position = 0;
-            return bf.Deserialize(memStream);
+            return serializer.Deserialize(memStream);
         }
     }
 }

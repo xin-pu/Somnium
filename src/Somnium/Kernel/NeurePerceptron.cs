@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Linq;
-using System.Xml.Serialization;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
 
 namespace Somnium.Kernel
 {
-    public class Perceptron : Neure
+    /// <summary>
+    /// 感知机神经元
+    /// </summary>
+    [Serializable]
+    public class NeurePerceptron : Neure
     {
-
-
 
         private ActivateMode _activateMode;
 
@@ -36,32 +38,43 @@ namespace Somnium.Kernel
             get => _activateMode;
         }
 
-        [XmlIgnore]
+    
         public Func<double, double> ActivateFuc { set; get; }
-        [XmlIgnore]
         public Func<double, double> FirstDerivativeFunc { set; get; }
         
-        public Perceptron()
+        public NeurePerceptron()
         {
-
+              
         }
 
-        public Perceptron(NeureShape shape):base(shape)
+        public NeurePerceptron(NeureShape shape):base(shape)
         {
           
         }
 
-        public Perceptron(int rows, int columns) : base(rows, columns)
+        public NeurePerceptron(int rows, int columns) : base(rows, columns)
         {
 
         }
 
+        /// <summary>
+        /// Activate Neure
+        /// </summary>
+        /// <param name="inputData"></param>
+        /// <returns></returns>
         public Tuple<double, double> GetActivated(double[] inputData)
         {
+            if (inputData.Length != Shape.Levels)
+                return new Tuple<double, double>(double.NaN, double.NaN);
             var weight = inputData.Zip(Weight, (a, b) => a * b).Sum();
             var activate = ActivateFuc(weight + Offset);
             return new Tuple<double, double>(activate, weight);
         }
 
+        public Tuple<double, double> GetActivated(Matrix inputData)
+        {
+            var values = inputData.AsRowMajorArray();
+            return GetActivated(values);
+        }
     }
 }

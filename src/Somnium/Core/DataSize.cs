@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Xml.Serialization;
-using MathNet.Numerics.LinearAlgebra.Double;
-
-
-namespace Somnium.Core
+﻿namespace Somnium.Core
 {
 
 

@@ -1,15 +1,18 @@
 ﻿using System;
 using System.IO;
-using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
+    /// <summary>
+    /// 基础神经元
+    /// </summary>
     [Serializable]
     public abstract class Neure : ICloneable
     {
-        
+
         public int LayerIndex { set; get; }
         public int Order { set; get; }
         public NeureShape Shape { set; get; }
@@ -32,23 +35,23 @@ namespace Somnium.Kernel
         }
 
 
-        public object Clone()
+        public virtual object Clone()
         {
-            var bf = new XmlSerializer(GetType());
+            var serializer = new BinaryFormatter();
             var memStream = new MemoryStream();
-            bf.Serialize(memStream, this);
+            serializer.Serialize(memStream, this);
             memStream.Flush();
             memStream.Position = 0;
-            return bf.Deserialize(memStream);
+            return serializer.Deserialize(memStream);
         }
 
         private void Initial(NeureShape shape)
         {
-            Weight = DenseMatrix.CreateRandom(shape.Rows, shape.Columns,new Normal()).Values;
+            Weight = DenseMatrix.CreateRandom(shape.Rows, shape.Columns, new Normal()).Values;
             Offset = new ContinuousUniform().Median;
+            Shape = shape;
         }
     }
-
 
 
 }

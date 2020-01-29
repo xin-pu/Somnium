@@ -1,27 +1,23 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
-using Somnium.Core;
 
 namespace Somnium.Kernel
 {
+    [Serializable]
     public class LayerFullConnected : Layer
     {
 
-        public int NeureCount { set; get; }
+        public int NeureCount { protected set; get; }
 
+        public NeurePerceptron[] Perceptrons { set; get; }
 
-        public Perceptron[] Perceptrons { set; get; }
-
-        public LayerFullConnected(DataShape shape, int neureCount,int layerIndex)
+        public LayerFullConnected(DataShape shape, int neureCount,int layerIndex) : base(shape,layerIndex)
         {
-            LayerIndex = layerIndex;
-            ShapeIn = shape;
-            ShapeOut = new DataShape {Rows = neureCount, Columns = 1, Layers = 1};
+            NeureCount = neureCount;
             Perceptrons = Enumerable.Range(0, neureCount)
-                .Select(a => new Perceptron(shape.Levels, 1)
+                .Select(a => new NeurePerceptron(shape.Levels, 1)
                 {
                     LayerIndex = layerIndex,
                     Order = a
@@ -29,29 +25,23 @@ namespace Somnium.Kernel
                 .ToArray();
         }
 
-        public override void Save(string path)
-        {
-            using var fs = new FileStream(path, FileMode.Create);
-            var formatter = new XmlSerializer(typeof(FullConnectedLayer));
-            formatter.Serialize(fs, this);
-        }
 
-        public override bool CheckInData(DataFlow dataFlow)
-        {
-            var dataIn = dataFlow.Data;
-            var columns = dataIn.Select(a => a.ColumnCount).Distinct().ToArray();
-            var rows= dataIn.Select(a => a.RowCount).Distinct().ToArray();
-            if (columns.Length != 1 || rows.Length != 1) return false;
-            var equal = dataIn.Length == ShapeIn.Layers &&
-                        rows.First() == ShapeIn.Rows &&
-                        columns.First() == ShapeIn.Columns;
-            if (equal)
-            {
-               var DataIn = DimensionalityReduction(dataIn);
-            }
+        //public override bool CheckInData(Matrix[] DataIn)
+        //{
+        //    var dataIn = dataFlow.Data;
+        //    var columns = dataIn.Select(a => a.ColumnCount).Distinct().ToArray();
+        //    var rows= dataIn.Select(a => a.RowCount).Distinct().ToArray();
+        //    if (columns.Length != 1 || rows.Length != 1) return false;
+        //    var equal = dataIn.Length == ShapeIn.Layers &&
+        //                rows.First() == ShapeIn.Rows &&
+        //                columns.First() == ShapeIn.Columns;
+        //    if (equal)
+        //    {
+        //       var DataIn = DimensionalityReduction(dataIn);
+        //    }
 
-            return equal;
-        }
+        //    return equal;
+        //}
 
 
         private Matrix DimensionalityReduction(Matrix[] datas)
@@ -63,6 +53,14 @@ namespace Somnium.Kernel
         }
 
 
+        public override Array Activated(DataFlow dataFlow, Matrix datas)
+        {
+            throw new NotImplementedException();
+        }
 
+        public override Array Activated(DataFlow dataFlow, Array datas)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

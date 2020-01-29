@@ -3,23 +3,52 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
-    public class DataFlow
+    public class DataFlow 
     {
+
+
         public DataFlow()
         {
-            DataQueuePre = new Dictionary<int, Matrix[]>();
-            DataQueuePost = new Dictionary<int, double[]>();
+            NeureQueue = new Dictionary<int, Neure[]>();
+            LayerQueue = new Dictionary<int, Layer>();
         }
 
-        public Dictionary<int, Matrix[]> DataQueuePre { set; get; }
-        public Dictionary<int, double[]> DataQueuePost { set; get; }
+        public Matrix InputData { set; get; }
+
+        public Dictionary<int, Layer> LayerQueue { set; get; }
+        public Dictionary<int, Neure[]> NeureQueue { set; get; }
+
 
         public double[] ExpectedOut { set; get; }
         public double[] ActualOut { set; get; }
         public string ExpectedLabel { set; get; }
         public string ActualLabel { set; get; }
 
+        public void AddLayer(LayerFullConnected layer)
+        {
+            LayerQueue[layer.LayerIndex] = layer;
+            NeureQueue[layer.LayerIndex] = (NeurePerceptron[]) layer.Perceptrons.Clone();
+        }
+
+        public void AddLayer(LayerInput layer)
+        {
+            LayerQueue[layer.LayerIndex] = layer;
+            NeureQueue[layer.LayerIndex] = null;
+        }
+    }
 
 
+    public class DataUnit<T>
+    {
+        public DataFormat Format { set; get; }
+        public T DataValue { set; get; }
+
+    }
+
+    public enum DataFormat
+    {
+        MatrixArray,
+        Matrix,
+        DoubleArray
     }
 }

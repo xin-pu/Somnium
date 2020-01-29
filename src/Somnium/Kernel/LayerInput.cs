@@ -1,48 +1,37 @@
 ﻿using System;
-using System.Linq;
-using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
+    /// <summary>
+    /// Input Layer is the first Layer which the input size and output size are same.
+    /// </summary>
     [Serializable]
     public class LayerInput : Layer
     {
 
 
-        public LayerInput()
+        public LayerInput(int rows, int columns, int layers, int layerIndex = 0)
+            : base(rows, columns, layers, layerIndex)
         {
 
         }
 
-
-        public LayerInput(int rows, int columns, int layers)
+        public LayerInput(DataShape shape, int layerIndex = 0)
+            : base(shape,layerIndex)
         {
-            var degreeIn = new DataShape {Rows = rows, Columns = columns, Layers = layers};
-            ShapeIn = ShapeOut = degreeIn;
-        }
-
-        public LayerInput(DataShape shape)
-        {
-            ShapeIn = ShapeOut = shape;
+          
         }
 
 
-        public override void Save(string path)
+        public override Array Activated(DataFlow dataFlow, Matrix datas)
         {
             throw new NotImplementedException();
         }
 
-        public override bool CheckInData(DataFlow dataFlow)
+        public override Array Activated(DataFlow dataFlow, Array datas)
         {
-            var dataIn = dataFlow.Data;
-            if (dataIn.Length != ShapeIn.Layers) return false;
-            var data = dataIn.First();
-            var equal = data.RowCount == ShapeIn.Rows
-                        && data.ColumnCount == ShapeIn.Columns;
-            return equal;
+            throw new NotImplementedException();
         }
-
-
     }
 }
