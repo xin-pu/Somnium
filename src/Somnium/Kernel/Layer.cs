@@ -15,12 +15,12 @@ namespace Somnium.Kernel
 
 
         public abstract void Save(string path);
-        public abstract bool CheckInData(DataFlow dataFlow);
-
-
+        public abstract bool CheckInData(Array datas);
 
         public object Clone()
         {
+            CheckInData(new[] { 1 });
+            CheckInData(new[,] { { 1, 1 }, { 1, 1 } });
             var bf = new XmlSerializer(GetType());
             var memStream = new MemoryStream();
             bf.Serialize(memStream, this);

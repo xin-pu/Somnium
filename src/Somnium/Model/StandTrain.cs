@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
 using Somnium.Core;
 using Somnium.Data;
@@ -11,7 +9,7 @@ namespace Somnium.Model
     [Serializable]
     public abstract class StandTrain
     {
-        public StandTrain()
+        protected StandTrain()
         {
         }
 

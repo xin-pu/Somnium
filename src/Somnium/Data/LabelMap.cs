@@ -19,17 +19,6 @@ namespace Somnium.Data
             CreateMap(labels.ToArray());
         }
 
-        private void CreateMap(IList<string> labels)
-        {
-            Dict = new Dictionary<string, int>();
-            var i = 0;
-            labels.Distinct().ToList().ForEach(label =>
-            {
-                Dict[label] = i;
-                i++;
-            });
-        }
-
         public string GetLabel(int value)
         {
             return Dict.First(a => a.Value == value).Key;
@@ -46,6 +35,18 @@ namespace Somnium.Data
             var array = new double[Dict.Count];
             array[value] = 1;
             return array;
+        }
+
+
+        private void CreateMap(IList<string> labels)
+        {
+            Dict = new Dictionary<string, int>();
+            var i = 0;
+            labels.Distinct().ToList().ForEach(label =>
+            {
+                Dict[label] = i;
+                i++;
+            });
         }
 
     }

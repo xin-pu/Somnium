@@ -7,13 +7,11 @@ namespace Somnium.Data
     {
         public static void Save(Matrix data, string path, string separator = "")
         {
-            using (var sw = new StreamWriter(path))
+            using var sw = new StreamWriter(path);
+            var rows = data.ToRowArrays();
+            foreach (var row in rows)
             {
-                var rows = data.ToRowArrays();
-                foreach (var row in rows)
-                {
-                    sw.WriteLine(string.Join(separator, row));
-                }
+                sw.WriteLine(string.Join(separator, row));
             }
         }
     }
