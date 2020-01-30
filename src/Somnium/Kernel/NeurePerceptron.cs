@@ -38,6 +38,7 @@ namespace Somnium.Kernel
             get => _activateMode;
         }
 
+    
         public Func<double, double> ActivateFuc { set; get; }
         public Func<double, double> FirstDerivativeFunc { set; get; }
         
@@ -63,10 +64,8 @@ namespace Somnium.Kernel
         /// <returns></returns>
         public override Tuple<double, double> Activated(Matrix inputData)
         {
-            var values = inputData.AsRowMajorArray();
-            if (values.Length != Shape.Levels)
-                return new Tuple<double, double>(double.NaN, double.NaN);
-            var weight = values.Zip(Weight, (a, b) => a * b).Sum();
+
+            var weight = inputData.PointwiseMultiply(Weight).Enumerate().Sum();
             var activate = ActivateFuc(weight + Offset);
             return new Tuple<double, double>(activate, weight);
         }

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
-using DenseMatrix = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
 
 namespace Somnium.Kernel
 {
 
     /// <summary>
     /// 用于存储单个样列 产生的所有的中间数据
+    /// 必须数显从网络层神经元 复制的 delat数据
     /// </summary>
     public class StreamData
     {
@@ -22,7 +20,6 @@ namespace Somnium.Kernel
             
         }
 
-        public double[] InPutData { set; get; }
 
         public Matrix InputDataMatrix
         {
@@ -37,21 +34,23 @@ namespace Somnium.Kernel
         public DataShape InputDataShape { set; get; }
         public List<Matrix> QueueData { set; get; }
 
+        public List<Layer> QueueNeure { set; get; }
 
         public double[] ExpectedOut { set; get; }
-        public double[] ActualOut { set; get; }
         public string ExpectedLabel { set; get; }
+        public double[] ActualOut { set; get; }
         public string ActualLabel { set; get; }
 
 
 
         public static Func<string,StreamData> GetStreamData;
 
+
+
         public static StreamData CreateStreamData(string path)
         {
             return GetStreamData?.Invoke(path);
         }
-
         public static DataShape FilterDataShape(IEnumerable<StreamData> streamDatas)
         {
             var dataShapes = streamDatas.Select(a => a.InputDataShape).ToArray();

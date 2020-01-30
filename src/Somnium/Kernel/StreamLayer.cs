@@ -23,6 +23,7 @@ namespace Somnium.Kernel
         public bool AddInputLayer(LayerInput layer)
         {
             if (LayerQueue.Count != 0) return false;
+            layer.LayerIndex = 0;
             LayerQueue.Enqueue(layer);
             return true;
         }
@@ -30,7 +31,10 @@ namespace Somnium.Kernel
         public bool AddFullConnectedLayer(int neureCount)
         {
             var dataShape = LayerQueue.Last().ShapeOut;
-            var fullConnectedLayer = new LayerFullConnected(dataShape, neureCount);
+            var fullConnectedLayer = new LayerFullConnected(dataShape, neureCount)
+            {
+                LayerIndex = LayerQueue.Count
+            };
             LayerQueue.Enqueue(fullConnectedLayer);
             return true;
         }
@@ -38,7 +42,10 @@ namespace Somnium.Kernel
         public bool AddOutputLayer(int neureCount)
         {
             var dataShape = LayerQueue.Last().ShapeOut;
-            var outputLayer = new LayerOutput(dataShape, neureCount);
+            var outputLayer = new LayerOutput(dataShape, neureCount)
+            {
+                LayerIndex = LayerQueue.Count
+            };
             LayerQueue.Enqueue(outputLayer);
             return true;
         }

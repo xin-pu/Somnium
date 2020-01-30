@@ -17,7 +17,7 @@ namespace Somnium.Kernel
         public int LayerIndex { set; get; }
         public int Order { set; get; }
         public NeureShape Shape { set; get; }
-        public double[] Weight { set; get; }
+        public Matrix Weight { set; get; }
         public double Offset { set; get; }
         public Matrix WeightMatrix { set; get; }
 
@@ -54,7 +54,7 @@ namespace Somnium.Kernel
 
         private void Initial(NeureShape shape)
         {
-            Weight = DenseMatrix.CreateRandom(shape.Rows, shape.Columns, new Normal()).Values;
+            Weight = DenseMatrix.CreateRandom(shape.Rows, shape.Columns, new Normal());
             Offset = new ContinuousUniform().Median;
             Shape = shape;
         }
