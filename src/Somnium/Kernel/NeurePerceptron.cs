@@ -13,7 +13,7 @@ namespace Somnium.Kernel
     public class NeurePerceptron : Neure
     {
 
-        private ActivateMode _activateMode;
+        private ActivateMode _activateMode = ActivateMode.Sigmoid;
 
         public ActivateMode ActivateMode
         {
@@ -38,7 +38,6 @@ namespace Somnium.Kernel
             get => _activateMode;
         }
 
-    
         public Func<double, double> ActivateFuc { set; get; }
         public Func<double, double> FirstDerivativeFunc { set; get; }
         
@@ -62,19 +61,19 @@ namespace Somnium.Kernel
         /// </summary>
         /// <param name="inputData"></param>
         /// <returns></returns>
-        public Tuple<double, double> GetActivated(double[] inputData)
+        public override Tuple<double, double> Activated(Matrix inputData)
         {
-            if (inputData.Length != Shape.Levels)
+            var values = inputData.AsRowMajorArray();
+            if (values.Length != Shape.Levels)
                 return new Tuple<double, double>(double.NaN, double.NaN);
-            var weight = inputData.Zip(Weight, (a, b) => a * b).Sum();
+            var weight = values.Zip(Weight, (a, b) => a * b).Sum();
             var activate = ActivateFuc(weight + Offset);
             return new Tuple<double, double>(activate, weight);
         }
 
-        public Tuple<double, double> GetActivated(Matrix inputData)
+        public override Tuple<double, double> Updated()
         {
-            var values = inputData.AsRowMajorArray();
-            return GetActivated(values);
+            throw new NotImplementedException();
         }
     }
 }

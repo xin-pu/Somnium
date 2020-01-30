@@ -12,17 +12,15 @@ namespace Somnium.Kernel
         public DataShape ShapeOut { protected set; get; }
 
 
-        protected Layer(int rows, int columns, int layers,int layIndex)
+        protected Layer(int rows, int columns, int layers)
         {
-            var degreeIn = new DataShape { Rows = rows, Columns = columns, Layers = layers };
+            var degreeIn = new DataShape {Rows = rows, Columns = columns, Layers = layers};
             ShapeIn = ShapeOut = degreeIn;
-            LayerIndex = layIndex;
         }
 
-        protected Layer(DataShape shape, int layerIndex)
+        protected Layer(DataShape shape)
         {
             ShapeIn = ShapeOut = shape;
-            LayerIndex = layerIndex;
         }
 
         public virtual void Save(string path)
@@ -32,8 +30,8 @@ namespace Somnium.Kernel
             serializer.Serialize(fs, this);
         }
 
-        public abstract Array Activated(DataFlow dataFlow, Matrix datas);
-        public abstract Array Activated(DataFlow dataFlow, Array datas);
+        public abstract Array Activated(StreamLayer layerNet, Matrix datas);
+        public abstract Array Activated(StreamLayer layerNet, Array datas);
         
         public object Clone()
         {

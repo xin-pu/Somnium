@@ -28,6 +28,13 @@ namespace Somnium.Kernel
     [Serializable]
     public struct DataShape : IShape
     {
+        public DataShape(int rows, int columns, int layers = 1)
+        {
+            Rows = rows;
+            Columns = columns;
+            Layers = layers;
+        }
+
         public int Rows { get; set; }
         public int Columns { get; set; }
         public int Layers { get; set; }

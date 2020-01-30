@@ -12,12 +12,14 @@ namespace Somnium.Kernel
     [Serializable]
     public abstract class Neure : ICloneable
     {
+        private readonly object _myLock = new object();
 
         public int LayerIndex { set; get; }
         public int Order { set; get; }
         public NeureShape Shape { set; get; }
         public double[] Weight { set; get; }
         public double Offset { set; get; }
+        public Matrix WeightMatrix { set; get; }
 
         protected Neure()
         {
@@ -31,8 +33,13 @@ namespace Somnium.Kernel
 
         protected Neure(int rows, int columns)
         {
-            Initial(new NeureShape {Rows = rows, Columns = columns});
+            var shape = new NeureShape {Rows = rows, Columns = columns};
+            Initial(shape);
         }
+
+
+        public abstract Tuple<double, double> Activated(Matrix inputData);
+        public abstract Tuple<double, double> Updated();
 
 
         public virtual object Clone()

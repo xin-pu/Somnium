@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
@@ -11,27 +12,28 @@ namespace Somnium.Kernel
     {
 
 
-        public LayerInput(int rows, int columns, int layers, int layerIndex = 0)
-            : base(rows, columns, layers, layerIndex)
+        public LayerInput(int rows, int columns, int layers=1)
+            : base(rows, columns, layers)
         {
 
         }
 
-        public LayerInput(DataShape shape, int layerIndex = 0)
-            : base(shape,layerIndex)
+        public LayerInput(DataShape shape)
+            : base(shape)
         {
           
         }
 
 
-        public override Array Activated(DataFlow dataFlow, Matrix datas)
+        public override Array Activated(StreamLayer layerNet, Matrix datas)
         {
-            throw new NotImplementedException();
+            var values = datas.AsRowMajorArray();
+            return values.ToArray();
         }
 
-        public override Array Activated(DataFlow dataFlow, Array datas)
+        public override Array Activated(StreamLayer layerNet, Array datas)
         {
-            throw new NotImplementedException();
+            return datas;
         }
     }
 }

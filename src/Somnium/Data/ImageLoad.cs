@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
+using Somnium.Kernel;
 
 namespace Somnium.Data
 {
@@ -39,6 +40,7 @@ namespace Somnium.Data
             inputLayer.DatasCheckIn(matrix, excepted);
             return inputLayer;
         }
+
 
     }
 }
