@@ -26,16 +26,42 @@ namespace Somnium.Kernel
                 .ToArray();
         }
 
-        public override Array Activated(StreamLayer layerNet, Matrix datas)
+        public override Tuple<Matrix, Matrix> Activated(Matrix datas)
         {
-            throw new NotImplementedException();
+            var activatedRes = Perceptrons.Select(perceptron => perceptron.Activated(datas)).ToArray();
+            var activatedWithActivated = activatedRes.Select(a => a.Item1).ToArray();
+            var activatedWithWeighted = activatedRes.Select(a => a.Item2).ToArray();
+
+            return new Tuple<Matrix, Matrix>(
+                new DenseMatrix(ShapeOut.Rows, ShapeOut.Columns, activatedWithActivated),
+                new DenseMatrix(ShapeOut.Rows, ShapeOut.Columns, activatedWithWeighted));
         }
 
-        public override Array Activated(StreamLayer layerNet, Array datas)
+
+        public override void Deviated(StreamData data, double gradient)
         {
-            throw new NotImplementedException();
+            var expVal = data.QueueActivated[LayerIndex].AsRowMajorArray();
+            if (expVal.Length != Perceptrons.Length)
+                return;
+            var weightOutput = data.QueueWeighted[LayerIndex];
+            var activatedOutput = data.QueueActivated[LayerIndex];
+            var deviations = expVal.Select((a, b) =>
+                (activatedOutput[b, 0] - a) * Perceptrons[b].FirstDerivativeFunc(weightOutput[b, 0])).ToList();
+
+            var i = 0;
+            Perceptrons.ToList().ForEach(perceptron =>
+            {
+                var deviation = deviations.ElementAt(i);
+                var gra = -deviation * gradient;
+                perceptron.AddDeviation((Matrix) data.QueueActivated[LayerIndex - 1].Multiply(gra), gra);
+                i++;
+            });
         }
 
+        public override void UpdateNeure()
+        {
+            Perceptrons.ToList().ForEach(a=>a.UpdateDeviation());
+        }
 
     }
 }

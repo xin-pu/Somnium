@@ -50,6 +50,7 @@ namespace Somnium.Model
         public override void Training(string trainFolder)
         {
             if (ReadLayerInput == null) return;
+            throw new NotImplementedException();
         }
 
         public override void TestStandTrain(string testPath)

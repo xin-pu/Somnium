@@ -6,13 +6,14 @@ namespace Somnium.Kernel
 {
     /// <summary>
     /// Input Layer is the first Layer which the input size and output size are same.
+    /// So Activated method will return the input data.
     /// </summary>
     [Serializable]
     public class LayerInput : Layer
     {
 
 
-        public LayerInput(int rows, int columns, int layers=1)
+        public LayerInput(int rows, int columns, int layers = 1)
             : base(rows, columns, layers)
         {
 
@@ -21,19 +22,24 @@ namespace Somnium.Kernel
         public LayerInput(DataShape shape)
             : base(shape)
         {
-          
+
         }
 
 
-        public override Array Activated(StreamLayer layerNet, Matrix datas)
+        public override Tuple<Matrix, Matrix> Activated(Matrix datas)
         {
-            var values = datas.AsRowMajorArray();
-            return values.ToArray();
+            return new Tuple<Matrix, Matrix>(datas, datas);
         }
 
-        public override Array Activated(StreamLayer layerNet, Array datas)
+        public override void Deviated(StreamData data, double gradient)
         {
-            return datas;
+
         }
+
+        public override void UpdateNeure()
+        {
+
+        }
+
     }
 }

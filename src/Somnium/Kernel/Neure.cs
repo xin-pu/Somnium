@@ -12,14 +12,16 @@ namespace Somnium.Kernel
     [Serializable]
     public abstract class Neure : ICloneable
     {
-        private readonly object _myLock = new object();
+        public readonly object _myLock = new object();
 
         public int LayerIndex { set; get; }
         public int Order { set; get; }
         public NeureShape Shape { set; get; }
         public Matrix Weight { set; get; }
         public double Offset { set; get; }
-        public Matrix WeightMatrix { set; get; }
+
+        public Matrix WeightDelta { set; get; }
+        public double OffsetDelta { set; get; }
 
         protected Neure()
         {
@@ -39,8 +41,8 @@ namespace Somnium.Kernel
 
 
         public abstract Tuple<double, double> Activated(Matrix inputData);
-        public abstract Tuple<double, double> Updated();
-
+        public abstract void AddDeviation(Matrix devWeight, double devBias);
+        public abstract void UpdateDeviation();
 
         public virtual object Clone()
         {
@@ -56,6 +58,9 @@ namespace Somnium.Kernel
         {
             Weight = DenseMatrix.CreateRandom(shape.Rows, shape.Columns, new Normal());
             Offset = new ContinuousUniform().Median;
+
+            WeightDelta = DenseMatrix.Create(shape.Rows, shape.Columns, 0);
+            OffsetDelta = 0;
             Shape = shape;
         }
     }

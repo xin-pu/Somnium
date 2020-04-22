@@ -13,7 +13,7 @@ namespace Somnium.Tests.StreamTest
     public class StreamLayerTest
     {
 
-        public string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\trainingDigits";
+        public string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\smallDigits";
 
         
          
@@ -35,7 +35,7 @@ namespace Somnium.Tests.StreamTest
 
             var dataShape = StreamData.FilterDataShape(inputStreams);
 
-            //Create LabelMap
+            //映射标记结果
             var map = new LabelMap(inputStreams.Select(a => a.ActualLabel));
             inputStreams.ForEach(a => a.ActualOut = map.GetCorrectResult(a.ActualLabel));
 
@@ -48,9 +48,13 @@ namespace Somnium.Tests.StreamTest
 
             
             //以神经网络层更新数据层
-        
+            inputStreams.ToList().AsParallel().ForAll(singleData =>
+            {
+                layerStream.RunLayerNet(singleData);
+            });
 
             //从数据层层更新神经网络层的神经元
+            layerStream.UpdateWeight(inputStreams);
 
             //多次迭代
 

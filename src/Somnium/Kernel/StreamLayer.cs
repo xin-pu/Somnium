@@ -6,19 +6,20 @@ using MathNet.Numerics.LinearAlgebra.Double;
 namespace Somnium.Kernel
 {
     [Serializable]
-    public class StreamLayer 
+    public class StreamLayer
     {
 
-        public StreamLayer()
+        public StreamLayer(double gradient = 0.01)
         {
             LayerQueue = new Queue<Layer>();
+            Gradient = gradient;
         }
 
 
         public Queue<Layer> LayerQueue { set; get; }
         public Dictionary<int, Neure[]> NeureQueue { set; get; }
-
-
+        public double Gradient { get; }
+        public double Target { get; }
 
         public bool AddInputLayer(LayerInput layer)
         {
@@ -64,14 +65,32 @@ namespace Somnium.Kernel
             return false;
         }
 
-        public double[] RunLayerNet(Matrix inputdata)
+        public double[] RunLayerNet(StreamData streamData)
         {
+            var tempData = streamData.InputDataMatrix;
+            LayerQueue.ToList().ForEach(layer =>
+            {
+                var (item1, item2) = layer.Activated(tempData);
+                streamData.QueueWeighted.Add(item2);
+                streamData.QueueActivated.Add(item1);
+                tempData = item1;
+            });
             return new double[0];
         }
+
+        public void UpdateWeight(List<StreamData> streamDatas)
+        {
+            LayerQueue.OrderByDescending(a => a.LayerIndex).ToList().ForEach(layer =>
+            {
+                streamDatas.ForEach(streamData => { layer.Deviated(streamData, Gradient); });
+                layer.UpdateNeure();
+            });
+        }
+
 
 
     }
 
 
-  
+
 }

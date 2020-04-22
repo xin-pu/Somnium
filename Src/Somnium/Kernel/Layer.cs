@@ -30,9 +30,10 @@ namespace Somnium.Kernel
             serializer.Serialize(fs, this);
         }
 
-        public abstract Array Activated(StreamLayer layerNet, Matrix datas);
-        public abstract Array Activated(StreamLayer layerNet, Array datas);
-        
+        public abstract Tuple<Matrix, Matrix> Activated(Matrix datas);
+        public abstract void Deviated(StreamData data, double gradient);
+        public abstract void UpdateNeure();
+
         public object Clone()
         {
             var serializer = new BinaryFormatter();

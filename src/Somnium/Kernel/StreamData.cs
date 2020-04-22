@@ -8,7 +8,7 @@ namespace Somnium.Kernel
 
     /// <summary>
     /// 用于存储单个样列 产生的所有的中间数据
-    /// 必须数显从网络层神经元 复制的 delat数据
+    /// 必须数显从网络层神经元 复制的 delta数据
     /// </summary>
     public class StreamData
     {
@@ -17,7 +17,8 @@ namespace Somnium.Kernel
 
         public StreamData()
         {
-            
+            QueueWeighted=new List<Matrix>();
+            QueueActivated = new List<Matrix>();
         }
 
 
@@ -32,7 +33,8 @@ namespace Somnium.Kernel
         }
 
         public DataShape InputDataShape { set; get; }
-        public List<Matrix> QueueData { set; get; }
+        public List<Matrix> QueueWeighted { set; get; }
+        public List<Matrix> QueueActivated { set; get; }
 
         public List<Layer> QueueNeure { set; get; }
 

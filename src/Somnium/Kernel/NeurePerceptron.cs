@@ -47,14 +47,15 @@ namespace Somnium.Kernel
               
         }
 
-        public NeurePerceptron(NeureShape shape):base(shape)
+        public NeurePerceptron(NeureShape shape, ActivateMode activateMode = ActivateMode.Sigmoid) :base(shape)
         {
-          
+            ActivateMode = activateMode;
         }
 
-        public NeurePerceptron(int rows, int columns) : base(rows, columns)
+        public NeurePerceptron(int rows, int columns, ActivateMode activateMode = ActivateMode.Sigmoid)
+            : base(rows, columns)
         {
-
+            ActivateMode = activateMode;
         }
 
         /// <summary>
@@ -64,15 +65,25 @@ namespace Somnium.Kernel
         /// <returns></returns>
         public override Tuple<double, double> Activated(Matrix inputData)
         {
-
             var weight = inputData.PointwiseMultiply(Weight).Enumerate().Sum();
             var activate = ActivateFuc(weight + Offset);
             return new Tuple<double, double>(activate, weight);
         }
 
-        public override Tuple<double, double> Updated()
+
+        public override void AddDeviation(Matrix devWeight, double devBias)
         {
-            throw new NotImplementedException();
+            lock (_myLock)
+            {
+                WeightDelta = (Matrix)(WeightDelta + devWeight);
+                OffsetDelta = OffsetDelta + devBias;
+            }
+        }
+
+        public override void UpdateDeviation()
+        {
+            Weight = (Matrix) (Weight + WeightDelta);
+            Offset += OffsetDelta;
         }
     }
 }
