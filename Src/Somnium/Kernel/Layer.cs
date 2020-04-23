@@ -1,18 +1,37 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
+using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
     [Serializable]
-    public abstract class Layer : ICloneable
+    public abstract class Layer : ICloneable, INotifyPropertyChanged
     {
-        public int LayerIndex { set; get; }
-        public DataShape ShapeIn {  set; get; }
-        public DataShape ShapeOut {  set; get; }
+        private int _layIndex;
+        private DataShape _shapeIn;
+        private DataShape _shapeOut;
+
+        public int LayerIndex
+        {
+            set => UpdateProperty(ref _layIndex, value);
+            get => _layIndex;
+        }
+
+        public DataShape ShapeIn
+        {
+            set => UpdateProperty(ref _shapeIn, value);
+            get => _shapeIn;
+        }
+
+        public DataShape ShapeOut
+        {
+            set => UpdateProperty(ref _shapeOut, value);
+            get => _shapeOut;
+        }
 
         protected Layer()
         {
@@ -29,10 +48,6 @@ namespace Somnium.Kernel
             ShapeIn = ShapeOut = shape;
         }
 
-        public virtual void Save(string path)
-        {
-      
-        }
 
         public abstract Tuple<Matrix, Matrix> Activated(Matrix datas);
         public abstract void Deviated(StreamData data, double gradient);
@@ -49,6 +64,28 @@ namespace Somnium.Kernel
             return serializer.Deserialize(memStream);
         }
 
+        #region
 
+        public void UpdateProperty<T>(ref T properValue, T newValue, [CallerMemberName] string propertyName = "")
+        {
+            if (Equals(properValue, newValue))
+            {
+                return;
+            }
+
+            properValue = newValue;
+            OnPropertyChanged(propertyName);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 }

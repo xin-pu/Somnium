@@ -72,6 +72,8 @@ namespace Somnium.Kernel
             return new Tuple<double, double>(activate, weight);
         }
 
+     
+
 
         public override void AddDeviation(Matrix devWeight, double devBias)
         {

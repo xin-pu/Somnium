@@ -54,7 +54,7 @@ namespace Somnium.Kernel
 
         public void ClearLayer()
         {
-            LayerQueue.ToArray()[0].Save("D:\\1.xml");
+            
         }
 
         public void SaveLayer(string path)

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -16,42 +16,50 @@ namespace Somnium.Kernel
     public class LayerFullConnected : Layer
     {
 
-        public int NeureCount { protected set; get; }
+ 
+        private NeurePerceptron[] _perceptrons;
 
-        public NeurePerceptron[] Perceptrons { set; get; }
+        public int NeureCount => Perceptrons.Length;
+
+        public NeurePerceptron[] Perceptrons
+        {
+            set => UpdateProperty(ref _perceptrons, value);
+            get => _perceptrons;
+        }
 
 
         public LayerFullConnected()
         {
         }
 
+       
         /// <summary>
-        /// 
+        /// Full connected layer's output shape should be (NeureCount * 1)
+        /// [ a(1) ]
+        /// [ a(2) ]
+        /// ...
+        /// [ a(n-1) 
+        /// [ a(n) ]
         /// </summary>
         /// <param name="shape"></param>
         /// <param name="neureCount"></param>
         public LayerFullConnected(DataShape shape, int neureCount) : base(shape)
         {
             ShapeIn = shape;
-            // Full connected layer's output shape should be (NeureCount * 1)
-            // [ a(1) ]
-            // [ a(2) ]
-            // ...
-            // [ a(n-1) ]
-            // [ a(n) ]
-            NeureCount = neureCount;
-
+            ShapeOut = new DataShape(neureCount, 1);
             Perceptrons = Enumerable.Range(0, neureCount)
                 .Select(a => new NeurePerceptron(shape.Levels, 1)
                 {
                     Order = a
                 })
                 .ToArray();
-
-            ShapeOut = new DataShape(neureCount, 1);
-
         }
 
+        /// <summary>
+        /// Activated will update input data by layer's Perceptrons
+        /// </summary>
+        /// <param name="datas"></param>
+        /// <returns>Tuple which Item1 is Activated, and Item2 is Weighted</returns>
         public override Tuple<Matrix, Matrix> Activated(Matrix datas)
         {
             var activatedRes = Perceptrons.Select(perceptron => perceptron.Activated(datas)).ToArray();
@@ -67,30 +75,40 @@ namespace Somnium.Kernel
         public override void Deviated(StreamData data, double gradient)
         {
             var swd = data.GetSwd(LayerIndex);
+            var activatedArray = data.GetActivatedArray(LayerIndex);
+            var preActivatedMatrix = data.GetActivatedMatrix(LayerIndex - 1);
 
-            var activatedData = data.GetActivatedArray(LayerIndex);
-            var deviations = swd.Select((a, b) => a * Perceptrons[b].FirstDerivativeFunc(activatedData[b]))
+
+            var deviations = swd
+                .Select((a, b) => a * Perceptrons[b].FirstDerivativeFunc(activatedArray[b]))
                 .ToList();
 
             data.LayerDatas[LayerIndex].Error = deviations;
 
-            data.LayerDatas[LayerIndex - 1].SWd =
-                Enumerable.Range(0, ShapeIn.Levels)
-                    .Select(index =>
-                        Perceptrons.Select((a, b) => a.Weight.At(index, 0) * deviations[b]).Sum());
+            
+            Task.WhenAll(
+                Task.Run(() =>
+                {
+                    return data.LayerDatas[LayerIndex - 1].SWd =
+                        Enumerable.Range(0, ShapeIn.Levels)
+                            .Select(index => Perceptrons.Select((a, b) => a.Weight.At(index, 0) * deviations[b])
+                                .Sum());
+                }),
+                Task.Run(() =>
+                {
+                    Perceptrons.ToList().ForEach(perceptron =>
+                    {
+                        var gra = -deviations[perceptron.Order] * gradient;
+                        perceptron.AddDeviation((Matrix) preActivatedMatrix.Multiply(gra), gra);
+                    });
+                }));
 
-     
-            var preActivatedMatrix = data.GetActivatedMatrix(LayerIndex - 1);
-            Perceptrons.ToList().ForEach(perceptron =>
-            {
-                var gra = -deviations[perceptron.Order] * gradient;
-                perceptron.AddDeviation((Matrix) preActivatedMatrix.Multiply(gra), gra);
-            });
         }
 
         public override void UpdateNeure()
         {
-            Perceptrons.ToList().ForEach(a => a.UpdateDeviation());
+            Perceptrons.AsParallel().ToList()
+                .ForEach(a => a.UpdateDeviation());
         }
 
         public override void Serializer(string filename)
@@ -98,17 +116,6 @@ namespace Somnium.Kernel
             using var fs = new FileStream(filename, FileMode.Create);
             new XmlSerializer(typeof(LayerFullConnected)).Serialize(fs, this);
         }
-
-        private Matrix DimensionalityReduction(Matrix[] datas)
-        {
-            var datasArrays = datas.Select(a => a.Enumerate());
-            var datasOutput = new List<double>();
-            datasArrays.ToList().ForEach(a => datasOutput.AddRange(a));
-            return new DenseMatrix(datasOutput.Count, 1, datasOutput.ToArray());
-        }
-
-
-    
 
     }
 }

@@ -17,7 +17,7 @@ namespace Somnium.Kernel
         public LayerInput()
         {
         }
- 
+
 
         public LayerInput(DataShape shape)
             : base(shape)
@@ -25,7 +25,11 @@ namespace Somnium.Kernel
 
         }
 
-
+        /// <summary>
+        /// Input Layer will return the input data without weighted and activated.
+        /// </summary>
+        /// <param name="datas"></param>
+        /// <returns></returns>
         public override Tuple<Matrix, Matrix> Activated(Matrix datas)
         {
             return new Tuple<Matrix, Matrix>(datas, datas);
@@ -33,12 +37,12 @@ namespace Somnium.Kernel
 
         public override void Deviated(StreamData data, double gradient)
         {
-
+            // Input Layer do nothing here
         }
 
         public override void UpdateNeure()
         {
-
+            // Input Layer do nothing here
         }
 
         public override void Serializer(string filename)
