@@ -65,24 +65,11 @@ namespace Somnium.Kernel
             return false;
         }
 
-        public double[] RunLayerNet(StreamData streamData)
-        {
-            var tempData = streamData.InputDataMatrix;
-            LayerQueue.ToList().ForEach(layer =>
-            {
-                var (item1, item2) = layer.Activated(tempData);
-                streamData.QueueWeighted.Add(item2);
-                streamData.QueueActivated.Add(item1);
-                tempData = item1;
-            });
-            return new double[0];
-        }
 
         public void UpdateWeight(List<StreamData> streamDatas)
         {
-            LayerQueue.OrderByDescending(a => a.LayerIndex).ToList().ForEach(layer =>
+            LayerQueue.ToList().ForEach(layer =>
             {
-                streamDatas.ForEach(streamData => { layer.Deviated(streamData, Gradient); });
                 layer.UpdateNeure();
             });
         }

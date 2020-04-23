@@ -59,21 +59,25 @@ namespace Somnium.Kernel
 
         public override void Deviated(StreamData data, double gradient)
         {
-            var expVal = data.QueueActivated[LayerIndex].AsRowMajorArray();
-            if (expVal.Length != Perceptrons.Length)
-                return;
-            var weightOutput = data.QueueWeighted[LayerIndex];
-            var activatedOutput = data.QueueActivated[LayerIndex];
-            var deviations = expVal.Select((a, b) =>
-                (activatedOutput[b, 0] - a) * Perceptrons[b].FirstDerivativeFunc(weightOutput[b, 0])).ToList();
+            var swd = data.GetSwd(LayerIndex);
 
-            var i = 0;
+            var activatedData = data.GetActivatedArray(LayerIndex);
+            var deviations = swd.Select((a, b) => a * Perceptrons[b].FirstDerivativeFunc(activatedData[b]))
+                .ToList();
+
+            data.LayerDatas[LayerIndex].Error = deviations;
+
+            data.LayerDatas[LayerIndex - 1].SWd =
+                Enumerable.Range(0, ShapeIn.Levels)
+                    .Select(index =>
+                        Perceptrons.Select((a, b) => a.Weight.At(index, 0) * deviations[b]).Sum());
+
+     
+            var preActivatedMatrix = data.GetActivatedMatrix(LayerIndex - 1);
             Perceptrons.ToList().ForEach(perceptron =>
             {
-                var deviation = deviations.ElementAt(i);
-                var gra = -deviation * gradient;
-                perceptron.AddDeviation((Matrix)data.QueueActivated[LayerIndex - 1].Multiply(gra), gra);
-                i++;
+                var gra = -deviations[perceptron.Order] * gradient;
+                perceptron.AddDeviation((Matrix) preActivatedMatrix.Multiply(gra), gra);
             });
         }
 

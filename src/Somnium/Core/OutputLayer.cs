@@ -102,7 +102,7 @@ namespace Somnium.Core
 
         public IList<double> GetLikelihoodRatio()
         {
-            return SoftMax.softMax(OutputData.Enumerate().ToList());
+            return SoftMax.softMax(OutputData.Enumerate().ToList()).ToList();
         }
 
         public override void Save(string path)

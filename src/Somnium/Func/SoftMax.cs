@@ -6,7 +6,7 @@ namespace Somnium.Func
 {
     public class SoftMax
     {
-        public static IList<double> softMax(IList<double> activated)
+        public static IEnumerable<double> softMax(IEnumerable<double> activated)
         {
             var exps = activated.Select(a => Math.Pow(Math.E, a)).ToArray();
             var expsSum = exps.Sum();

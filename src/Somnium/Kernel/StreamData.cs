@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Somnium.Func;
 
 namespace Somnium.Kernel
 {
@@ -17,8 +18,7 @@ namespace Somnium.Kernel
 
         public StreamData()
         {
-            QueueWeighted=new List<Matrix>();
-            QueueActivated = new List<Matrix>();
+            LayerDatas=new Dictionary<int, LayerData>();
         }
 
 
@@ -33,26 +33,79 @@ namespace Somnium.Kernel
         }
 
         public DataShape InputDataShape { set; get; }
-        public List<Matrix> QueueWeighted { set; get; }
-        public List<Matrix> QueueActivated { set; get; }
 
-        public List<Layer> QueueNeure { set; get; }
+        public Dictionary<int,LayerData> LayerDatas { set; get; }
 
+
+        public bool IsMeetExpect => EstimateLabel.Equals(ExpectedLabel);
+        public double[] EstimateOut { set; get; }
+        public string EstimateLabel { set; get; }
         public double[] ExpectedOut { set; get; }
         public string ExpectedLabel { set; get; }
-        public double[] ActualOut { set; get; }
-        public string ActualLabel { set; get; }
+        public double SquareError { set; get; }
+
+        public void ActivateLayerNet(StreamLayer streamLayer)
+        {
+            var tempData = InputDataMatrix;
+            streamLayer.LayerQueue.ToList().ForEach(layer =>
+            {
+                var (item1, item2) = layer.Activated(tempData);
+                LayerDatas[layer.LayerIndex] = new LayerData
+                {
+                    Weighted = item1,
+                    Activated = item2
+                };
+                tempData = item1;
+            });
+            EstimateOut = LayerDatas[LayerDatas.Count - 1].Activated.AsColumnMajorArray(); ;
+            EstimateLabel = GetEstimateLabel.Invoke(GetLikelihoodRatio(EstimateOut));
+            SquareError = GetCost.Invoke(ExpectedOut, EstimateOut);
+        }
+
+        public void ErrorBackPropagation(StreamLayer streamLayer, double gar)
+        {
+            streamLayer.LayerQueue.OrderByDescending(a => a.LayerIndex).ToList().ForEach(layer =>
+            {
+                layer.Deviated(this, gar);
+            });
+        }
+
+        public double[] GetActivatedArray(int layIndex)
+        {
+            return LayerDatas[layIndex].Activated.AsColumnMajorArray();
+        }
+
+        public Matrix GetActivatedMatrix(int layIndex)
+        {
+            return LayerDatas[layIndex].Activated;
+        }
 
 
+        public double[] GetError(int layIndex)
+        {
+            return LayerDatas[layIndex].Error.ToArray();
+        }
+
+        public double[] GetSwd(int layIndex)
+        {
+            return LayerDatas[layIndex].SWd.ToArray();
+        }
+
+        private int GetLikelihoodRatio(IEnumerable<double> outputData)
+        {
+            var res= SoftMax.softMax(outputData).ToArray();
+            return res.ToList().IndexOf(res.Max());
+        }
 
         public static Func<string,StreamData> GetStreamData;
-
-
+        public static Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
+        public static Func<int, string> GetEstimateLabel;
 
         public static StreamData CreateStreamData(string path)
         {
             return GetStreamData?.Invoke(path);
         }
+
         public static DataShape FilterDataShape(IEnumerable<StreamData> streamDatas)
         {
             var dataShapes = streamDatas.Select(a => a.InputDataShape).ToArray();
@@ -64,17 +117,14 @@ namespace Somnium.Kernel
     }
 
 
-    public class DataUnit<T>
+    public class LayerData
     {
-        public DataFormat Format { set; get; }
-        public T DataValue { set; get; }
+        public Matrix Weighted { set; get; }
+        public Matrix Activated { set; get; }
+        public IEnumerable<double> Error { set; get; }
+        public IEnumerable<double> SWd { set; get; }
 
     }
 
-    public enum DataFormat
-    {
-        MatrixArray,
-        Matrix,
-        DoubleArray
-    }
+
 }

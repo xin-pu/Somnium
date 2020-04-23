@@ -84,6 +84,8 @@ namespace Somnium.Kernel
         {
             Weight = (Matrix) (Weight + WeightDelta);
             Offset += OffsetDelta;
+            WeightDelta.Clear();
+            OffsetDelta = 0;
         }
     }
 }

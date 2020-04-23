@@ -5,6 +5,7 @@ using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Somnium.Data;
+using Somnium.Func;
 using Somnium.Kernel;
 
 namespace Somnium.Tests.StreamTest
@@ -15,13 +16,17 @@ namespace Somnium.Tests.StreamTest
 
         public string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\smallDigits";
 
-        
-         
+
+
         [TestMethod]
         public void TestInitial()
         {
+
+            int count = 2;
+            double gar = 0.2;
             //定义从文件获取数据流的方法，需要返回矩阵数据以及正确Label
             StreamData.GetStreamData = GetArrayStreamData;
+
 
             //读取数据层
             var dir = new DirectoryInfo(WorkFolder);
@@ -29,34 +34,41 @@ namespace Somnium.Tests.StreamTest
                 .Where(path => path.Extension == ".txt")
                 .Select((path, index) =>
                 {
-                    var inputLayer =StreamData.CreateStreamData(path.FullName);
+                    var inputLayer = StreamData.CreateStreamData(path.FullName);
                     return inputLayer;
                 }).ToList();
+            //映射标记结果
+            var map = new LabelMap(inputStreams.Select(a => a.ExpectedLabel));
+            inputStreams.ForEach(a => a.ExpectedOut = map.GetCorrectResult(a.ExpectedLabel));
+
 
             var dataShape = StreamData.FilterDataShape(inputStreams);
 
-            //映射标记结果
-            var map = new LabelMap(inputStreams.Select(a => a.ActualLabel));
-            inputStreams.ForEach(a => a.ActualOut = map.GetCorrectResult(a.ActualLabel));
+            StreamData.GetCost = Cost.GetVariance;
+            StreamData.GetEstimateLabel = map.GetLabel;
 
 
             //创建神经网络层
             var layerStream = new StreamLayer();
             layerStream.AddInputLayer(new LayerInput(dataShape));
-            layerStream.AddFullConnectedLayer(20);
+            layerStream.AddFullConnectedLayer(5);
             layerStream.AddOutputLayer(map.Count);
 
-            
-            //以神经网络层更新数据层
-            inputStreams.ToList().AsParallel().ForAll(singleData =>
+            for (int i = 0; i < count; i++)
             {
-                layerStream.RunLayerNet(singleData);
-            });
+                //以神经网络层更新数据层
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(layerStream));
 
-            //从数据层层更新神经网络层的神经元
-            layerStream.UpdateWeight(inputStreams);
+                if (inputStreams.Count(a => a.IsMeetExpect) * 1.0 / inputStreams.Count > 0.8)
+                    break;
 
-            //多次迭代
+                //反向传播误差
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerStream, gar));
+
+                //从数据层收集误差并更新神经网络层的神经元
+                layerStream.UpdateWeight(inputStreams);
+
+            }
 
         }
 
@@ -74,7 +86,7 @@ namespace Somnium.Tests.StreamTest
                 rowIndex++;
             });
             var actual = new FileInfo(path).Name.Split('_').First();
-            return new StreamData { InputDataMatrix = matrix, ActualLabel = actual };
+            return new StreamData { InputDataMatrix = matrix, ExpectedLabel = actual };
         }
 
         public StreamData GetArrayStreamData(string path)
@@ -91,7 +103,7 @@ namespace Somnium.Tests.StreamTest
             return new StreamData
             {
                 InputDataMatrix = matrix,
-                ActualLabel = actual
+                ExpectedLabel = actual
             };
         }
 
