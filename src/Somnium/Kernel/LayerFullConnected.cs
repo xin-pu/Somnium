@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
@@ -17,6 +19,11 @@ namespace Somnium.Kernel
         public int NeureCount { protected set; get; }
 
         public NeurePerceptron[] Perceptrons { set; get; }
+
+
+        public LayerFullConnected()
+        {
+        }
 
         /// <summary>
         /// 
@@ -84,6 +91,12 @@ namespace Somnium.Kernel
         public override void UpdateNeure()
         {
             Perceptrons.ToList().ForEach(a => a.UpdateDeviation());
+        }
+
+        public override void Serializer(string filename)
+        {
+            using var fs = new FileStream(filename, FileMode.Create);
+            new XmlSerializer(typeof(LayerFullConnected)).Serialize(fs, this);
         }
 
         private Matrix DimensionalityReduction(Matrix[] datas)

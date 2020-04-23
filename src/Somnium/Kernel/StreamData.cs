@@ -52,8 +52,8 @@ namespace Somnium.Kernel
                 var (item1, item2) = layer.Activated(tempData);
                 LayerDatas[layer.LayerIndex] = new LayerData
                 {
-                    Weighted = item1,
-                    Activated = item2
+                    Activated = item1,
+                    Weighted = item2
                 };
                 tempData = item1;
             });

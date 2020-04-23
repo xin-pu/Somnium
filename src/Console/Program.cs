@@ -4,7 +4,6 @@ using Somnium.Data;
 using System.IO;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
-using Somnium.Core;
 using Somnium.Func;
 using Somnium.Kernel;
 
@@ -12,68 +11,18 @@ namespace Console
 {
     class Program
     {
-        public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\smallDigits";
+        //public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\newTest";
+        public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\test";
 
         static void Main(string[] args)
         {
             TrainingDigits();
         }
 
-        public static void ExecuteAllLayByIte()
-        {
-            var iterations = 10000;
-            var gradient = 0.1;
-            var fullConnectCount = 18;
-
-            var inputsLays = new DirectoryInfo(WorkFolder).GetFiles()
-                .Select((path, index) =>
-                {
-                    var inputLayer = ImageLoad.ReadLayerInput(path.FullName, ImageLoad.ReadDigitsAsInputLayer);
-                    return inputLayer;
-                }).ToList();
-
-            var map = new LabelMap(inputsLays.Select(a => a.Label));
-            inputsLays.ForEach(a => a.ExpectVal = map.GetCorrectResult(a.Label));
-
-            var inputLayFormat = inputsLays.First();
-            var fullConnectedLayer = new FullConnectedLayer(inputLayFormat.OutputDataSizeFormat, fullConnectCount);
-            var outputLayer = new OutputLayer(fullConnectedLayer.OutputDataSizeFormat, map.Count);
-
-            //Learning
-            Enumerable.Range(0, iterations).ToList().ForEach(i =>
-            {
-                inputsLays.ForEach(lay =>
-                {
-                    //Check in Datas
-                    fullConnectedLayer.DatasCheckIn(lay.OutputDatas);
-                    outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
-
-                    //Cal Deviation Update Delta Weight and Bias
-                    outputLayer.Deviated(lay.ExpectVal, gradient);
-                    fullConnectedLayer.Deviationed(outputLayer.ActivateNerveCells, gradient);
-                });
-
-                //Update Weight and Bias
-                outputLayer.UpdateWeight();
-                fullConnectedLayer.UpdateWeight();
-
-                //Test Learning
-                inputsLays.ForEach(lay =>
-                {
-                    fullConnectedLayer.DatasCheckIn(lay.OutputDatas);
-                    outputLayer.DatasCheckIn(fullConnectedLayer.OutputData);
-                    var likelihoodRatio = outputLayer.GetLikelihoodRatio();
-                    var likeIndex = likelihoodRatio.IndexOf(likelihoodRatio.Max());
-                    lay.LabelEstimate = map.GetLabel(likeIndex);
-                });
-                var cor = 100 * inputsLays.Count(a => a.LabelEstimate == a.Label) / (double) inputsLays.Count;
-                System.Console.WriteLine($"Count{i} Accuracy {cor}%");
-            });
-        }
-
+        
         public static void TrainingDigits()
         {
-            int count = 200;
+            int count = 5;
             double gar = 0.2;
             //定义从文件获取数据流的方法，需要返回矩阵数据以及正确Label
             StreamData.GetStreamData = GetArrayStreamData;
@@ -98,12 +47,52 @@ namespace Console
             StreamData.GetCost = Cost.GetVariance;
             StreamData.GetEstimateLabel = map.GetLabel;
 
-
+            
             //创建神经网络层
             var layerStream = new StreamLayer();
             layerStream.AddInputLayer(new LayerInput(dataShape));
-            layerStream.AddFullConnectedLayer(5);
+            layerStream.AddFullConnectedLayer(8);
             layerStream.AddOutputLayer(map.Count);
+
+            //var secondlayer = (LayerFullConnected) layerStream.LayerQueue.ToArray()[1];
+            //secondlayer.Perceptrons[0].Weight.SetColumn(0,new[]
+            //{
+            //    0.490,0.348,0.073,
+            //    0.837,-0.071,-3.671,
+            //    -0.536,-0.023,-1.717,
+            //    -1.456,-0.556,0.852
+            //});
+            //secondlayer.Perceptrons[1].Weight.SetColumn(0, new[]
+            //{
+            //    0.442,-0.537,1.008,
+            //    1.072,-0.733,0.823,
+            //    -0.453,-0.014,-0.027,
+            //    -0.427,1.876,-2.305
+            //});
+            //secondlayer.Perceptrons[2].Weight.SetColumn(0, new[]
+            //{
+            //    0.654,-1.389,1.246,
+            //    0.057,-0.183,-0.743,
+            //    -0.461,0.331,0.449,
+            //    -1.296,1.569,-0.471
+            //});
+            //secondlayer.Perceptrons[0].Offset = -0.185;
+            //secondlayer.Perceptrons[1].Offset = 0.526;
+            //secondlayer.Perceptrons[2].Offset = -1.169;
+
+
+            //var outputlayer = (LayerOutput)layerStream.LayerQueue.ToArray()[2];
+            //outputlayer.Perceptrons[0].Weight.SetColumn(0, new[]
+            //{
+            //    0.388,0.803,0.029
+            //});
+            //outputlayer.Perceptrons[1].Weight.SetColumn(0, new[]
+            //{
+            //    0.025,-0.790,1.553
+            //});
+            //outputlayer.Perceptrons[0].Offset =-1.438;
+            //outputlayer.Perceptrons[1].Offset = -1.379;
+            
 
             for (int i = 0; i < count; i++)
             {
@@ -112,8 +101,7 @@ namespace Console
 
                 var correct = inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count;
                 System.Console.WriteLine($"{correct}%");
-                if (correct > 80)
-                    break;
+            
 
                 //反向传播误差
                 inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerStream, gar));
@@ -123,6 +111,8 @@ namespace Console
 
             }
 
+            layerStream.SaveLayer("D:\\1.xml");
+            
         }
 
         public static StreamData GetArrayStreamData(string path)

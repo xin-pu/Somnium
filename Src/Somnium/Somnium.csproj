@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Core\ActivateNerveLayer.cs" />
+    <Compile Remove="Model\SingleFCLTrain.cs" />
+    <Compile Remove="Model\StandTrain.cs" />
   </ItemGroup>
 
   <ItemGroup>

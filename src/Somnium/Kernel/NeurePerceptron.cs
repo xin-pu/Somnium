@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Xml.Serialization;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
@@ -38,8 +39,9 @@ namespace Somnium.Kernel
             get => _activateMode;
         }
 
-    
+        [XmlIgnore]
         public Func<double, double> ActivateFuc { set; get; }
+        [XmlIgnore]
         public Func<double, double> FirstDerivativeFunc { set; get; }
         
         public NeurePerceptron()

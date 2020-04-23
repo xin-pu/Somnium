@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
@@ -17,7 +19,6 @@ namespace Somnium.Kernel
 
 
         public Queue<Layer> LayerQueue { set; get; }
-        public Dictionary<int, Neure[]> NeureQueue { set; get; }
         public double Gradient { get; }
         public double Target { get; }
 
@@ -53,16 +54,14 @@ namespace Somnium.Kernel
 
         public void ClearLayer()
         {
-            LayerQueue.Clear();
+            LayerQueue.ToArray()[0].Save("D:\\1.xml");
         }
 
-        public void ResetLayer()
+        public void SaveLayer(string path)
         {
-        }
-
-        public bool CheckLayer(Matrix inputData)
-        {
-            return false;
+            //using var fs = new FileStream(path, FileMode.Create);
+            //var serializer = new BinaryFormatter();
+            //serializer.Serialize(fs, this);
         }
 
 

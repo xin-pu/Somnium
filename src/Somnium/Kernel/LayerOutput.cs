@@ -1,16 +1,19 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
+    [Serializable]
     public class LayerOutput : Layer
     {
-        public int NeureCount { protected set; get; }
+        public int NeureCount {  set; get; }
 
         public NeurePerceptron[] Perceptrons { set; get; }
 
-        public LayerOutput(int rows, int columns, int layers) : base(rows, columns, layers)
+        public LayerOutput()
         {
         }
 
@@ -71,5 +74,10 @@ namespace Somnium.Kernel
             Perceptrons.ToList().ForEach(a=>a.UpdateDeviation());
         }
 
+        public override void Serializer(string filename)
+        {
+            using var fs = new FileStream(filename, FileMode.Create);
+            new XmlSerializer(typeof(LayerOutput)).Serialize(fs, this);
+        }
     }
 }

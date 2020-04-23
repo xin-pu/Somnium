@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
@@ -12,12 +14,10 @@ namespace Somnium.Kernel
     public class LayerInput : Layer
     {
 
-
-        public LayerInput(int rows, int columns, int layers = 1)
-            : base(rows, columns, layers)
+        public LayerInput()
         {
-
         }
+ 
 
         public LayerInput(DataShape shape)
             : base(shape)
@@ -41,5 +41,10 @@ namespace Somnium.Kernel
 
         }
 
+        public override void Serializer(string filename)
+        {
+            using var fs = new FileStream(filename, FileMode.Create);
+            new XmlSerializer(typeof(LayerInput)).Serialize(fs, this);
+        }
     }
 }
