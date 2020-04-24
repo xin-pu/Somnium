@@ -12,11 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Model\SingleFCLTrain.cs" />
-    <Compile Remove="Model\StandTrain.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
     <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
   </ItemGroup>

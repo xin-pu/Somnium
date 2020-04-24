@@ -3,7 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Somnium.Func;
 
 namespace Somnium.Kernel
 {
@@ -26,10 +28,23 @@ namespace Somnium.Kernel
             get => _perceptrons;
         }
 
+        private ActivateMode _activateMode;
+
+        public ActivateMode ActivateMode
+        {
+            set
+            {
+                UpdateProperty(ref _activateMode, value);
+                Perceptrons.ToList().ForEach(perceptron => perceptron.ActivateMode = value);
+            }
+            get => _activateMode;
+        }
 
         public LayerFullConnected()
         {
         }
+
+
 
        
         /// <summary>

@@ -14,6 +14,11 @@ namespace Somnium.Kernel
     public class StreamData
     {
 
+
+        public static Func<string, StreamData> GetStreamData;
+        public static Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
+        public static Func<int, string> GetEstimateLabel;
+
         private Matrix _matrix;
 
         public StreamData()
@@ -98,9 +103,7 @@ namespace Somnium.Kernel
             return res.ToList().IndexOf(res.Max());
         }
 
-        public static Func<string,StreamData> GetStreamData;
-        public static Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
-        public static Func<int, string> GetEstimateLabel;
+
 
         public static StreamData CreateStreamData(string path)
         {
