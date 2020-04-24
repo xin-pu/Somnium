@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Somnium.Kernel
 {
-    [Serializable]
+
     public class LayerOutput : Layer
     {
         private NeurePerceptron[] _perceptrons;

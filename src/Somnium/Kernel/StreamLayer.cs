@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using MathNet.Numerics.LinearAlgebra.Double;
+using System.Xml.Serialization;
 
 namespace Somnium.Kernel
 {
-    [Serializable]
+    [XmlInclude(typeof(LayerInput))]
+    [XmlInclude(typeof(LayerOutput))]
+    [XmlInclude(typeof(LayerFullConnected))]
     public class StreamLayer
     {
 
+        public StreamLayer()
+        {
+            LayerQueue = new List<Layer>();
+        }
+
         public StreamLayer(double gradient = 0.01)
         {
-            LayerQueue = new Queue<Layer>();
+            LayerQueue = new List<Layer>();
             Gradient = gradient;
         }
 
-
-        public Queue<Layer> LayerQueue { set; get; }
+        public List<Layer> LayerQueue { set; get; }
         public double Gradient { get; }
-        public double Target { get; }
+
 
         public bool AddInputLayer(LayerInput layer)
         {
             if (LayerQueue.Count != 0) return false;
             layer.LayerIndex = 0;
-            LayerQueue.Enqueue(layer);
+            LayerQueue.Add(layer);
             return true;
         }
 
@@ -37,7 +41,7 @@ namespace Somnium.Kernel
             {
                 LayerIndex = LayerQueue.Count
             };
-            LayerQueue.Enqueue(fullConnectedLayer);
+            LayerQueue.Add(fullConnectedLayer);
             return true;
         }
 
@@ -48,35 +52,37 @@ namespace Somnium.Kernel
             {
                 LayerIndex = LayerQueue.Count
             };
-            LayerQueue.Enqueue(outputLayer);
+            LayerQueue.Add(outputLayer);
             return true;
         }
 
         public void ClearLayer()
         {
-            
+
         }
 
-        public void SaveLayer(string path)
-        {
-            //using var fs = new FileStream(path, FileMode.Create);
-            //var serializer = new BinaryFormatter();
-            //serializer.Serialize(fs, this);
-        }
+
 
 
         public void UpdateWeight(List<StreamData> streamDatas)
         {
-            LayerQueue.ToList().ForEach(layer =>
-            {
-                layer.UpdateNeure();
-            });
+            LayerQueue.ToList().ForEach(layer => { layer.UpdateNeure(); });
+        }
+
+        public void Serializer(string path)
+        {
+            using var fs = new FileStream(path, FileMode.Create);
+            new XmlSerializer(typeof(StreamLayer)).Serialize(fs, this);
         }
 
 
+        public static StreamLayer Deserialize(string path)
+        {
+            using var fs = new FileStream(path, FileMode.Open);
+            return (StreamLayer) (new XmlSerializer(typeof(StreamLayer)).Deserialize(fs));
+        }
 
     }
-
 
 
 }

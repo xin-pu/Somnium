@@ -9,7 +9,6 @@ namespace Somnium.Kernel
     /// Input Layer is the first Layer which the input size and output size are same.
     /// So Activated method will return the input data.
     /// </summary>
-    [Serializable]
     public class LayerInput : Layer
     {
 

@@ -12,7 +12,6 @@ namespace Somnium.Kernel
     /// It need define data shape and the neure count.
     /// So Activated method will return the input data.
     /// </summary>
-    [Serializable]
     public class LayerFullConnected : Layer
     {
 
