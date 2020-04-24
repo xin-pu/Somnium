@@ -16,4 +16,10 @@ namespace Somnium.Func
             return variance;
         }
     }
+
+    [Serializable]
+    public enum CostType
+    {
+        Basic
+    }
 }

@@ -71,7 +71,11 @@ namespace Somnium.Kernel
                 new DenseMatrix(ShapeOut.Rows, ShapeOut.Columns, activatedWithWeighted));
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="gradient"></param>
         public override void Deviated(StreamData data, double gradient)
         {
             var swd = data.GetSwd(LayerIndex);

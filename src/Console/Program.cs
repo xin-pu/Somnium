@@ -22,8 +22,8 @@ namespace Console
         
         public static void TrainingDigits()
         {
-            int count = 5;
-            double gar = 0.2;
+            int count = 1000;
+            double gar = 0.1;
             //定义从文件获取数据流的方法，需要返回矩阵数据以及正确Label
             StreamData.GetStreamData = GetArrayStreamData;
 
@@ -54,46 +54,8 @@ namespace Console
             layerStream.AddFullConnectedLayer(8);
             layerStream.AddOutputLayer(map.Count);
 
-            //var secondlayer = (LayerFullConnected) layerStream.LayerQueue.ToArray()[1];
-            //secondlayer.Perceptrons[0].Weight.SetColumn(0,new[]
-            //{
-            //    0.490,0.348,0.073,
-            //    0.837,-0.071,-3.671,
-            //    -0.536,-0.023,-1.717,
-            //    -1.456,-0.556,0.852
-            //});
-            //secondlayer.Perceptrons[1].Weight.SetColumn(0, new[]
-            //{
-            //    0.442,-0.537,1.008,
-            //    1.072,-0.733,0.823,
-            //    -0.453,-0.014,-0.027,
-            //    -0.427,1.876,-2.305
-            //});
-            //secondlayer.Perceptrons[2].Weight.SetColumn(0, new[]
-            //{
-            //    0.654,-1.389,1.246,
-            //    0.057,-0.183,-0.743,
-            //    -0.461,0.331,0.449,
-            //    -1.296,1.569,-0.471
-            //});
-            //secondlayer.Perceptrons[0].Offset = -0.185;
-            //secondlayer.Perceptrons[1].Offset = 0.526;
-            //secondlayer.Perceptrons[2].Offset = -1.169;
-
-
-            //var outputlayer = (LayerOutput)layerStream.LayerQueue.ToArray()[2];
-            //outputlayer.Perceptrons[0].Weight.SetColumn(0, new[]
-            //{
-            //    0.388,0.803,0.029
-            //});
-            //outputlayer.Perceptrons[1].Weight.SetColumn(0, new[]
-            //{
-            //    0.025,-0.790,1.553
-            //});
-            //outputlayer.Perceptrons[0].Offset =-1.438;
-            //outputlayer.Perceptrons[1].Offset = -1.379;
             
-
+            
             for (int i = 0; i < count; i++)
             {
                 //以神经网络层更新数据层

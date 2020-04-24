@@ -93,7 +93,7 @@ namespace Somnium.Kernel
 
         private int GetLikelihoodRatio(IEnumerable<double> outputData)
         {
-            var res= SoftMax.softMax(outputData).ToArray();
+            var res= SoftMax.BasicSoftMax(outputData).ToArray();
             return res.ToList().IndexOf(res.Max());
         }
 

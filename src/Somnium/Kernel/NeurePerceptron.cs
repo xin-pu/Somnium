@@ -14,13 +14,17 @@ namespace Somnium.Kernel
     public class NeurePerceptron : Neure
     {
 
-        private ActivateMode _activateMode = ActivateMode.Sigmoid;
+        [XmlIgnore] public Func<double, double> ActivateFuc { set; get; }
+        [XmlIgnore] public Func<double, double> FirstDerivativeFunc { set; get; }
+
+
+        private ActivateMode _activateMode;
 
         public ActivateMode ActivateMode
         {
             set
             {
-                _activateMode = value;
+                UpdateProperty(ref _activateMode, value);
                 switch (value)
                 {
                     case ActivateMode.Tanh:
@@ -33,23 +37,21 @@ namespace Somnium.Kernel
                         ActivateFuc = Activate.Sigmoid;
                         break;
                 }
-              
+
                 FirstDerivativeFunc = Differentiate.FirstDerivativeFunc(ActivateFuc);
             }
             get => _activateMode;
         }
 
-        [XmlIgnore]
-        public Func<double, double> ActivateFuc { set; get; }
-        [XmlIgnore]
-        public Func<double, double> FirstDerivativeFunc { set; get; }
-        
+
+
         public NeurePerceptron()
         {
-              
+
         }
 
-        public NeurePerceptron(NeureShape shape, ActivateMode activateMode = ActivateMode.Sigmoid) :base(shape)
+        public NeurePerceptron(NeureShape shape, ActivateMode activateMode = ActivateMode.Sigmoid)
+            : base(shape)
         {
             ActivateMode = activateMode;
         }
@@ -72,14 +74,11 @@ namespace Somnium.Kernel
             return new Tuple<double, double>(activate, weight);
         }
 
-     
-
-
         public override void AddDeviation(Matrix devWeight, double devBias)
         {
-            lock (_myLock)
+            lock (MyLock)
             {
-                WeightDelta = (Matrix)(WeightDelta + devWeight);
+                WeightDelta = (Matrix) (WeightDelta + devWeight);
                 OffsetDelta = OffsetDelta + devBias;
             }
         }
