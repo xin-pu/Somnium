@@ -18,19 +18,19 @@ namespace Somnium.Kernel
         [XmlIgnore] public Func<double, double> FirstDerivativeFunc { set; get; }
 
 
-        private ActivateMode _activateMode;
+        private ActivateType _activateType;
 
-        public ActivateMode ActivateMode
+        public ActivateType ActivateType
         {
             set
             {
-                UpdateProperty(ref _activateMode, value);
+                UpdateProperty(ref _activateType, value);
                 switch (value)
                 {
-                    case ActivateMode.Tanh:
+                    case ActivateType.Tanh:
                         ActivateFuc = Activate.Tanh;
                         break;
-                    case ActivateMode.Max:
+                    case ActivateType.Max:
                         ActivateFuc = Activate.Max;
                         break;
                     default:
@@ -40,7 +40,7 @@ namespace Somnium.Kernel
 
                 FirstDerivativeFunc = Differentiate.FirstDerivativeFunc(ActivateFuc);
             }
-            get => _activateMode;
+            get => _activateType;
         }
 
 
@@ -50,16 +50,16 @@ namespace Somnium.Kernel
 
         }
 
-        public NeurePerceptron(NeureShape shape, ActivateMode activateMode = ActivateMode.Sigmoid)
+        public NeurePerceptron(NeureShape shape, ActivateType activateType = ActivateType.Sigmoid)
             : base(shape)
         {
-            ActivateMode = activateMode;
+            ActivateType = activateType;
         }
 
-        public NeurePerceptron(int rows, int columns, ActivateMode activateMode = ActivateMode.Sigmoid)
+        public NeurePerceptron(int rows, int columns, ActivateType activateType = ActivateType.Sigmoid)
             : base(rows, columns)
         {
-            ActivateMode = activateMode;
+            ActivateType = activateType;
         }
 
         /// <summary>

@@ -49,10 +49,7 @@ namespace Somnium.Tests.StreamTest
 
 
             //创建神经网络层
-            var layerStream = new StreamLayer();
-            layerStream.AddInputLayer(new LayerInput(dataShape));
-            layerStream.AddFullConnectedLayer(5);
-            layerStream.AddOutputLayer(map.Count);
+            var layerStream = new StreamLayer(dataShape, map.Count, new[] { 5 },0.01);
 
             for (int i = 0; i < count; i++)
             {
@@ -63,7 +60,7 @@ namespace Somnium.Tests.StreamTest
                     break;
 
                 //反向传播误差
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerStream, gar));
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerStream));
 
                 //从数据层收集误差并更新神经网络层的神经元
                 layerStream.UpdateWeight(inputStreams);

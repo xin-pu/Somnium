@@ -28,16 +28,16 @@ namespace Somnium.Kernel
             get => _perceptrons;
         }
 
-        private ActivateMode _activateMode;
+        private ActivateType _activateType;
 
-        public ActivateMode ActivateMode
+        public ActivateType ActivateType
         {
             set
             {
-                UpdateProperty(ref _activateMode, value);
-                Perceptrons.ToList().ForEach(perceptron => perceptron.ActivateMode = value);
+                UpdateProperty(ref _activateType, value);
+                Perceptrons.ToList().ForEach(perceptron => perceptron.ActivateType = value);
             }
-            get => _activateMode;
+            get => _activateType;
         }
 
         public LayerFullConnected()

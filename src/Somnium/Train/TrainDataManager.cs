@@ -34,15 +34,25 @@ namespace Somnium.Train
             set => UpdateProperty(ref _dataShapeFormat, value);
             get => _dataShapeFormat;
         }
-        public List<StreamData> StreamDatas {
+
+        public List<StreamData> StreamDatas
+        {
             set => UpdateProperty(ref _streamDatas, value);
             get => _streamDatas;
         }
 
+        public int OutTypeCount => LabelMap.Count;
+
+
+        public TrainDataManager(string workFolder)
+        {
+            WorkFolder = workFolder;
+        }
 
         public void LoadStreamDatas()
         {
-       
+            StreamData.GetStreamData = GetArrayStreamData;
+
             var dir = new DirectoryInfo(WorkFolder);
             if (!dir.Exists) return;
             StreamDatas = dir.GetFiles()
@@ -55,6 +65,7 @@ namespace Somnium.Train
             DataShapeFormat = StreamData.FilterDataShape(StreamDatas);
             LabelMap = new LabelMap(StreamDatas.Select(a => a.ExpectedLabel));
             StreamDatas.ForEach(a => a.ExpectedOut = LabelMap.GetCorrectResult(a.ExpectedLabel));
+            StreamData.GetEstimateLabel = LabelMap.GetLabel;
         }
 
         public static StreamData GetArrayStreamData(string path)
@@ -71,7 +82,7 @@ namespace Somnium.Train
             return new StreamData
             {
                 InputDataMatrix = matrix,
-                ExpectedLabel = actual
+                ExpectedLabel = actual,
             };
         }
 

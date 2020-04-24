@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Somnium.Data;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
 using Somnium.Kernel;
+using Somnium.Train;
 
 namespace Console
 {
@@ -16,14 +18,13 @@ namespace Console
 
         static void Main(string[] args)
         {
-            TrainingDigits();
+           TrainingSmallDigitsWithExtendMethod();
         }
 
-        
+
         public static void TrainingDigits()
         {
             int count = 20000;
-            double gar = 0.1;
             //定义从文件获取数据流的方法，需要返回矩阵数据以及正确Label
             StreamData.GetStreamData = GetArrayStreamData;
 
@@ -49,13 +50,9 @@ namespace Console
 
             
             //创建神经网络层
-            var layerStream = new StreamLayer(gar);
-            layerStream.AddInputLayer(new LayerInput(dataShape));
-            layerStream.AddFullConnectedLayer(6);
-            layerStream.AddOutputLayer(map.Count);
+            var layerStream = new StreamLayer(dataShape, map.Count, new[] { 6 },0.01);
 
-            
-            
+
             for (int i = 0; i < count; i++)
             {
                 //以神经网络层更新数据层
@@ -99,6 +96,26 @@ namespace Console
                 };
             }
         }
+
+
+        public static void TrainingSmallDigitsWithExtendMethod()
+        {
+            var train = new BasicDeepLearning();
+
+            // 加载数据集
+            var workFolder = @"D:\Document Code\Code Somnium\Somnium\datas\smallDigits";
+            var trainDataManager = new TrainDataManager(workFolder);
+
+            // 创建神经网络层
+            var layerStream = new StreamLayer(trainDataManager.DataShapeFormat, trainDataManager.OutTypeCount,
+                new[] {6},
+                train.LearningRate);
+
+            //// 创建训练
+            train.ExecuteTrain(layerStream, trainDataManager);
+        }
+
+
 
     }
 }

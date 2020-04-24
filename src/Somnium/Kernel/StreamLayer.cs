@@ -16,6 +16,18 @@ namespace Somnium.Kernel
             LayerQueue = new List<Layer>();
         }
 
+
+
+
+        public StreamLayer(DataShape inputDataShape, int outputSize, int[] neureList, double gradient = 0.01)
+        {
+            LayerQueue = new List<Layer>();
+            InputDataShape = inputDataShape;
+            OutputDataShape = outputSize;
+            Gradient = gradient;
+            CreateFullConnectLayer(neureList);
+        }
+
         public StreamLayer(double gradient = 0.01)
         {
             LayerQueue = new List<Layer>();
@@ -26,39 +38,30 @@ namespace Somnium.Kernel
         public double Gradient { get; }
 
 
-        public bool AddInputLayer(LayerInput layer)
-        {
-            if (LayerQueue.Count != 0) return false;
-            layer.LayerIndex = 0;
-            LayerQueue.Add(layer);
-            return true;
-        }
+        private DataShape InputDataShape { set; get; }
+        private int OutputDataShape { set; get; }
 
-        public bool AddFullConnectedLayer(int neureCount)
+
+        private void CreateFullConnectLayer(int[] neureList)
         {
-            var dataShape = LayerQueue.Last().ShapeOut;
-            var fullConnectedLayer = new LayerFullConnected(dataShape, neureCount)
+            LayerQueue = new List<Layer>();
+            var inputLayer = new LayerInput(InputDataShape) {LayerIndex = 0};
+            LayerQueue.Add(inputLayer);
+            neureList.ToList().ForEach(a =>
             {
-                LayerIndex = LayerQueue.Count
-            };
-            LayerQueue.Add(fullConnectedLayer);
-            return true;
-        }
+                var dataShape = LayerQueue.Last().ShapeOut;
+                var fullConnectedLayer = new LayerFullConnected(dataShape, a)
+                {
+                    LayerIndex = LayerQueue.Count
+                };
+                LayerQueue.Add(fullConnectedLayer);
+            });
 
-        public bool AddOutputLayer(int neureCount)
-        {
-            var dataShape = LayerQueue.Last().ShapeOut;
-            var outputLayer = new LayerOutput(dataShape, neureCount)
+            var outputLayer = new LayerOutput(LayerQueue.Last().ShapeOut, OutputDataShape)
             {
                 LayerIndex = LayerQueue.Count
             };
             LayerQueue.Add(outputLayer);
-            return true;
-        }
-
-        public void ClearLayer()
-        {
-
         }
 
 
@@ -75,7 +78,6 @@ namespace Somnium.Kernel
             new XmlSerializer(typeof(StreamLayer)).Serialize(fs, this);
         }
 
-
         public static StreamLayer Deserialize(string path)
         {
             using var fs = new FileStream(path, FileMode.Open);
@@ -83,6 +85,5 @@ namespace Somnium.Kernel
         }
 
     }
-
 
 }

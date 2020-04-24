@@ -4,13 +4,18 @@ using System.Linq;
 
 namespace Somnium.Func
 {
-    public class SoftMax
+    public class LikeliHood
     {
-        public static IEnumerable<double> BasicSoftMax(IEnumerable<double> activated)
+        public static IEnumerable<double> SoftMax(IEnumerable<double> activated)
         {
             var exps = activated.Select(a => Math.Pow(Math.E, a)).ToArray();
             var expsSum = exps.Sum();
             return exps.Select(a => a / expsSum).ToList();
         }
+    }
+
+    public enum LikeliHoodType
+    {
+        SoftMax
     }
 }

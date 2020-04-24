@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
 
@@ -11,43 +14,112 @@ namespace Somnium.Kernel
     /// 用于存储单个样列 产生的所有的中间数据
     /// 必须数显从网络层神经元 复制的 delta数据
     /// </summary>
-    public class StreamData
+    public class StreamData : INotifyPropertyChanged
     {
-
 
         public static Func<string, StreamData> GetStreamData;
         public static Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
+        public static Func<IEnumerable<double>, IEnumerable<double>> GetLikelihood;
         public static Func<int, string> GetEstimateLabel;
 
-        private Matrix _matrix;
 
-        public StreamData()
+        public static CostType CostType
         {
-            LayerDatas=new Dictionary<int, LayerData>();
+            set
+            {
+                _costType = value;
+                switch (value)
+                {
+                    default:
+                        GetCost = Cost.GetVariance;
+                        break;
+                }
+            }
+            get => _costType;
         }
+        public static LikeliHoodType LikeliHoodType
+        {
+            set
+            {
+                _likeliHoodType = value;
+                switch (value)
+                {
+                    default:
+                        GetLikelihood = LikeliHood.SoftMax;
+                        break;
+                }
+            }
+            get => _likeliHoodType;
+        }
+        private static CostType _costType = CostType.Basic;
+        private static LikeliHoodType _likeliHoodType = LikeliHoodType.SoftMax;
 
+
+        private Matrix _matrix;
+        private bool _isMeetExpect;
+        private double[] _estimateOut;
+        private string _estimateLabel;
+        private double[] _expectedOut;
+        private string _expectedLabel;
+        private double _squareError;
 
         public Matrix InputDataMatrix
         {
             set
             {
                 _matrix = value;
-                InputDataShape = new DataShape(value.RowCount,value.ColumnCount);
+                InputDataShape = new DataShape(value.RowCount, value.ColumnCount);
             }
             get => _matrix;
         }
 
-        public DataShape InputDataShape { set; get; }
+        public DataShape InputDataShape { protected set; get; }
+        public Dictionary<int, LayerData> LayerDatas { set; get; }
 
-        public Dictionary<int,LayerData> LayerDatas { set; get; }
+        public bool IsMeetExpect
+        {
+            set => UpdateProperty(ref _isMeetExpect, value);
+            get => _isMeetExpect;
+        }
+        public double[] EstimateOut
+        {
+            set => UpdateProperty(ref _estimateOut, value);
+            get => _estimateOut;
+        }
+
+        public string EstimateLabel
+        {
+            set
+            {
+                UpdateProperty(ref _estimateLabel, value);
+                IsMeetExpect = EstimateLabel.Equals(ExpectedLabel);
+            }
+            get => _estimateLabel;
+        }
+
+        public double[] ExpectedOut
+        {
+            set => UpdateProperty(ref _expectedOut, value);
+            get => _expectedOut;
+        }
+        public string ExpectedLabel
+        {
+            set => UpdateProperty(ref _expectedLabel, value);
+            get => _expectedLabel;
+        }
+        public double SquareError
+        {
+            set => UpdateProperty(ref _squareError, value);
+            get => _squareError;
+        }
 
 
-        public bool IsMeetExpect => EstimateLabel.Equals(ExpectedLabel);
-        public double[] EstimateOut { set; get; }
-        public string EstimateLabel { set; get; }
-        public double[] ExpectedOut { set; get; }
-        public string ExpectedLabel { set; get; }
-        public double SquareError { set; get; }
+
+        public StreamData()
+        {
+            LayerDatas = new Dictionary<int, LayerData>();
+        }
+
 
         public void ActivateLayerNet(StreamLayer streamLayer)
         {
@@ -62,7 +134,7 @@ namespace Somnium.Kernel
                 };
                 tempData = item1;
             });
-            EstimateOut = LayerDatas[LayerDatas.Count - 1].Activated.AsColumnMajorArray(); ;
+            EstimateOut = LayerDatas[LayerDatas.Count - 1].Activated.AsColumnMajorArray();
             EstimateLabel = GetEstimateLabel.Invoke(GetLikelihoodRatio(EstimateOut));
             SquareError = GetCost.Invoke(ExpectedOut, EstimateOut);
         }
@@ -99,11 +171,9 @@ namespace Somnium.Kernel
 
         private int GetLikelihoodRatio(IEnumerable<double> outputData)
         {
-            var res= SoftMax.BasicSoftMax(outputData).ToArray();
+            var res = GetLikelihood.Invoke(outputData).ToArray();
             return res.ToList().IndexOf(res.Max());
         }
-
-
 
         public static StreamData CreateStreamData(string path)
         {
@@ -118,6 +188,31 @@ namespace Somnium.Kernel
                 throw new Exception();
             return dataShapes.First();
         }
+
+
+        #region
+
+        public void UpdateProperty<T>(ref T properValue, T newValue, [CallerMemberName] string propertyName = "")
+        {
+            if (Equals(properValue, newValue))
+            {
+                return;
+            }
+
+            properValue = newValue;
+            OnPropertyChanged(propertyName);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 
 

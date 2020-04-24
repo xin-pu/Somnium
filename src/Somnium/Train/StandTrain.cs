@@ -19,8 +19,8 @@ namespace Somnium.Train
         private DateTime _startTime;
         private DateTime _stopTime;
         private TimeSpan _timeSpan;
-        private double _learningRate;
-        private uint _trainCountLimit;
+        private double _learningRate = 0.1;
+        private uint _trainCountLimit = 1000;
         private uint _trainCountCurrent;
         private DataShape _dataShapeIn;
         private double _correctRateCurrent;
@@ -101,8 +101,6 @@ namespace Somnium.Train
         {
             CreateTime = DateTime.Now;
             Name = $"Train_{CreateTime:hh_mm_ss}";
-            LearningRate = 0.1;
-            TrainCountLimit = 1000;
         }
 
         public virtual void SetDataShapeInFormat(int rows, int columns)
@@ -110,33 +108,7 @@ namespace Somnium.Train
             DataShapeIn = new DataShape(rows, columns);
         }
 
-        public virtual async Task ExecuteTrain(StreamLayer layerNet, TrainDataManager trainDataManager)
-        {
-            await Task.Run(() =>
-            {
-                var inputStreams = trainDataManager.StreamDatas;
-                StartTime = DateTime.Now;
-                TrainCountCurrent = 0;
-
-                for (TrainCountCurrent = 1; TrainCountCurrent <= TrainCountLimit; TrainCountCurrent++)
-                {
-                    //以神经网络层更新数据层
-                    inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(layerNet));
-
-                    CorrectRateCurrent = inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count;
-                    CorrectRates.Add(CorrectRateCurrent);
-
-                    //反向传播误差
-                    inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerNet));
-
-                    //从数据层收集误差并更新神经网络层的神经元
-                    layerNet.UpdateWeight(inputStreams);
-
-                }
-
-                StopTime = DateTime.Now;
-            });
-        }
+        public abstract void ExecuteTrain(StreamLayer layerNet, TrainDataManager trainDataManager);
 
 
 
