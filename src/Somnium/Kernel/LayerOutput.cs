@@ -111,5 +111,11 @@ namespace Somnium.Kernel
             using var fs = new FileStream(filename, FileMode.Create);
             new XmlSerializer(typeof(LayerOutput)).Serialize(fs, this);
         }
+
+        public static Layer Deserialize(string filename)
+        {
+            using var fs = new FileStream(filename, FileMode.Open);
+            return (LayerOutput)(new XmlSerializer(typeof(LayerOutput)).Deserialize(fs));
+        }
     }
 }

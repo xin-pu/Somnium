@@ -88,7 +88,8 @@ namespace Somnium.Kernel
 
         public double[] GetSwd(int layIndex)
         {
-            return LayerDatas[layIndex].SWd.ToArray();
+            var data = LayerDatas[layIndex].SWd;
+            return data.ToArray();
         }
 
         private int GetLikelihoodRatio(IEnumerable<double> outputData)

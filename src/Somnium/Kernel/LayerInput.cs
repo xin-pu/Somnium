@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -49,6 +48,12 @@ namespace Somnium.Kernel
         {
             using var fs = new FileStream(filename, FileMode.Create);
             new XmlSerializer(typeof(LayerInput)).Serialize(fs, this);
+        }
+
+        public static Layer Deserialize(string filename)
+        {
+            using var fs = new FileStream(filename, FileMode.Open);
+            return (LayerInput) (new XmlSerializer(typeof(LayerInput)).Deserialize(fs));
         }
     }
 }

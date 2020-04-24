@@ -121,5 +121,11 @@ namespace Somnium.Kernel
             new XmlSerializer(typeof(LayerFullConnected)).Serialize(fs, this);
         }
 
+        public static Layer Deserialize(string filename)
+        {
+            using var fs = new FileStream(filename, FileMode.Open);
+            return (LayerFullConnected) (new XmlSerializer(typeof(LayerFullConnected)).Deserialize(fs));
+        }
+
     }
 }

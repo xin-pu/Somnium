@@ -12,7 +12,7 @@ namespace Console
     class Program
     {
         //public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\newTest";
-        public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\test";
+        public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\trainingDigits";
 
         static void Main(string[] args)
         {
@@ -22,7 +22,7 @@ namespace Console
         
         public static void TrainingDigits()
         {
-            int count = 1000;
+            int count = 20000;
             double gar = 0.1;
             //定义从文件获取数据流的方法，需要返回矩阵数据以及正确Label
             StreamData.GetStreamData = GetArrayStreamData;
@@ -51,7 +51,7 @@ namespace Console
             //创建神经网络层
             var layerStream = new StreamLayer();
             layerStream.AddInputLayer(new LayerInput(dataShape));
-            layerStream.AddFullConnectedLayer(8);
+            layerStream.AddFullConnectedLayer(20);
             layerStream.AddOutputLayer(map.Count);
 
             
