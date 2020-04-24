@@ -62,11 +62,11 @@ namespace Somnium.Kernel
             SquareError = GetCost.Invoke(ExpectedOut, EstimateOut);
         }
 
-        public void ErrorBackPropagation(StreamLayer streamLayer, double gar)
+        public void ErrorBackPropagation(StreamLayer streamLayer)
         {
             streamLayer.LayerQueue.OrderByDescending(a => a.LayerIndex).ToList().ForEach(layer =>
             {
-                layer.Deviated(this, gar);
+                layer.Deviated(this, streamLayer.Gradient);
             });
         }
 

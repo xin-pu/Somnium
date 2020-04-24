@@ -93,5 +93,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Somnium\Somnium.csproj">
+      <Project>{8a3f8244-5aae-46a9-9aac-df4e010cf0d4}</Project>
+      <Name>Somnium</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

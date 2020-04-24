@@ -12,7 +12,7 @@ namespace Console
     class Program
     {
         //public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\newTest";
-        public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\trainingDigits";
+        public static string WorkFolder = @"D:\Document Code\Code Somnium\Somnium\datas\smallDigits";
 
         static void Main(string[] args)
         {
@@ -49,9 +49,9 @@ namespace Console
 
             
             //创建神经网络层
-            var layerStream = new StreamLayer();
+            var layerStream = new StreamLayer(gar);
             layerStream.AddInputLayer(new LayerInput(dataShape));
-            layerStream.AddFullConnectedLayer(20);
+            layerStream.AddFullConnectedLayer(6);
             layerStream.AddOutputLayer(map.Count);
 
             
@@ -66,14 +66,14 @@ namespace Console
             
 
                 //反向传播误差
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerStream, gar));
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerStream));
 
                 //从数据层收集误差并更新神经网络层的神经元
                 layerStream.UpdateWeight(inputStreams);
 
             }
 
-            layerStream.SaveLayer("D:\\1.xml");
+            layerStream.Serializer("D:\\1.xml");
             
         }
 
