@@ -14,11 +14,7 @@
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
     <PackageReference Include="MathNet.Numerics" Version="4.9.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Utility\" />
-    <Folder Include="PreTreatment\" />
+    <PackageReference Include="OpenCvSharp4" Version="4.3.0.20200421" />
   </ItemGroup>
 
 </Project>

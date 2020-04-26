@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Somnium.Func;
 
-namespace Somnium.Tests
+namespace Somnium.Tests.Func
 {
     [TestClass]
     public class FuncTest
