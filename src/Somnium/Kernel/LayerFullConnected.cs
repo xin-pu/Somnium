@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Somnium.Core;
 using Somnium.Func;
+using Somnium.Train;
 
 namespace Somnium.Kernel
 {

@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra.Double;
+using Somnium.Core;
+using Somnium.Train;
 
 namespace Somnium.Kernel
 {

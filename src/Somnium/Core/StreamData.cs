@@ -6,8 +6,9 @@ using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Func;
+using Somnium.Kernel;
 
-namespace Somnium.Kernel
+namespace Somnium.Core
 {
 
     /// <summary>
@@ -17,7 +18,6 @@ namespace Somnium.Kernel
     public class StreamData : INotifyPropertyChanged
     {
 
-        public static Func<string, StreamData> GetStreamData;
         public static Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
         public static Func<IEnumerable<double>, IEnumerable<double>> GetLikelihood;
         public static Func<int, string> GetEstimateLabel;
@@ -121,10 +121,10 @@ namespace Somnium.Kernel
         }
 
 
-        public void ActivateLayerNet(StreamLayer streamLayer)
+        public void ActivateLayerNet(LayerNetManager layerNet)
         {
             var tempData = InputDataMatrix;
-            streamLayer.LayerQueue.ToList().ForEach(layer =>
+            layerNet.LayerNet.ToList().ForEach(layer =>
             {
                 var (item1, item2) = layer.Activated(tempData);
                 LayerDatas[layer.LayerIndex] = new LayerData
@@ -139,11 +139,11 @@ namespace Somnium.Kernel
             SquareError = GetCost.Invoke(ExpectedOut, EstimateOut);
         }
 
-        public void ErrorBackPropagation(StreamLayer streamLayer)
+        public void ErrorBackPropagation(LayerNetManager layerNet)
         {
-            streamLayer.LayerQueue.OrderByDescending(a => a.LayerIndex).ToList().ForEach(layer =>
+            layerNet.LayerNet.OrderByDescending(a => a.LayerIndex).ToList().ForEach(layer =>
             {
-                layer.Deviated(this, streamLayer.Gradient);
+                layer.Deviated(this, layerNet.LearningRate);
             });
         }
 
@@ -175,23 +175,9 @@ namespace Somnium.Kernel
             return res.ToList().IndexOf(res.Max());
         }
 
-        public static StreamData CreateStreamData(string path)
-        {
-            return GetStreamData?.Invoke(path);
-        }
-
-        public static DataShape FilterDataShape(IEnumerable<StreamData> streamDatas)
-        {
-            var dataShapes = streamDatas.Select(a => a.InputDataShape).ToArray();
-            if (dataShapes.Select(a => a.Rows).Distinct().Count() > 1 ||
-                dataShapes.Select(a => a.Columns).Distinct().Count() > 1)
-                throw new Exception();
-            return dataShapes.First();
-        }
 
 
         #region
-
         public void UpdateProperty<T>(ref T properValue, T newValue, [CallerMemberName] string propertyName = "")
         {
             if (Equals(properValue, newValue))

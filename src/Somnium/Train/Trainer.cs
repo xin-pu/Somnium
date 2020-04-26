@@ -5,28 +5,31 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Somnium.Core;
 using Somnium.Kernel;
 
 namespace Somnium.Train
 {
-    public abstract class StandTrain : ICloneable, INotifyPropertyChanged
+    public class DeepLeaningModel : ICloneable, INotifyPropertyChanged
     {
 
         private string _name;
+
         private DateTime _createDateTime;
         private DateTime _startTime;
         private DateTime _stopTime;
         private TimeSpan _timeSpan;
-        private double _learningRate = 0.1;
-        private uint _trainCountLimit = 1000;
-        private uint _trainCountCurrent;
-        private DataShape _dataShapeIn;
         private double _correctRateCurrent;
         private List<double> _correctRates;
+        private uint _trainCountLimit = 1000;
+        private uint _trainCountCurrent;
 
 
+        private double _learningRate = 0.1;
+        private DataShape _dataShapeIn;
+      
+        
         public string Name
         {
             set => UpdateProperty(ref _name, value);
@@ -97,7 +100,7 @@ namespace Somnium.Train
         /// <summary>
         /// We will Create a Train with Default Value
         /// </summary>
-        protected StandTrain()
+        public DeepLeaningModel()
         {
             CreateTime = DateTime.Now;
             Name = $"Train_{CreateTime:hh_mm_ss}";
@@ -108,8 +111,31 @@ namespace Somnium.Train
             DataShapeIn = new DataShape(rows, columns);
         }
 
-        public abstract void ExecuteTrain(StreamLayer layerNet, TrainDataManager trainDataManager);
+        public virtual void ExecuteTrain(LayerNetManager layerNetNet, TrainDataManager trainDataManager)
+        {
+            var inputStreams = trainDataManager.StreamDatas;
+            StartTime = DateTime.Now;
+            TrainCountCurrent = 0;
+            CorrectRates=new List<double>();
 
+            for (TrainCountCurrent = 1; TrainCountCurrent <= TrainCountLimit; TrainCountCurrent++)
+            {
+                //以神经网络层更新数据层
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(layerNetNet));
+
+                CorrectRateCurrent = inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count;
+                CorrectRates.Add(CorrectRateCurrent);
+
+                //反向传播误差
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerNetNet));
+
+                //从数据层收集误差并更新神经网络层的神经元
+                layerNetNet.UpdateWeight();
+
+            }
+
+            StopTime = DateTime.Now;
+        }
 
 
         public object Clone()
@@ -146,5 +172,6 @@ namespace Somnium.Train
 
         #endregion
     }
+
 
 }

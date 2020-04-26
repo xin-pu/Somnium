@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Somnium.Data;
-using Somnium.Func;
-using Somnium.Kernel;
+using Somnium.Core;
 
 namespace Somnium.Tests.StreamTest
 {
@@ -18,56 +16,6 @@ namespace Somnium.Tests.StreamTest
 
 
 
-        [TestMethod]
-        public void TestInitial()
-        {
-
-            int count = 2;
-            double gar = 0.2;
-            //定义从文件获取数据流的方法，需要返回矩阵数据以及正确Label
-            StreamData.GetStreamData = GetArrayStreamData;
-
-
-            //读取数据层
-            var dir = new DirectoryInfo(WorkFolder);
-            var inputStreams = dir.GetFiles()
-                .Where(path => path.Extension == ".txt")
-                .Select((path, index) =>
-                {
-                    var inputLayer = StreamData.CreateStreamData(path.FullName);
-                    return inputLayer;
-                }).ToList();
-            //映射标记结果
-            var map = new LabelMap(inputStreams.Select(a => a.ExpectedLabel));
-            inputStreams.ForEach(a => a.ExpectedOut = map.GetCorrectResult(a.ExpectedLabel));
-
-
-            var dataShape = StreamData.FilterDataShape(inputStreams);
-
-            StreamData.GetCost = Cost.GetVariance;
-            StreamData.GetEstimateLabel = map.GetLabel;
-
-
-            //创建神经网络层
-            var layerStream = new StreamLayer(dataShape, map.Count, new[] { 5 },0.01);
-
-            for (int i = 0; i < count; i++)
-            {
-                //以神经网络层更新数据层
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(layerStream));
-
-                if (inputStreams.Count(a => a.IsMeetExpect) * 1.0 / inputStreams.Count > 0.8)
-                    break;
-
-                //反向传播误差
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerStream));
-
-                //从数据层收集误差并更新神经网络层的神经元
-                layerStream.UpdateWeight(inputStreams);
-
-            }
-
-        }
 
         public StreamData GetStreamData(string path)
         {
