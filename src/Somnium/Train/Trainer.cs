@@ -7,29 +7,29 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using Somnium.Core;
-using Somnium.Kernel;
 
 namespace Somnium.Train
 {
     public class DeepLeaningModel : ICloneable, INotifyPropertyChanged
     {
-
+        private TrainParameters _trainParameters;
         private string _name;
-
         private DateTime _createDateTime;
         private DateTime _startTime;
         private DateTime _stopTime;
         private TimeSpan _timeSpan;
         private double _correctRateCurrent;
         private List<double> _correctRates;
-        private uint _trainCountLimit = 1000;
         private uint _trainCountCurrent;
 
-
-        private double _learningRate = 0.1;
-        private DataShape _dataShapeIn;
-      
         
+        public TrainParameters TrainParameters
+        {
+            set => UpdateProperty(ref _trainParameters, value);
+            get => _trainParameters;
+        }
+
+
         public string Name
         {
             set => UpdateProperty(ref _name, value);
@@ -60,28 +60,11 @@ namespace Somnium.Train
             get => _timeSpan;
         }
 
-        public double LearningRate
-        {
-            set => UpdateProperty(ref _learningRate, value);
-            get => _learningRate;
-        }
-
-        public uint TrainCountLimit
-        {
-            set => UpdateProperty(ref _trainCountLimit, value);
-            get => _trainCountLimit;
-        }
 
         public uint TrainCountCurrent
         {
             set => UpdateProperty(ref _trainCountCurrent, value);
             get => _trainCountCurrent;
-        }
-
-        public DataShape DataShapeIn
-        {
-            set => UpdateProperty(ref _dataShapeIn, value);
-            get => _dataShapeIn;
         }
 
 
@@ -97,41 +80,40 @@ namespace Somnium.Train
             get => _correctRates;
         }
 
+    
         /// <summary>
         /// We will Create a Train with Default Value
         /// </summary>
-        public DeepLeaningModel()
+        public DeepLeaningModel(TrainParameters trainParameters)
         {
+            TrainParameters = trainParameters;
             CreateTime = DateTime.Now;
             Name = $"Train_{CreateTime:hh_mm_ss}";
         }
 
-        public virtual void SetDataShapeInFormat(int rows, int columns)
-        {
-            DataShapeIn = new DataShape(rows, columns);
-        }
 
         public virtual void ExecuteTrain(LayerNetManager layerNetNet, TrainDataManager trainDataManager)
         {
             var inputStreams = trainDataManager.StreamDatas;
             StartTime = DateTime.Now;
             TrainCountCurrent = 0;
-            CorrectRates=new List<double>();
+            CorrectRates = new List<double>();
 
-            for (TrainCountCurrent = 1; TrainCountCurrent <= TrainCountLimit; TrainCountCurrent++)
+            for (TrainCountCurrent = 1; TrainCountCurrent <= TrainParameters.TrainCountLimit; TrainCountCurrent++)
             {
                 //以神经网络层更新数据层
                 inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(layerNetNet));
 
-                CorrectRateCurrent = inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count;
+                CorrectRateCurrent = inputStreams.Count(a => a.IsMeetExpect) * 1.0 / inputStreams.Count;
                 CorrectRates.Add(CorrectRateCurrent);
+                Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent:P}");
 
                 //反向传播误差
                 inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerNetNet));
 
                 //从数据层收集误差并更新神经网络层的神经元
                 layerNetNet.UpdateWeight();
-
+                layerNetNet.Serializer("D:\\test.xml");
             }
 
             StopTime = DateTime.Now;

@@ -57,6 +57,7 @@ namespace Somnium.Core
         }
 
 
+        
         public List<StreamData> StreamDatas
         {
             set => UpdateProperty(ref _streamDatas, value);
@@ -79,6 +80,7 @@ namespace Somnium.Core
             StreamData.GetLikelihood = trainParameters.GetLikelihood;
             StreamData.GetEstimateLabel = LabelMap.GetLabel;
         }
+
 
         private void LoadStreamDatas()
         {
@@ -113,6 +115,8 @@ namespace Somnium.Core
             StreamDatas.ForEach(a => a.ExpectedOut = LabelMap.GetCorrectResult(a.ExpectedLabel));
 
         }
+
+
 
 
         #region

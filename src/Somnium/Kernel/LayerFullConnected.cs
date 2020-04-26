@@ -3,11 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
 using Somnium.Func;
-using Somnium.Train;
 
 namespace Somnium.Kernel
 {
@@ -105,23 +103,16 @@ namespace Somnium.Kernel
 
             data.LayerDatas[LayerIndex].Error = deviations;
 
-            
-            Task.WhenAll(
-                Task.Run(() =>
-                {
-                    return data.LayerDatas[LayerIndex - 1].SWd =
-                        Enumerable.Range(0, ShapeIn.Levels)
-                            .Select(index => Perceptrons.Select((a, b) => a.Weight.At(index, 0) * deviations[b])
-                                .Sum());
-                }),
-                Task.Run(() =>
-                {
-                    Perceptrons.ToList().ForEach(perceptron =>
-                    {
-                        var gra = -deviations[perceptron.Order] * gradient;
-                        perceptron.AddDeviation((Matrix) preActivatedMatrix.Multiply(gra), gra);
-                    });
-                }));
+            data.LayerDatas[LayerIndex - 1].SWd =
+                Enumerable.Range(0, ShapeIn.Levels)
+                    .Select(index => Perceptrons.Select((a, b) => a.Weight.At(index, 0) * deviations[b])
+                        .Sum());
+
+            Perceptrons.ToList().ForEach(perceptron =>
+            {
+                var gra = -deviations[perceptron.Order] * gradient;
+                perceptron.AddDeviation((Matrix)preActivatedMatrix.Multiply(gra), gra);
+            });
 
         }
 
