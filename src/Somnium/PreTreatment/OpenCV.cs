@@ -9,15 +9,15 @@ namespace Somnium.PreTreatment
             return new Mat(fileName, imreadModes);
         }
 
-        public static Mat GetMat(int rows, int columns, uint[] array, MatType matType)
+        public static Mat GetMat(int rows, int columns, byte[] array, MatType matType)
         {
             return new Mat(rows, columns, MatType.CV_8S, array);
         }
 
-        public static OutputArray Resize(InputArray inPutArray)
+        public static Mat Resize(InputArray inPutArray, Size size)
         {
             var outPutArray = new Mat();
-            Cv2.Resize(inPutArray, outPutArray, new Size(2, 2));
+            Cv2.Resize(inPutArray, outPutArray, size);
             return outPutArray;
         }
 
