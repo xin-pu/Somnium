@@ -15,7 +15,7 @@ namespace Somnium.Core
 
         public Func<string, StreamData> GetStreamData;
 
-
+        private LabelMap _labelMap;
         private List<StreamData> _streamDatas;
         private bool _formatStatus;
         private DataShape _dataShapeIn;
@@ -25,7 +25,11 @@ namespace Somnium.Core
         private int _fileCount;
 
 
-        private LabelMap LabelMap { set; get; }
+        public LabelMap LabelMap
+        {
+            set => UpdateProperty(ref _labelMap, value);
+            get => _labelMap;
+        }
 
         public string WorkFolder
         {

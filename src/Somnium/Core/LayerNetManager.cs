@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
+using Somnium.Data;
 using Somnium.Kernel;
 
 namespace Somnium.Core
@@ -32,14 +33,15 @@ namespace Somnium.Core
             LayNetParameter layNetParameter)
         {
             LayerNet = new List<Layer>();
+            // Loading information from data manager
+            LabelMap = trainDataManager.LabelMap;
             InputDataShape = trainDataManager.DataShapeIn;
             OutputDataShape = trainDataManager.DataShapeOut;
             LearningRate = trainParameters.LearningRate;
             CreateLayNet(layNetParameter);
         }
 
-        
-
+        public LabelMap LabelMap { set; get; }
         public List<Layer> LayerNet { set; get; }
         public double LearningRate { get; }
 
