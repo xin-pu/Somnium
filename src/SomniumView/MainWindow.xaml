@@ -1,12 +1,33 @@
-﻿<Window x:Class="SomniumView.MainWindow"
+﻿<mah:MetroWindow  x:Class="SomniumView.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SomniumView"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:apps="clr-namespace:SomniumView.Apps"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
-</Window>
+        Title="Somnium Deep-Learning"
+        Icon="PNG/Somnium.png"
+        Height="766" Width="1366"
+        MinHeight="766" MinWidth="1366"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        TitlebarHeight="40"
+        BorderThickness="1">
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button>
+                <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xe629; Train"/>
+            </Button>
+            <Button>
+                <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xe606; Test"/>
+            </Button>
+            <Button>
+                <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xe60c; OpenCV"/>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+    <DockPanel>
+        <apps:TrainApp/>
+    </DockPanel>
+</mah:MetroWindow>

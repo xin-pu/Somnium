@@ -5,6 +5,7 @@ using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 using OpenCvSharp;
 using Somnium.Core;
+using Somnium.Data;
 using Somnium.Func;
 using Somnium.Train;
 
@@ -16,6 +17,7 @@ namespace Console
 
         static void Main()
         {
+
             TrainingSmallDigitsWithExtendMethod();
         }
 
@@ -36,7 +38,7 @@ namespace Console
 
             // 根据数据目录,以及读取文件流的方法，加载数据集
             const string workFolder = @"D:\Document Code\Code Somnium\Somnium\datas\resizeDigits";
-            var trainDataManager = new TrainDataManager(workFolder, GetStreamDataFromResizeFolder);
+            var trainDataManager = new TrainDataManager(workFolder, new DigitsRead().ReadDigitsAsInputLayer);
             trainDataManager.Binding(trainParameters);
 
             // 创建神经网络层

@@ -21,7 +21,5 @@ namespace Somnium.PreTreatment
             return outPutArray;
         }
 
-
-
     }
 }

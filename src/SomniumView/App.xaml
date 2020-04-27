@@ -4,6 +4,35 @@
              xmlns:local="clr-namespace:SomniumView"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <!-- Accent and AppTheme setting -->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/emerald.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+
+                <ResourceDictionary Source="Resources/MyTextBlockStyle.xaml" />
+
+
+            </ResourceDictionary.MergedDictionaries>
+
+
+            <SolidColorBrush x:Key="MyThemeColor" Color="#1BA1E2"/>
+            <SolidColorBrush x:Key="MyLineColor" Color="#1BA1E2"/>
+            <SolidColorBrush x:Key="MainForeGround" Color="#FFFFFF" />
+
+
+
+            <SolidColorBrush x:Key="StatusBarColor" Color="#808080"/>
+
+            <LinearGradientBrush x:Key="LinearGradientBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="White" Offset="0"/>
+                <GradientStop Color="#848589" Offset="3"/>
+            </LinearGradientBrush>
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

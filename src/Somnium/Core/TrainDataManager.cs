@@ -22,6 +22,7 @@ namespace Somnium.Core
         private int _dataShapeOut;
         private IEnumerable<string> _labelsOut;
         private string _workFolder;
+        private int _fileCount;
 
 
         private LabelMap LabelMap { set; get; }
@@ -56,8 +57,12 @@ namespace Somnium.Core
             get => _formatStatus;
         }
 
+        public int FileCount
+        {
+            set => UpdateProperty(ref _fileCount, value);
+            get => _fileCount;
+        }
 
-        
         public List<StreamData> StreamDatas
         {
             set => UpdateProperty(ref _streamDatas, value);
@@ -113,6 +118,7 @@ namespace Somnium.Core
             DataShapeOut = LabelsOut.Count();
 
             StreamDatas.ForEach(a => a.ExpectedOut = LabelMap.GetCorrectResult(a.ExpectedLabel));
+            FileCount = StreamDatas.Count;
 
         }
 
