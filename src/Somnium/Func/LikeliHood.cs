@@ -12,6 +12,7 @@ namespace Somnium.Func
             var expsSum = exps.Sum();
             return exps.Select(a => a / expsSum).ToList();
         }
+
     }
 
     public enum LikeliHoodType

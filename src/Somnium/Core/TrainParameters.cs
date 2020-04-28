@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Somnium.Func;
+using Somnium.Kernel;
+using Somnium.Utility;
 
 namespace Somnium.Core
 {
     public class TrainParameters : INotifyPropertyChanged
     {
-
-
         #region Function
 
         public Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
@@ -23,7 +24,7 @@ namespace Somnium.Core
         private int _trainCountLimit = 1000;
         private CostType _costType = CostType.Basic;
         private LikeliHoodType _likeliHoodType = LikeliHoodType.SoftMax;
-
+        private AsyncObservableCollection<LayerStruct> _layerStructs = new AsyncObservableCollection<LayerStruct>();
 
         public double LearningRate
         {
@@ -68,12 +69,36 @@ namespace Somnium.Core
         }
 
 
-        public TrainParameters()
+        public AsyncObservableCollection<LayerStruct> InterLayerStructs
+        {
+            protected set => UpdateProperty(ref _layerStructs, value);
+            get => _layerStructs;
+        }
+
+        public void AppendDefaultLayer()
+        {
+            AddLayer(LayerType.FullConnectLayer, 10);
+        }
+
+        public void ClearLayer()
+        {
+            InterLayerStructs.Clear();
+        }
+
+        public void AddLayer(LayerType layerType, int neureCount)
+        {
+            var indexes = InterLayerStructs.Select(a => a.Index).ToArray();
+            var newLayerStruct = new LayerStruct(layerType, neureCount)
+            {
+                Index = !indexes.Any() ? 0 : indexes.Max() + 1
+            };
+            InterLayerStructs.Add(newLayerStruct);
+        }
+
+        public void DeleteLayer()
         {
 
         }
-
-
 
         #region
 
@@ -99,4 +124,6 @@ namespace Somnium.Core
 
         #endregion
     }
+
+
 }

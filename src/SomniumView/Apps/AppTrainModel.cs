@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using JetBrains.Annotations;
@@ -15,6 +16,8 @@ namespace SomniumView.Apps
 
         private string _workFolder;
         private TrainDataManager _trainDataManager;
+        private TrainParameters _trainParameters;
+        private List<Type> _dataReaders;
 
         public AppTrainModel()
         {
@@ -28,8 +31,21 @@ namespace SomniumView.Apps
             set => UpdateProperty(ref _workFolder, value);
             get => _workFolder;
         }
-        public List<Type> DataReaders { set; get; }
+
+        public List<Type> DataReaders
+        {
+            set
+            {
+                UpdateProperty(ref _dataReaders, value);
+                SelectedDataReader = value.First();
+            }
+            get => _dataReaders;
+        }
+
         public Type SelectedDataReader { set; get; }
+
+
+
 
         public TrainDataManager TrainDataManager
         {
@@ -37,21 +53,34 @@ namespace SomniumView.Apps
             get => _trainDataManager;
         }
 
+        public TrainParameters TrainParameters
+        {
+            set => UpdateProperty(ref _trainParameters, value);
+            get => _trainParameters;
+        }
+
         public ICommand OpenWorkFolderCmd { set; get; }
         public ICommand LoadTrainDataSetsCmd { set; get; }
 
+        public ICommand AddLayerCmd { set; get; }
+        public ICommand ClearLayerCmd { set; get; }
+        public ICommand DeleteLayerCmd { set; get; }
 
 
         private void LoadInitialInfo()
         {
             DataReaders = DataReader.GetDataReaders();
+            TrainParameters = new TrainParameters();
         }
 
         private void LoadCommands()
         {
             OpenWorkFolderCmd = new RelayCommand(OpenWorkFolderExecute);
             LoadTrainDataSetsCmd = new RelayCommand(LoadTrainDataSets);
+            AddLayerCmd = new RelayCommand(AppendDefaultLayer);
+            ClearLayerCmd = new RelayCommand(ClearLayer);
         }
+
 
         public void OpenWorkFolderExecute()
         {
@@ -65,8 +94,15 @@ namespace SomniumView.Apps
             TrainDataManager = new TrainDataManager(WorkFolder, new ResizeDigitsDataReader().ReadStreamData);
         }
 
+        public void AppendDefaultLayer()
+        {
+            TrainParameters.AppendDefaultLayer();
+        }
 
-
+        public void ClearLayer()
+        {
+            TrainParameters.ClearLayer();
+        }
 
         #region
 

@@ -15,6 +15,7 @@ namespace Somnium.Func
             var variance = expected.Zip(estimated, (a, b) => Math.Pow(a - b, 2)).Sum() / 2;
             return variance;
         }
+
     }
 
     [Serializable]

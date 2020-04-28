@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using Somnium.Data;
 using Somnium.Kernel;
 
 namespace Somnium.Core
@@ -20,49 +19,41 @@ namespace Somnium.Core
         }
 
 
-
         public LayerNetManager(TrainDataManager trainDataManager, TrainParameters trainParameters)
         {
             LayerNet = new List<Layer>();
-            InputDataShape = trainDataManager.DataShapeIn;
-            OutputDataShape = trainDataManager.DataShapeOut;
-            LearningRate = trainParameters.LearningRate;
-            CreateLayNet(new LayNetParameter());
-        }
-
-        public LayerNetManager(TrainDataManager trainDataManager, TrainParameters trainParameters,
-            LayNetParameter layNetParameter)
-        {
-            LayerNet = new List<Layer>();
-            // Loading information from data manager
             LabelMap = trainDataManager.LabelMap;
             InputDataShape = trainDataManager.DataShapeIn;
             OutputDataShape = trainDataManager.DataShapeOut;
             LearningRate = trainParameters.LearningRate;
-            CreateLayNet(layNetParameter);
+            CreateLayNet(trainParameters);
         }
 
         public LabelMap LabelMap { set; get; }
         public List<Layer> LayerNet { set; get; }
         public double LearningRate { get; }
-
         private DataShape InputDataShape { get; }
         private int OutputDataShape { get; }
 
 
-        public void CreateLayNet(LayNetParameter layNetParameter)
+        public void CreateLayNet(TrainParameters layNetParameter)
         {
             LayerNet = new List<Layer>();
             var inputLayer = new LayerInput(InputDataShape) {LayerIndex = 0};
             LayerNet.Add(inputLayer);
-            layNetParameter.FullConnectLayer.ToList().ForEach(a =>
+            layNetParameter.InterLayerStructs.ToList().ForEach(a =>
             {
-                var dataShape = LayerNet.Last().ShapeOut;
-                var fullConnectedLayer = new LayerFullConnected(dataShape, a)
+                switch (a.LayerType)
                 {
-                    LayerIndex = LayerNet.Count
-                };
-                LayerNet.Add(fullConnectedLayer);
+                    case LayerType.FullConnectLayer:
+                        var dataShape = LayerNet.Last().ShapeOut;
+                        var fullConnectedLayer = new LayerFullConnected(dataShape, a.NeureCount)
+                        {
+                            LayerIndex = LayerNet.Count
+                        };
+                        LayerNet.Add(fullConnectedLayer);
+                        break;
+                }
             });
             var outputLayer = new LayerOutput(LayerNet.Last().ShapeOut, OutputDataShape)
             {
@@ -91,11 +82,5 @@ namespace Somnium.Core
 
     }
 
-    /// <summary>
-    /// The LayNet Parameters
-    /// </summary>
-    public class LayNetParameter
-    {
-        public int[] FullConnectLayer { set; get; } = new int[0];
-    }
+ 
 }

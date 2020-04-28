@@ -6,6 +6,7 @@ using OpenCvSharp;
 using Somnium.Core;
 using Somnium.Data;
 using Somnium.Func;
+using Somnium.Kernel;
 using Somnium.Train;
 
 namespace Console
@@ -31,6 +32,7 @@ namespace Console
                 CostType = CostType.Basic,
                 LikeliHoodType = LikeliHoodType.SoftMax
             };
+            trainParameters.AddLayer(LayerType.FullConnectLayer,32);
 
             //// 创建训练
             var train = new DeepLeaningModel(trainParameters);
@@ -40,13 +42,9 @@ namespace Console
             trainDataManager.Binding(trainParameters);
 
             // 创建神经网络层
-            var layNet = new LayerNetManager(trainDataManager, trainParameters,
-                new LayNetParameter
-                {
-                    FullConnectLayer = new[] {16}
-                });
+            var layNet = new LayerNetManager(trainDataManager, trainParameters);
 
-            // 执行训练
+                // 执行训练
             train.ExecuteTrain(layNet, trainDataManager);
         }
 

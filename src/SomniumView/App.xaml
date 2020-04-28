@@ -1,7 +1,9 @@
 ﻿<Application x:Class="SomniumView.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:SomniumView"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:func="clr-namespace:Somnium.Func;assembly=Somnium"
+             xmlns:kernel="clr-namespace:Somnium.Kernel;assembly=Somnium"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -32,6 +34,32 @@
                 <GradientStop Color="White" Offset="0"/>
                 <GradientStop Color="#848589" Offset="3"/>
             </LinearGradientBrush>
+
+
+
+            <ObjectDataProvider x:Key="CostTypeValues"
+                                MethodName="GetValues"
+                                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="func:CostType"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider x:Key="LikeliHoodTypeValues"
+                                MethodName="GetValues"
+                                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="func:LikeliHoodType"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
+            <ObjectDataProvider x:Key="LayerTypeValues"
+                                MethodName="GetValues"
+                                ObjectType="{x:Type system:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="kernel:LayerType"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
 
         </ResourceDictionary>
     </Application.Resources>

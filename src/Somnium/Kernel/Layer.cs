@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
+using Somnium.Func;
 
 namespace Somnium.Kernel
 {
@@ -88,5 +92,26 @@ namespace Somnium.Kernel
         }
 
         #endregion
+    }
+
+
+    public class LayerStruct
+    {
+        public LayerStruct(LayerType layerType, int neureCount)
+        {
+            LayerType = layerType;
+            NeureCount = neureCount;
+        }
+
+        public LayerType LayerType { set; get; }
+        public int NeureCount { set; get; }
+        public int Index { set; get; }
+
+    }
+
+    public enum LayerType
+    {
+        FullConnectLayer,
+        EmptyLayer
     }
 }

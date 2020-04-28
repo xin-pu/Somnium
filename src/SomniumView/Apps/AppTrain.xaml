@@ -6,6 +6,45 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              MinWidth="1300" MinHeight="700"
              mc:Ignorable="d">
+   
+    <UserControl.Resources>
+
+        <Style x:Key="LayStructView" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" 
+                                BorderBrush="Gray">
+                            <DockPanel  VerticalAlignment="Center">
+                                <TextBlock DockPanel.Dock="Left" Width="40"
+                                           Style="{DynamicResource MyTextBlock}"
+                                           Text="{Binding Index}"/>
+
+                                <Grid Width="200">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <ComboBox Grid.Row="0" Margin="2"
+                                              mah:TextBoxHelper.Watermark="Select The Cost Method."
+                                              ItemsSource="{Binding Source={StaticResource LayerTypeValues}}"
+                                              SelectedValue="{Binding LayerType,Mode=TwoWay}"/>
+
+                                    <mah:NumericUpDown Grid.Row="1"  Margin="2"
+                                                       TextAlignment="Left"
+                                                       Minimum="1"
+                                                       Maximum="100"
+                                                       Value="{Binding NeureCount,Mode=TwoWay}"/>
+                                </Grid>
+
+                            </DockPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom" Height="80" 
                        BorderThickness="0,1,00,0" BorderBrush="{DynamicResource GrayBrush1}"
@@ -53,8 +92,7 @@
                         <ComboBox Grid.Row="1" Height="28" Margin="0,3"
                                   mah:TextBoxHelper.Watermark="Select the method of Read DataSet."
                                   ItemsSource="{Binding DataReaders}"
-                                  SelectedItem="{Binding SelectedDataReader}">
-                        </ComboBox>
+                                  SelectedItem="{Binding SelectedDataReader}"/>
 
                         <StackPanel Grid.Row="2" Height="28" Margin="0,3"
                                     Orientation="Horizontal"
@@ -123,21 +161,27 @@
                                        Text="Out Levels:"/>
 
                             <mah:NumericUpDown Grid.Row="0" Grid.Column="1" Margin="5,2"
+                                               TextAlignment="Left"
                                                IsReadOnly="True"
                                                Value="{Binding FileCount}"/>
                             <mah:NumericUpDown Grid.Row="1" Grid.Column="1" Margin="5,2"
+                                               TextAlignment="Left"
                                                IsReadOnly="True"
                                                Value="{Binding DataShapeIn.Rows}"/>
                             <mah:NumericUpDown Grid.Row="2" Grid.Column="1" Margin="5,2"
+                                               TextAlignment="Left"
                                                IsReadOnly="True"
                                                Value="{Binding DataShapeIn.Columns}"/>
                             <mah:NumericUpDown Grid.Row="3" Grid.Column="1" Margin="5,2"
+                                               TextAlignment="Left"
                                                IsReadOnly="True"
                                                Value="{Binding DataShapeIn.Layers}"/>
                             <mah:NumericUpDown Grid.Row="4" Grid.Column="1" Margin="5,2"
+                                               TextAlignment="Left"
                                                IsReadOnly="True"
                                                Value="{Binding DataShapeIn.Levels}"/>
                             <mah:NumericUpDown Grid.Row="5" Grid.Column="1" Margin="5,2"
+                                               TextAlignment="Left"
                                                IsReadOnly="True"
                                                Value="{Binding DataShapeOut}"/>
 
@@ -148,7 +192,109 @@
                     </StackPanel>
                 </DockPanel>
             </GroupBox>
-            <GroupBox Header="Train" Margin="2">
+
+            <GroupBox DockPanel.Dock="Left" Width="300" DataContext="{Binding AppTrainModel}"
+                      Margin="2" Padding="0" 
+                      BorderThickness="1"
+                      BorderBrush="Gray"
+                      Background="Gray">
+                <GroupBox.Header>
+                    <StackPanel Height="25" Orientation="Horizontal">
+                        <TextBlock Style="{DynamicResource MyTextBlock}" Text="Train Parameters"/>
+                    </StackPanel>
+                </GroupBox.Header>
+
+                <DockPanel  Margin="5">
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.6*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" 
+                                   Style="{DynamicResource MyTextBlock}"
+                                   FontSize="12"
+                                   HorizontalAlignment="Right"
+                                   Text="Learning Rate:"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" 
+                                   Style="{DynamicResource MyTextBlock}"
+                                   FontSize="12"
+                                   HorizontalAlignment="Right"
+                                   Text="Train Count:"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" 
+                                   Style="{DynamicResource MyTextBlock}"
+                                   FontSize="12"
+                                   HorizontalAlignment="Right"
+                                   Text="Cost Type:"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" 
+                                   Style="{DynamicResource MyTextBlock}"
+                                   FontSize="12"
+                                   HorizontalAlignment="Right"
+                                   Text="LikeliHoodType:"/>
+
+                        <mah:NumericUpDown Grid.Row="0" Grid.Column="1" Margin="5,2"
+                                           TextAlignment="Left"
+                                           Interval="0.0001"
+                                           Minimum="0.0001"
+                                           Maximum="0.5"
+                                           Speedup="True"
+                                           Value="{Binding TrainParameters.LearningRate}"/>
+
+                        <mah:NumericUpDown Grid.Row="1" Grid.Column="1" Margin="5,2"
+                                           TextAlignment="Left"
+                                           Interval="10"
+                                           Minimum="10"
+                                           Maximum="100000"
+                                           Speedup="True"
+                                           Value="{Binding TrainParameters.TrainCountLimit}"/>
+
+                        <ComboBox Grid.Row="2" Grid.Column="1"  Margin="5,2"
+                                  mah:TextBoxHelper.Watermark="Select The Cost Method."
+                                  ItemsSource="{Binding Source={StaticResource CostTypeValues}}"
+                                  SelectedValue="{Binding TrainParameters.CostType}"/>
+
+                        <ComboBox Grid.Row="3" Grid.Column="1" Margin="5,2"
+                                  mah:TextBoxHelper.Watermark="Select The Likeli Hood Method."
+                                  ItemsSource="{Binding Source={StaticResource LikeliHoodTypeValues}}"
+                                  SelectedValue="{Binding TrainParameters.LikeliHoodType}"/>
+                    </Grid>
+                    
+                    <TextBlock DockPanel.Dock="Top" 
+                               Style="{DynamicResource MyTextBlock}" Text="Lay Nets"
+                               FontSize="18"
+                               Foreground="{DynamicResource AccentBaseColorBrush}"/>
+
+                    <Separator Height="1" DockPanel.Dock="Top"
+                               BorderBrush="Gray"/>
+
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Content="Append Layer" Margin="2"
+                                Style="{DynamicResource MetroFlatButton}"
+                                Command="{Binding AddLayerCmd}"/>
+                        <Button Content="Clear" Margin="2"
+                                Style="{DynamicResource MetroFlatButton}"
+                                CommandParameter="{Binding}"
+                                Command="{Binding ClearLayerCmd}"/>
+                    </StackPanel>
+
+                    <ListView BorderThickness="0" Margin="2"
+                              ItemContainerStyle="{DynamicResource LayStructView}"
+                              SelectionMode="Single"
+                              ItemsSource="{Binding TrainParameters.InterLayerStructs}"/>
+                  
+                </DockPanel>
+            </GroupBox>
+
+            <GroupBox Header="Trains" Margin="2">
 
             </GroupBox>
         </DockPanel>
