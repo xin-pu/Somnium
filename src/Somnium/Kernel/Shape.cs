@@ -33,11 +33,12 @@ namespace Somnium.Kernel
             Rows = rows;
             Columns = columns;
             Layers = layers;
+            Levels = Rows * Columns * Layers;
         }
 
         public int Rows { get; set; }
         public int Columns { get; set; }
         public int Layers { get; set; }
-        public int Levels => Rows * Columns * Layers;
+        public int Levels { get; set; }
     }
 }

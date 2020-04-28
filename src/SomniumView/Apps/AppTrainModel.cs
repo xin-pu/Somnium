@@ -1,21 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using JetBrains.Annotations;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Somnium.Core;
+using Somnium.Data;
 
 namespace SomniumView.Apps
 {
-    public class MTrainApp : INotifyPropertyChanged
+    public class AppTrainModel : INotifyPropertyChanged
     {
 
         private string _workFolder;
+        private TrainDataManager _trainDataManager;
 
-        public MTrainApp()
+        public AppTrainModel()
         {
             LoadCommands();
+            LoadInitialInfo();
         }
 
 
@@ -24,16 +28,24 @@ namespace SomniumView.Apps
             set => UpdateProperty(ref _workFolder, value);
             get => _workFolder;
         }
-        public List<string> LoadDataMethod { set; get; }
-        public string SelectedLoadDataMethod { set; get; }
+        public List<Type> DataReaders { set; get; }
+        public Type SelectedDataReader { set; get; }
 
-        public TrainDataManager TrainDataManager { set; get; }
+        public TrainDataManager TrainDataManager
+        {
+            set => UpdateProperty(ref _trainDataManager, value);
+            get => _trainDataManager;
+        }
 
         public ICommand OpenWorkFolderCmd { set; get; }
         public ICommand LoadTrainDataSetsCmd { set; get; }
 
 
 
+        private void LoadInitialInfo()
+        {
+            DataReaders = DataReader.GetDataReaders();
+        }
 
         private void LoadCommands()
         {
@@ -50,7 +62,7 @@ namespace SomniumView.Apps
 
         public void LoadTrainDataSets()
         {
-
+            TrainDataManager = new TrainDataManager(WorkFolder, new ResizeDigitsDataReader().ReadStreamData);
         }
 
 

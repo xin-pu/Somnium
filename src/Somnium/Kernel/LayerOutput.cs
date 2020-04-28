@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
-using Somnium.Train;
 
 namespace Somnium.Kernel
 {

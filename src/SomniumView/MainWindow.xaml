@@ -28,6 +28,6 @@
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
     <DockPanel>
-        <apps:TrainApp/>
+        <apps:AppTrain/>
     </DockPanel>
 </mah:MetroWindow>

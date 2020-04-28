@@ -78,7 +78,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="Apps\TrainApp.xaml">
+    <Page Include="Apps\AppTrain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -90,10 +90,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Apps\MTrainApp.cs" />
+    <Compile Include="Apps\AppTrainModel.cs" />
     <Compile Include="Apps\RelayCommand.cs" />
-    <Compile Include="Apps\TrainApp.xaml.cs">
-      <DependentUpon>TrainApp.xaml</DependentUpon>
+    <Compile Include="Apps\AppTrain.xaml.cs">
+      <DependentUpon>AppTrain.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

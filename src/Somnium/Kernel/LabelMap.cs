@@ -2,7 +2,7 @@
 using System.Linq;
 using Somnium.Utility;
 
-namespace Somnium.Data
+namespace Somnium.Kernel
 {
     public class LabelMap
     {

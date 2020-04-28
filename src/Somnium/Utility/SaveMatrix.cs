@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace Somnium.Data
+namespace Somnium.Utility
 {
     public class SaveMatrix
     {

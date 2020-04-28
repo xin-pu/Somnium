@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
-using Somnium.Data;
 using Somnium.Kernel;
 
 namespace Somnium.Core
@@ -16,6 +15,7 @@ namespace Somnium.Core
         private LabelMap _labelMap;
         private List<StreamData> _streamDatas;
         private bool _formatStatus;
+        private bool _isReading;
         private DataShape _dataShapeIn;
         private int _dataShapeOut;
         private IEnumerable<string> _labelsOut;
@@ -35,6 +35,12 @@ namespace Somnium.Core
         {
             set => UpdateProperty(ref _workFolder, value);
             get => _workFolder;
+        }
+
+        public bool IsReading
+        {
+            set => UpdateProperty(ref _isReading, value);
+            get => _isReading;
         }
 
         public DataShape DataShapeIn
@@ -94,7 +100,7 @@ namespace Somnium.Core
         {
             var dir = new DirectoryInfo(WorkFolder);
             if (!dir.Exists) return;
-
+            IsReading = true;
             StreamDatas = dir.GetFiles()
                 .Where(path => path.Extension == ".txt")
                 .AsParallel()
@@ -103,7 +109,7 @@ namespace Somnium.Core
                     var inputLayer = GetStreamData?.Invoke(path.FullName);
                     return inputLayer;
                 }).ToList();
-
+            IsReading = false;
         }
 
         private void FilterDataShape(List<StreamData> streamDatas)

@@ -36,7 +36,7 @@ namespace Console
             var train = new DeepLeaningModel(trainParameters);
 
             // 根据数据目录,以及读取文件流的方法，加载数据集
-            var trainDataManager = new TrainDataManager(workFolder, new DigitsRead().ReadStreamData);
+            var trainDataManager = new TrainDataManager(workFolder, new ResizeDigitsDataReader().ReadStreamData);
             trainDataManager.Binding(trainParameters);
 
             // 创建神经网络层
