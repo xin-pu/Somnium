@@ -22,6 +22,7 @@ namespace Somnium.Core
         public LayerNetManager(TrainDataManager trainDataManager, TrainParameters trainParameters)
         {
             LayerNet = new List<Layer>();
+            TrainParameters = trainParameters;
             LabelMap = trainDataManager.LabelMap;
             InputDataShape = trainDataManager.DataShapeIn;
             OutputDataShape = trainDataManager.DataShapeOut;
@@ -34,7 +35,7 @@ namespace Somnium.Core
         public double LearningRate { get; }
         private DataShape InputDataShape { get; }
         private int OutputDataShape { get; }
-
+        private TrainParameters TrainParameters { set; get; }
 
         public void CreateLayNet(TrainParameters layNetParameter)
         {

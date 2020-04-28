@@ -8,15 +8,32 @@ using JetBrains.Annotations;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Somnium.Core;
 using Somnium.Data;
+using Somnium.Learner;
+using Somnium.Utility;
 
 namespace SomniumView.Apps
 {
     public class AppTrainModel : INotifyPropertyChanged
     {
 
+
+        #region ICommands
+
+        public ICommand OpenWorkFolderCmd { set; get; }
+        public ICommand LoadTrainDataSetsCmd { set; get; }
+        public ICommand AddLayerCmd { set; get; }
+        public ICommand ClearLayerCmd { set; get; }
+        public ICommand DeleteLayerCmd { set; get; }
+        public ICommand CreateLearnerCmd { set; get; }
+
+        #endregion
+
+
         private string _workFolder;
         private TrainDataManager _trainDataManager;
         private TrainParameters _trainParameters;
+        private AsyncObservableCollection<DeepLearner> _deepLearners;
+
         private List<Type> _dataReaders;
 
         public AppTrainModel()
@@ -45,8 +62,6 @@ namespace SomniumView.Apps
         public Type SelectedDataReader { set; get; }
 
 
-
-
         public TrainDataManager TrainDataManager
         {
             set => UpdateProperty(ref _trainDataManager, value);
@@ -59,26 +74,27 @@ namespace SomniumView.Apps
             get => _trainParameters;
         }
 
-        public ICommand OpenWorkFolderCmd { set; get; }
-        public ICommand LoadTrainDataSetsCmd { set; get; }
-
-        public ICommand AddLayerCmd { set; get; }
-        public ICommand ClearLayerCmd { set; get; }
-        public ICommand DeleteLayerCmd { set; get; }
+        public AsyncObservableCollection<DeepLearner> DeepLearners
+        {
+            set => UpdateProperty(ref _deepLearners, value);
+            get => _deepLearners;
+        }
 
 
         private void LoadInitialInfo()
         {
             DataReaders = DataReader.GetDataReaders();
             TrainParameters = new TrainParameters();
+            DeepLearners = new AsyncObservableCollection<DeepLearner>();
         }
 
         private void LoadCommands()
         {
             OpenWorkFolderCmd = new RelayCommand(OpenWorkFolderExecute);
-            LoadTrainDataSetsCmd = new RelayCommand(LoadTrainDataSets);
-            AddLayerCmd = new RelayCommand(AppendDefaultLayer);
-            ClearLayerCmd = new RelayCommand(ClearLayer);
+            LoadTrainDataSetsCmd = new RelayCommand(LoadTrainDataSetsExecute);
+            AddLayerCmd = new RelayCommand(AppendDefaultLayerExecute);
+            ClearLayerCmd = new RelayCommand(ClearLayerExecute);
+            CreateLearnerCmd=new RelayCommand(CreateLeanerExecute);
         }
 
 
@@ -89,19 +105,34 @@ namespace SomniumView.Apps
             if (res == CommonFileDialogResult.Ok) WorkFolder = folderBrowserDialog.FileName;
         }
 
-        public void LoadTrainDataSets()
+        public void LoadTrainDataSetsExecute()
         {
-            TrainDataManager = new TrainDataManager(WorkFolder, new ResizeDigitsDataReader().ReadStreamData);
+            TrainDataManager = new TrainDataManager(WorkFolder,
+                new ResizeDigitsDataReader().ReadStreamData);
         }
 
-        public void AppendDefaultLayer()
+        public void AppendDefaultLayerExecute()
         {
             TrainParameters.AppendDefaultLayer();
         }
 
-        public void ClearLayer()
+        public void ClearLayerExecute()
         {
             TrainParameters.ClearLayer();
+        }
+
+        public void CreateLeanerExecute()
+        {
+            // Clone a new trainParameters.
+            var trainParameters = (TrainParameters) TrainParameters.Clone();
+            var trainDataManager = (TrainDataManager) TrainDataManager.Clone();
+            trainDataManager.Binding(trainParameters);
+
+            var deepLearner = new DeepLearner(trainDataManager, trainParameters);
+
+
+            DeepLearners.Add(deepLearner);
+            //deepLearner.ExecuteTrain(layNet, TrainDataManager);
         }
 
         #region

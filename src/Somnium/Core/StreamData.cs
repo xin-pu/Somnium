@@ -17,9 +17,9 @@ namespace Somnium.Core
     public class StreamData : INotifyPropertyChanged
     {
 
-        public static Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
-        public static Func<IEnumerable<double>, IEnumerable<double>> GetLikelihood;
-        public static Func<int, string> GetEstimateLabel;
+        public Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
+        public Func<IEnumerable<double>, IEnumerable<double>> GetLikelihood;
+        public Func<int, string> GetEstimateLabel;
 
 
         private Matrix _matrix;

@@ -10,7 +10,8 @@ using Somnium.Utility;
 
 namespace Somnium.Core
 {
-    public class TrainParameters : INotifyPropertyChanged
+
+    public class TrainParameters : INotifyPropertyChanged, ICloneable
     {
         #region Function
 
@@ -100,6 +101,18 @@ namespace Somnium.Core
 
         }
 
+        public object Clone()
+        {
+            return new TrainParameters
+            {
+                LearningRate = LearningRate,
+                TrainCountLimit = TrainCountLimit,
+                CostType = CostType,
+                LikeliHoodType = LikeliHoodType,
+                InterLayerStructs = InterLayerStructs
+            };
+        }
+
         #region
 
         public void UpdateProperty<T>(ref T properValue, T newValue, [CallerMemberName] string propertyName = "")
@@ -123,6 +136,8 @@ namespace Somnium.Core
         }
 
         #endregion
+
+
     }
 
 

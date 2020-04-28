@@ -4,12 +4,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using Somnium.Kernel;
 
 namespace Somnium.Core
 {
-    public class TrainDataManager : INotifyPropertyChanged
+    public class TrainDataManager : INotifyPropertyChanged,ICloneable
     {
 
         private LabelMap _labelMap;
@@ -79,6 +80,11 @@ namespace Somnium.Core
             get => _streamDatas;
         }
 
+        private TrainDataManager()
+        {
+
+        }
+
         public TrainDataManager(string workFolder, Func<string, StreamData> getStream)
         {
             WorkFolder = workFolder;
@@ -90,9 +96,12 @@ namespace Somnium.Core
 
         public void Binding(TrainParameters trainParameters)
         {
-            StreamData.GetCost = trainParameters.GetCost;
-            StreamData.GetLikelihood = trainParameters.GetLikelihood;
-            StreamData.GetEstimateLabel = LabelMap.GetLabel;
+            StreamDatas.ForEach(a =>
+            {
+                a.GetCost = trainParameters.GetCost;
+                a.GetLikelihood = trainParameters.GetLikelihood;
+                a.GetEstimateLabel = LabelMap.GetLabel;
+            });
         }
 
 
@@ -131,7 +140,20 @@ namespace Somnium.Core
 
         }
 
-
+        public object Clone()
+        {
+            return new TrainDataManager
+            {
+                StreamDatas = StreamDatas,
+                LabelMap = LabelMap,
+                DataShapeIn = DataShapeIn,
+                DataShapeOut = DataShapeOut,
+                LabelsOut = LabelsOut,
+                WorkFolder = WorkFolder,
+                FileCount = FileCount,
+                GetStreamData = GetStreamData
+            };
+        }
 
 
         #region

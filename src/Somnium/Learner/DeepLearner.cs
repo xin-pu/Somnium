@@ -8,11 +8,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using Somnium.Core;
 
-namespace Somnium.Train
+namespace Somnium.Learner
 {
-    public class DeepLeaningModel : ICloneable, INotifyPropertyChanged
+    public class DeepLearner : ICloneable, INotifyPropertyChanged
     {
         private TrainParameters _trainParameters;
+        private LayerNetManager _layerNetManager;
         private string _name;
         private DateTime _createDateTime;
         private DateTime _startTime;
@@ -80,19 +81,26 @@ namespace Somnium.Train
             get => _correctRates;
         }
 
+        public LayerNetManager LayerNetManager
+        {
+            set => UpdateProperty(ref _layerNetManager, value);
+            get => _layerNetManager;
+        }
+
     
         /// <summary>
         /// We will Create a Train with Default Value
         /// </summary>
-        public DeepLeaningModel(TrainParameters trainParameters)
+        public DeepLearner(TrainDataManager trainDataManager, TrainParameters trainParameters)
         {
+            LayerNetManager = new LayerNetManager(trainDataManager, trainParameters); 
             TrainParameters = trainParameters;
             CreateTime = DateTime.Now;
-            Name = $"Train_{CreateTime:hh_mm_ss}";
+            Name = $"Train_1";
         }
 
 
-        public virtual void ExecuteTrain(LayerNetManager layerNetNet, TrainDataManager trainDataManager)
+        public virtual void ExecuteTrain(TrainDataManager trainDataManager)
         {
             var inputStreams = trainDataManager.StreamDatas;
             StartTime = DateTime.Now;
@@ -102,18 +110,18 @@ namespace Somnium.Train
             for (TrainCountCurrent = 1; TrainCountCurrent <= TrainParameters.TrainCountLimit; TrainCountCurrent++)
             {
                 //以神经网络层更新数据层
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(layerNetNet));
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(LayerNetManager));
 
                 CorrectRateCurrent = inputStreams.Count(a => a.IsMeetExpect) * 1.0 / inputStreams.Count;
                 CorrectRates.Add(CorrectRateCurrent);
                 Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent:P}");
 
                 //反向传播误差
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(layerNetNet));
+                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(LayerNetManager));
 
                 //从数据层收集误差并更新神经网络层的神经元
-                layerNetNet.UpdateWeight();
-                layerNetNet.Serializer("D:\\test.xml");
+                LayerNetManager.UpdateWeight();
+                LayerNetManager.Serializer("D:\\test.xml");
             }
 
             StopTime = DateTime.Now;

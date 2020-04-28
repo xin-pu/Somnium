@@ -7,7 +7,7 @@ using Somnium.Core;
 using Somnium.Data;
 using Somnium.Func;
 using Somnium.Kernel;
-using Somnium.Train;
+using Somnium.Learner;
 
 namespace Console
 {
@@ -34,18 +34,17 @@ namespace Console
             };
             trainParameters.AddLayer(LayerType.FullConnectLayer,32);
 
-            //// 创建训练
-            var train = new DeepLeaningModel(trainParameters);
+          
 
             // 根据数据目录,以及读取文件流的方法，加载数据集
             var trainDataManager = new TrainDataManager(workFolder, new ResizeDigitsDataReader().ReadStreamData);
             trainDataManager.Binding(trainParameters);
 
-            // 创建神经网络层
-            var layNet = new LayerNetManager(trainDataManager, trainParameters);
+            //// 创建训练
+            var train = new DeepLearner(trainDataManager, trainParameters);
 
-                // 执行训练
-            train.ExecuteTrain(layNet, trainDataManager);
+            // 执行训练
+            train.ExecuteTrain(trainDataManager);
         }
 
 
