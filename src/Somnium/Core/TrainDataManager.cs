@@ -13,8 +13,6 @@ namespace Somnium.Core
     public class TrainDataManager : INotifyPropertyChanged
     {
 
-        public Func<string, StreamData> GetStreamData;
-
         private LabelMap _labelMap;
         private List<StreamData> _streamDatas;
         private bool _formatStatus;
@@ -24,6 +22,8 @@ namespace Somnium.Core
         private string _workFolder;
         private int _fileCount;
 
+
+        public Func<string, StreamData> GetStreamData { set; get; }
 
         public LabelMap LabelMap
         {
@@ -73,8 +73,6 @@ namespace Somnium.Core
             get => _streamDatas;
         }
 
-
-
         public TrainDataManager(string workFolder, Func<string, StreamData> getStream)
         {
             WorkFolder = workFolder;
@@ -82,6 +80,7 @@ namespace Somnium.Core
             LoadStreamDatas();
             FilterDataShape(StreamDatas);
         }
+
 
         public void Binding(TrainParameters trainParameters)
         {

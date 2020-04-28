@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Double;
 using OpenCvSharp;
 using Somnium.Core;
 using Somnium.Data;
@@ -13,7 +12,7 @@ namespace Console
 {
     class Program
     {
-        private static string workFolder = @"D:\Document Code\Code Somnium\Somnium\datas\trainingDigits";
+        private static string workFolder = @"D:\Document Code\Code Somnium\Somnium\datas\resizeDigits";
 
         static void Main()
         {
@@ -27,8 +26,8 @@ namespace Console
             // 初始化训练参数
             var trainParameters = new TrainParameters
             {
-                LearningRate = 0.2,
-                TrainCountLimit = 10000,
+                LearningRate = 0.005,
+                TrainCountLimit = 100,
                 CostType = CostType.Basic,
                 LikeliHoodType = LikeliHoodType.SoftMax
             };
@@ -37,8 +36,7 @@ namespace Console
             var train = new DeepLeaningModel(trainParameters);
 
             // 根据数据目录,以及读取文件流的方法，加载数据集
-            const string workFolder = @"D:\Document Code\Code Somnium\Somnium\datas\resizeDigits";
-            var trainDataManager = new TrainDataManager(workFolder, new DigitsRead().ReadDigitsAsInputLayer);
+            var trainDataManager = new TrainDataManager(workFolder, new DigitsRead().ReadStreamData);
             trainDataManager.Binding(trainParameters);
 
             // 创建神经网络层
@@ -52,47 +50,7 @@ namespace Console
             train.ExecuteTrain(layNet, trainDataManager);
         }
 
-        public static StreamData GetStreamDataFromFolder(string path)
-        {
-            using (var streamRead = new StreamReader(path))
-            {
-                var allData = new List<double>();
-                var allLine = streamRead.ReadToEnd();
-                var lines = allLine.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
-                lines.ForEach(line =>
-                {
-                    allData.AddRange(line.ToCharArray().Select(a => double.Parse(a.ToString())));
-                });
 
-                var matrix = new DenseMatrix(allData.Count, 1);
-                matrix.SetColumn(0, allData.ToArray());
-                var actual = new FileInfo(path).Name.Split('_').First();
-                return new StreamData
-                {
-                    InputDataMatrix = matrix,
-                    ExpectedLabel = actual
-                };
-            }
-        }
-
-        public static StreamData GetStreamDataFromResizeFolder(string path)
-        {
-            using (var streamRead = new StreamReader(path))
-            {
-                var allLine = streamRead.ReadToEnd();
-                var lines = allLine.Split(new[] { ','}, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(double.Parse).ToList();
-                
-                var matrix = new DenseMatrix(lines.Count, 1);
-                matrix.SetColumn(0, lines.ToArray());
-                var actual = new FileInfo(path).Name.Split('_').First();
-                return new StreamData
-                {
-                    InputDataMatrix = matrix,
-                    ExpectedLabel = actual
-                };
-            }
-        }
 
 
         private static void AllPreTreatment(string workFolder, string newFolder)

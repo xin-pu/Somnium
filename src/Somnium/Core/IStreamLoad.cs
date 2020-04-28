@@ -2,7 +2,7 @@
 {
     public interface IStreamLoad
     {
-        StreamData ReadDigitsAsInputLayer(string path);
+        StreamData ReadStreamData(string path);
     }
     
 }

@@ -1,13 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Somnium.Utility;
 
 namespace Somnium.Data
 {
     public class LabelMap
     {
-        private Dictionary<string, int> Dict { set; get; }
+        public SerializeDictionary<string, int> Dict { set; get; }
 
         public int Count => Dict.Count;
+
+        public LabelMap()
+        {
+
+        }
 
         public LabelMap(IList<string> labels)
         {
@@ -37,10 +43,9 @@ namespace Somnium.Data
             return array;
         }
 
-
-        private void CreateMap(IList<string> labels)
+        private void CreateMap(IEnumerable<string> labels)
         {
-            Dict = new Dictionary<string, int>();
+            Dict = new SerializeDictionary<string, int>();
             var i = 0;
             labels.Distinct().ToList().ForEach(label =>
             {

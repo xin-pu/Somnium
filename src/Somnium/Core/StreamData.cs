@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra.Double;
-using Somnium.Func;
 using Somnium.Kernel;
 
 namespace Somnium.Core
@@ -21,38 +20,6 @@ namespace Somnium.Core
         public static Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
         public static Func<IEnumerable<double>, IEnumerable<double>> GetLikelihood;
         public static Func<int, string> GetEstimateLabel;
-
-
-        public static CostType CostType
-        {
-            set
-            {
-                _costType = value;
-                switch (value)
-                {
-                    default:
-                        GetCost = Cost.GetVariance;
-                        break;
-                }
-            }
-            get => _costType;
-        }
-        public static LikeliHoodType LikeliHoodType
-        {
-            set
-            {
-                _likeliHoodType = value;
-                switch (value)
-                {
-                    default:
-                        GetLikelihood = LikeliHood.SoftMax;
-                        break;
-                }
-            }
-            get => _likeliHoodType;
-        }
-        private static CostType _costType = CostType.Basic;
-        private static LikeliHoodType _likeliHoodType = LikeliHoodType.SoftMax;
 
 
         private Matrix _matrix;
@@ -81,6 +48,7 @@ namespace Somnium.Core
             set => UpdateProperty(ref _isMeetExpect, value);
             get => _isMeetExpect;
         }
+
         public double[] EstimateOut
         {
             set => UpdateProperty(ref _estimateOut, value);
@@ -102,11 +70,13 @@ namespace Somnium.Core
             set => UpdateProperty(ref _expectedOut, value);
             get => _expectedOut;
         }
+
         public string ExpectedLabel
         {
             set => UpdateProperty(ref _expectedLabel, value);
             get => _expectedLabel;
         }
+
         public double SquareError
         {
             set => UpdateProperty(ref _squareError, value);
@@ -114,12 +84,12 @@ namespace Somnium.Core
         }
 
 
-
-        public StreamData()
+        public StreamData(Matrix matrixData, string actual)
         {
             LayerDatas = new Dictionary<int, LayerData>();
+            InputDataMatrix = matrixData;
+            ExpectedLabel = actual;
         }
-
 
         public void ActivateLayerNet(LayerNetManager layerNet)
         {
@@ -176,8 +146,8 @@ namespace Somnium.Core
         }
 
 
-
         #region
+
         public void UpdateProperty<T>(ref T properValue, T newValue, [CallerMemberName] string propertyName = "")
         {
             if (Equals(properValue, newValue))

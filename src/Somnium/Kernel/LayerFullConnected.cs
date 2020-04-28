@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
@@ -133,6 +132,7 @@ namespace Somnium.Kernel
             using var fs = new FileStream(filename, FileMode.Open);
             return (LayerFullConnected) (new XmlSerializer(typeof(LayerFullConnected)).Deserialize(fs));
         }
+        
 
     }
 }

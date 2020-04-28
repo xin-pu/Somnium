@@ -7,6 +7,7 @@ using Somnium.Kernel;
 
 namespace Somnium.Core
 {
+    [XmlInclude(typeof(LabelMap))]
     [XmlInclude(typeof(LayerInput))]
     [XmlInclude(typeof(LayerOutput))]
     [XmlInclude(typeof(LayerFullConnected))]
