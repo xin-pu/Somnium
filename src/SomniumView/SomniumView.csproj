@@ -91,7 +91,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Apps\AppTrainModel.cs" />
-    <Compile Include="Apps\RelayCommand.cs" />
     <Compile Include="Apps\AppTrain.xaml.cs">
       <DependentUpon>AppTrain.xaml</DependentUpon>
     </Compile>
@@ -99,6 +98,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\MyButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\MyTextBlockStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

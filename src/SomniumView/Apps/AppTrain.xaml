@@ -17,14 +17,20 @@
                         <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" 
                                 BorderBrush="Gray">
                             <DockPanel  VerticalAlignment="Center">
-                                <TextBlock DockPanel.Dock="Left" Width="40"
+                                <Border Width="10" DockPanel.Dock="Left"
+                                        Background="{DynamicResource MyAccentBaseColor}"/>
+
+                                <TextBlock DockPanel.Dock="Left" Width="50"
                                            Style="{DynamicResource MyTextBlock}"
-                                           Text="{Binding Index}"/>
+                                           FontSize="30"
+                                           FontWeight="DemiBold"
+                                           Text="{Binding Index}"
+                                           TextDecorations="Underline"/>
 
                                 <Grid Width="200">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition></RowDefinition>
-                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
                                     </Grid.RowDefinitions>
                                     <ComboBox Grid.Row="0" Margin="2"
                                               mah:TextBoxHelper.Watermark="Select The Cost Method."
@@ -49,26 +55,64 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" Height="150"
-                                BorderBrush="Gray">
+                        <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" 
+                                Height="150"
+                                BorderBrush="{DynamicResource MyAccentBorderColor}">
                             <Grid>
-                                <ProgressBar Background="White" 
-                                             IsIndeterminate="True"
-                                             Opacity="0.3" Value="40"/>
+                                <mah:MetroProgressBar Background="{DynamicResource MyAccentBarColor}" 
+                                                      Foreground="{DynamicResource MyAccentBaseColor}"
+                                                      Style="{DynamicResource MahApps.Metro.Styles}"
+                                                      IsIndeterminate="False"
+                                                      Opacity="0.3" 
+                                                      Minimum="0"
+                                                      Maximum="{Binding TrainParameters.TrainCountLimit}"
+                                                      Value="{Binding TrainCountCurrent}"/>
                                 <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left" Width="100"
-                                               Style="{DynamicResource MyTextBlock}"
-                                               Text="{Binding Name}"/>
-                                    <Grid Margin="10">
+                                    <Grid DockPanel.Dock="Left"
+                                          HorizontalAlignment="Center"
+                                          Background="{DynamicResource MyAccentBaseColor}">
+                                        <Label Content="{Binding Name}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontWeight="DemiBold"
+                                                   Foreground="{DynamicResource MyAccentFontLightColor}">
+                                            <Label.LayoutTransform>
+                                                <RotateTransform Angle="270"/>
+                                            </Label.LayoutTransform>
+                                        </Label>
+                                    </Grid>
+
+                                    <wpf:Gauge Margin="5" Height="120" Width="120"
+                                               Uses360Mode="True"
+                                               From="0"
+                                               To="100"
+                                               HighFontSize="40"
+                                               InnerRadius="0"
+                                               Foreground="{DynamicResource WhiteBrush}"
+                                               GaugeBackground="{DynamicResource MyAccentBaseColor2}"
+                                               GaugeActiveFill="{DynamicResource MyAccentBaseColor}"
+                                               Value="{Binding CorrectRateCurrent}"
+                                               ContentStringFormat=""/>
+
+                                    <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Button Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
+                                                BorderBrush="{DynamicResource MyAccentBaseColor}"
+                                                BorderThickness="10"
+                                                Height="120" Width="120"
+                                                Command="{Binding TrainExecuteCmd}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+
+                                    <Grid Margin="10" HorizontalAlignment="Center">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="0.6*"></ColumnDefinition>
-                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="0.6*"/>
+                                            <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition></RowDefinition>
-                                            <RowDefinition></RowDefinition>
-                                            <RowDefinition></RowDefinition>
-                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Row="0" Grid.Column="0" 
@@ -97,19 +141,9 @@
                                                         SelectedTime="{Binding StopTime}" Background="Transparent"/>
                                     </Grid>
 
-                                    <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <Button Content="Training"/>
-                                        <Button Content="Cancel"/>
-                                    </StackPanel>
-                                    <wpf:Gauge Margin="5" Height="100" Width="100"
-                                               Uses360Mode="True"
-                                               Value="{Binding CorrectRateCurrent}"
-                                               From="0"
-                                               To="100"
-                                               HighFontSize="40"
-                                               InnerRadius="0"
-                                               Foreground="{DynamicResource WhiteBrush}"
-                                               GaugeBackground="{DynamicResource MyThemeColor}"/>
+
+                                 
+                                   
                                 </DockPanel>
                             </Grid>
                         </Border>
@@ -123,9 +157,15 @@
         <DockPanel >
             <StatusBar DockPanel.Dock="Bottom" Height="80" 
                        BorderThickness="0,1,00,0" BorderBrush="{DynamicResource GrayBrush1}"
-                       Background="{DynamicResource WhiteBrush}">
-                <Button Content="Create Learner" Style="{DynamicResource MetroFlatButton}"
-                        Command="{Binding CreateLearnerCmd}"/>
+                       Background="{DynamicResource WhiteBrush}"
+                       HorizontalAlignment="Center">
+
+                <Button Style="{StaticResource MyTextButton}"
+                        Content="&#xe61d;" 
+                        Command="{Binding CreateLearnerCmd}"
+                        Foreground="{DynamicResource MyAccentBaseColor2}"
+                        ToolTip="Create Learner"
+                        FontSize="25"/>
 
             </StatusBar>
 
@@ -156,7 +196,12 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBox Grid.Row="0" Height="50" Margin="0,3"
+                        <ComboBox Grid.Row="0" Height="28" Margin="0,3"
+                                  mah:TextBoxHelper.Watermark="Select the method of Read DataSet."
+                                  ItemsSource="{Binding DataReaders}"
+                                  SelectedItem="{Binding SelectedDataReader}"/>
+
+                        <TextBox Grid.Row="1" Height="50" Margin="0,3"
                                  mah:TextBoxHelper.Watermark="Select the folder of DataSets."
                                  mah:TextBoxHelper.ButtonCommand="{Binding OpenWorkFolderCmd}"
                                  Style="{DynamicResource SearchMetroTextBox}"
@@ -166,17 +211,17 @@
                                  IsReadOnly="True"
                                  TextWrapping="Wrap"/>
 
-                        <ComboBox Grid.Row="1" Height="28" Margin="0,3"
-                                  mah:TextBoxHelper.Watermark="Select the method of Read DataSet."
-                                  ItemsSource="{Binding DataReaders}"
-                                  SelectedItem="{Binding SelectedDataReader}"/>
-
                         <StackPanel Grid.Row="2" Height="28" Margin="0,3"
                                     Orientation="Horizontal"
                                     HorizontalAlignment="Right">
-                            <Button Width="150" Content="Load DataSets"
+     
+                            <Button Style="{StaticResource MyTextButton}"
+                                    Content="&#xe620;" 
                                     Command="{Binding LoadTrainDataSetsCmd}"
-                                    Style="{DynamicResource MetroFlatButton}"/>
+                                    Foreground="{DynamicResource MyAccentBaseColor2}"
+                                    ToolTip="Load DataSets"
+                                    FontSize="25"/>
+
                         </StackPanel>
 
                     </Grid>

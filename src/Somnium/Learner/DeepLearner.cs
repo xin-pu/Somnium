@@ -5,14 +5,18 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using JetBrains.Annotations;
 using Somnium.Core;
+using Somnium.Utility;
 
 namespace Somnium.Learner
 {
     public class DeepLearner : ICloneable, INotifyPropertyChanged
     {
         private TrainParameters _trainParameters;
+        private TrainDataManager _trainDataManager;
         private LayerNetManager _layerNetManager;
         private string _name;
         private DateTime _createDateTime;
@@ -23,7 +27,9 @@ namespace Somnium.Learner
         private List<double> _correctRates;
         private uint _trainCountCurrent;
 
-        
+        public ICommand ExecuteTrainCmd { set; get; }
+
+
         public TrainParameters TrainParameters
         {
             set => UpdateProperty(ref _trainParameters, value);
@@ -87,22 +93,33 @@ namespace Somnium.Learner
             get => _layerNetManager;
         }
 
-    
+        public TrainDataManager TrainDataManager
+        {
+            set => UpdateProperty(ref _trainDataManager, value);
+            get => _trainDataManager;
+        }
+
+        public ICommand TrainExecuteCmd { set; get; }
+
+
+
         /// <summary>
         /// We will Create a Train with Default Value
         /// </summary>
         public DeepLearner(TrainDataManager trainDataManager, TrainParameters trainParameters)
         {
-            LayerNetManager = new LayerNetManager(trainDataManager, trainParameters); 
+            TrainDataManager = trainDataManager;
+            LayerNetManager = new LayerNetManager(trainDataManager, trainParameters);
             TrainParameters = trainParameters;
             CreateTime = DateTime.Now;
-            Name = $"Train_1";
+            Name = $"Train_{CreateTime:HH_mm_SS}";
+            TrainExecuteCmd = new RelayCommand(() => Task.Run(ExecuteTrain));
         }
 
 
-        public virtual void ExecuteTrain(TrainDataManager trainDataManager)
+        public virtual void ExecuteTrain()
         {
-            var inputStreams = trainDataManager.StreamDatas;
+            var inputStreams = TrainDataManager.StreamDatas;
             StartTime = DateTime.Now;
             TrainCountCurrent = 0;
             CorrectRates = new List<double>();
@@ -112,9 +129,9 @@ namespace Somnium.Learner
                 //以神经网络层更新数据层
                 inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(LayerNetManager));
 
-                CorrectRateCurrent = inputStreams.Count(a => a.IsMeetExpect) * 1.0 / inputStreams.Count;
+                CorrectRateCurrent =Math.Round(inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count,1);
                 CorrectRates.Add(CorrectRateCurrent);
-                Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent:P}");
+                Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent:P2}");
 
                 //反向传播误差
                 inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(LayerNetManager));
@@ -163,5 +180,7 @@ namespace Somnium.Learner
         #endregion
     }
 
+
+   
 
 }

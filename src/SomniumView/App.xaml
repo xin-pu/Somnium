@@ -17,18 +17,33 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
 
                 <ResourceDictionary Source="Resources/MyTextBlockStyle.xaml" />
-
+                <ResourceDictionary Source="Resources/MyButtonStyle.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
 
-            <SolidColorBrush x:Key="MyThemeColor" Color="#1BA1E2"/>
-            <SolidColorBrush x:Key="MyLineColor" Color="#1BA1E2"/>
-            <SolidColorBrush x:Key="MainForeGround" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="MyAccentBaseColor" Color="#22B14C"/>
+            <SolidColorBrush x:Key="MyAccentBaseColor2" Color="#98E0AD"/>
 
+            <SolidColorBrush x:Key="MyAccentFontColor" Color="#A6A6A6"/>
+            <SolidColorBrush x:Key="MyAccentFontLightColor" Color="#F2F2F2"/>
+            <SolidColorBrush x:Key="MyAccentFontDarkColor" Color="#262626"/>
 
+            <SolidColorBrush x:Key="MyAccentBarColor" Color="#C8EFD4"/>
+            <SolidColorBrush x:Key="MyAccentBarLightColor" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="MyAccentBarDarkColor" Color="#BFBFBF"/>
 
-            <SolidColorBrush x:Key="StatusBarColor" Color="#808080"/>
+            <SolidColorBrush x:Key="MyAccentBorderColor" Color="#D3D5F5"/>
+
+            <SolidColorBrush x:Key="ItemMoveColor" Color="#E6E7EA"/>
+            <SolidColorBrush x:Key="ItemMoveBorderColor" Color="#6BD089"/>
+
+            <SolidColorBrush x:Key="ItemSelectColor" Color="#D9D9D9"/>
+            <SolidColorBrush x:Key="ItemSelectBorderColor" Color="#085820"/>
+
+            <SolidColorBrush x:Key="PassColor" Color="#22B14C"/>
+            <SolidColorBrush x:Key="Fail" Color="#ED1C24"/>
+
 
             <LinearGradientBrush x:Key="LinearGradientBrush" EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="White" Offset="0"/>

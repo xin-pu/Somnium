@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using OpenCvSharp;
 using Somnium.Core;
 using Somnium.Data;
@@ -17,8 +19,17 @@ namespace Console
 
         static void Main()
         {
+            
+            for (int i = 0; i < 1000; i++)
+            {
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+                Thread.Sleep(1);
+                stopWatch.Stop();
+                System.Console.WriteLine($"{stopWatch.ElapsedMilliseconds}ms");
+            }
 
-            TrainingSmallDigitsWithExtendMethod();
+            //TrainingSmallDigitsWithExtendMethod();
         }
 
 

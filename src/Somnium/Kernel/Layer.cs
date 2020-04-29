@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using JetBrains.Annotations;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Somnium.Core;
-using Somnium.Func;
 
 namespace Somnium.Kernel
 {

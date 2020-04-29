@@ -123,6 +123,7 @@ namespace SomniumView.Apps
 
         public void CreateLeanerExecute()
         {
+            if (TrainDataManager == null) return;
             // Clone a new trainParameters.
             var trainParameters = (TrainParameters) TrainParameters.Clone();
             var trainDataManager = (TrainDataManager) TrainDataManager.Clone();
