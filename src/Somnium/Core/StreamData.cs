@@ -14,7 +14,7 @@ namespace Somnium.Core
     /// 用于存储单个样列 产生的所有的中间数据
     /// 必须数显从网络层神经元 复制的 delta数据
     /// </summary>
-    public class StreamData : INotifyPropertyChanged
+    public class StreamData : INotifyPropertyChanged,ICloneable
     {
 
         public Func<IEnumerable<double>, IEnumerable<double>, double> GetCost;
@@ -145,6 +145,13 @@ namespace Somnium.Core
             return res.ToList().IndexOf(res.Max());
         }
 
+        public object Clone()
+        {
+            return new StreamData(InputDataMatrix, ExpectedLabel)
+            {
+                ExpectedOut = ExpectedOut,
+            };
+        }
 
         #region
 
@@ -169,6 +176,8 @@ namespace Somnium.Core
         }
 
         #endregion
+
+     
     }
 
 

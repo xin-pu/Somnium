@@ -145,7 +145,7 @@ namespace Somnium.Core
         {
             return new TrainDataManager
             {
-                StreamDatas = StreamDatas,
+                StreamDatas = StreamDatas.Select(a => (StreamData) a.Clone()).ToList(),
                 LabelMap = LabelMap,
                 DataShapeIn = DataShapeIn,
                 DataShapeOut = DataShapeOut,
