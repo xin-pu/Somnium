@@ -18,6 +18,7 @@
 
                 <ResourceDictionary Source="Resources/MyTextBlockStyle.xaml" />
                 <ResourceDictionary Source="Resources/MyButtonStyle.xaml" />
+                <ResourceDictionary Source="Resources/MyCheckBoxStyle.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 

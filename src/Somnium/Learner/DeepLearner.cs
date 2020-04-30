@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -20,12 +21,14 @@ namespace Somnium.Learner
         private LayerNetManager _layerNetManager;
         private string _name;
         private DateTime _createDateTime;
-        private DateTime _startTime;
-        private DateTime _stopTime;
-        private TimeSpan _timeSpan;
+        private TimeSpan _costTime;
+        private TimeSpan _remainTime;
+        private double _learnSpeed;
         private double _correctRateCurrent;
         private List<double> _correctRates;
         private uint _trainCountCurrent;
+        private bool _isExecuting = false;
+        private Stopwatch _stopwatch;
 
         public ICommand ExecuteTrainCmd { set; get; }
 
@@ -49,24 +52,23 @@ namespace Somnium.Learner
             get => _createDateTime;
         }
 
-        public DateTime StartTime
+        public Stopwatch Stopwatch
         {
-            set => UpdateProperty(ref _startTime, value);
-            get => _startTime;
-        }
-
-        public DateTime StopTime
-        {
-            set => UpdateProperty(ref _stopTime, value);
-            get => _stopTime;
+            set => UpdateProperty(ref _stopwatch, value);
+            get => _stopwatch;
         }
 
         public TimeSpan CostTime
         {
-            set => UpdateProperty(ref _timeSpan, value);
-            get => _timeSpan;
+            set => UpdateProperty(ref _costTime, value);
+            get => _costTime;
         }
 
+        public TimeSpan RemainTime
+        {
+            set => UpdateProperty(ref _remainTime, value);
+            get => _remainTime;
+        }
 
         public uint TrainCountCurrent
         {
@@ -99,6 +101,18 @@ namespace Somnium.Learner
             get => _trainDataManager;
         }
 
+        public bool IsExecuting
+        {
+            set => UpdateProperty(ref _isExecuting, value);
+            get => _isExecuting;
+        }
+
+        public double LearnSpeed
+        {
+            set => UpdateProperty(ref _learnSpeed, value);
+            get => _learnSpeed;
+        }
+
         public ICommand TrainExecuteCmd { set; get; }
 
 
@@ -109,8 +123,8 @@ namespace Somnium.Learner
         public DeepLearner(TrainDataManager trainDataManager, TrainParameters trainParameters)
         {
             TrainDataManager = trainDataManager;
-            LayerNetManager = new LayerNetManager(trainDataManager, trainParameters);
             TrainParameters = trainParameters;
+            LayerNetManager = new LayerNetManager(trainDataManager, trainParameters);
             CreateTime = DateTime.Now;
             Name = $"Train_{CreateTime:HH_mm_SS}";
             TrainExecuteCmd = new RelayCommand(() => Task.Run(ExecuteTrain));
@@ -119,29 +133,50 @@ namespace Somnium.Learner
 
         public virtual void ExecuteTrain()
         {
-            var inputStreams = TrainDataManager.StreamDatas;
-            StartTime = DateTime.Now;
-            TrainCountCurrent = 0;
-            CorrectRates = new List<double>();
-
-            for (TrainCountCurrent = 1; TrainCountCurrent <= TrainParameters.TrainCountLimit; TrainCountCurrent++)
+            if (IsExecuting)
             {
-                //以神经网络层更新数据层
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(LayerNetManager));
-
-                CorrectRateCurrent =Math.Round(inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count,1);
-                CorrectRates.Add(CorrectRateCurrent);
-                Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent}");
-
-                //反向传播误差
-                inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(LayerNetManager));
-
-                //从数据层收集误差并更新神经网络层的神经元
-                LayerNetManager.UpdateWeight();
-                LayerNetManager.Serializer("D:\\test.xml");
+                IsExecuting = false;
             }
+            else
+            {
+                var inputStreams = TrainDataManager.StreamDatas;
+                LayerNetManager = new LayerNetManager(TrainDataManager, TrainParameters);
+                Stopwatch = new Stopwatch();
+                Stopwatch.Start();
+                TrainCountCurrent = 0;
+                CorrectRates = new List<double>();
+                IsExecuting = true;
+                for (TrainCountCurrent = 1; TrainCountCurrent <= TrainParameters.TrainCountLimit; TrainCountCurrent++)
+                {
+                    if (!IsExecuting)
+                        break;
 
-            StopTime = DateTime.Now;
+                    //以神经网络层更新数据层
+                    inputStreams.AsParallel().ForAll(singleStream => singleStream.ActivateLayerNet(LayerNetManager));
+
+                    CorrectRateCurrent =
+                        Math.Round(inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count, 1);
+                    CorrectRates.Add(CorrectRateCurrent);
+                    Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent}");
+
+                    //反向传播误差
+                    inputStreams.AsParallel()
+                        .ForAll(singleStream => singleStream.ErrorBackPropagation(LayerNetManager));
+
+                    //从数据层收集误差并更新神经网络层的神经元
+                    LayerNetManager.UpdateWeight();
+                    LearnSpeed = Stopwatch.ElapsedMilliseconds * 1.0 / TrainCountCurrent;
+                    CostTime = Stopwatch.Elapsed;
+                    RemainTime =
+                        new TimeSpan(
+                            (long) ((TrainParameters.TrainCountLimit - TrainCountCurrent) * 10000 * LearnSpeed));
+
+                }
+
+                LayerNetManager.Serializer(Path.Combine(Environment.CurrentDirectory, "exp", $"{Name}.som"));
+                Stopwatch.Stop();
+                IsExecuting = false;
+            }
         }
 
 

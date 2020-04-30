@@ -58,8 +58,22 @@
                         <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" 
                                 Height="150"
                                 BorderBrush="{DynamicResource MyAccentBorderColor}">
-                            <Grid>
-                                <mah:MetroProgressBar Background="{DynamicResource MyAccentBarColor}" 
+                            <DockPanel>
+                                <Grid DockPanel.Dock="Left"
+                                      HorizontalAlignment="Center"
+                                      Background="{DynamicResource MyAccentBaseColor}">
+                                    <Label Content="{Binding Name}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontWeight="DemiBold"
+                                           Foreground="{DynamicResource MyAccentFontLightColor}">
+                                        <Label.LayoutTransform>
+                                            <RotateTransform Angle="270"/>
+                                        </Label.LayoutTransform>
+                                    </Label>
+                                </Grid>
+                                <Grid>
+                                    <mah:MetroProgressBar Background="{DynamicResource MyAccentBarColor}" 
                                                       Foreground="{DynamicResource MyAccentBaseColor}"
                                                       Style="{DynamicResource MahApps.Metro.Styles}"
                                                       IsIndeterminate="False"
@@ -67,22 +81,10 @@
                                                       Minimum="0"
                                                       Maximum="{Binding TrainParameters.TrainCountLimit}"
                                                       Value="{Binding TrainCountCurrent}"/>
-                                <DockPanel>
-                                    <Grid DockPanel.Dock="Left"
-                                          HorizontalAlignment="Center"
-                                          Background="{DynamicResource MyAccentBaseColor}">
-                                        <Label Content="{Binding Name}"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   FontWeight="DemiBold"
-                                                   Foreground="{DynamicResource MyAccentFontLightColor}">
-                                            <Label.LayoutTransform>
-                                                <RotateTransform Angle="270"/>
-                                            </Label.LayoutTransform>
-                                        </Label>
-                                    </Grid>
+                                    <DockPanel>
 
-                                    <wpf:Gauge Margin="5" Height="120" Width="120"
+
+                                        <wpf:Gauge Margin="5" Height="120" Width="120"
                                                Uses360Mode="True"
                                                From="0"
                                                To="100"
@@ -94,58 +96,45 @@
                                                Value="{Binding CorrectRateCurrent}"
                                                ContentStringFormat=""/>
 
-                                    <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <Button Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
+                                        <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <CheckBox Style="{DynamicResource MyCheckBox}"
                                                 BorderBrush="{DynamicResource MyAccentBaseColor}"
                                                 BorderThickness="10"
-                                                Height="120" Width="120"
                                                 Command="{Binding TrainExecuteCmd}"
-                                                CommandParameter="{Binding}"/>
-                                    </StackPanel>
+                                                CommandParameter="{Binding}"
+                                                ToolTip="{Binding IsExecuting}"
+                                                Margin="20"
+                                                FontSize="45"
+                                                VerticalAlignment="Center"
+                                                Content="&#xe628;">
+                                            </CheckBox>
+                                        </StackPanel>
 
-                                    <Grid Margin="10" HorizontalAlignment="Center">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="0.6*"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
+                                        <Grid Margin="10" DockPanel.Dock="Right" Width="200"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0"
+                                                   FontWeight="DemiBold"
+                                                   TextAlignment="Left"
+                                                   FontSize="24"
+                                                   Text="{Binding CostTime,StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}"/>
 
-                                        <TextBlock Grid.Row="0" Grid.Column="0" 
-                                                   Style="{DynamicResource MyTextBlock}"
-                                                   FontSize="12"
-                                                   HorizontalAlignment="Right"
-                                                   Text="Create Time:"/>
-                                        <TextBlock Grid.Row="1" Grid.Column="0" 
-                                                   Style="{DynamicResource MyTextBlock}"
-                                                   FontSize="12"
-                                                   HorizontalAlignment="Right"
-                                                   Text="Start Time:"/>
+                                            <TextBlock Grid.Row="2" 
+                                                   FontWeight="DemiBold"
+                                                   TextAlignment="Right"
+                                                   FontSize="24"
+                                                   Text="{Binding RemainTime,StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}"/>
+                                        </Grid>
 
-                                        <TextBlock Grid.Row="2" Grid.Column="0" 
-                                                   Style="{DynamicResource MyTextBlock}"
-                                                   FontSize="12"
-                                                   HorizontalAlignment="Right"
-                                                   Text="Stop Time:"/>
-
-                                        <mah:TimePicker Grid.Row="0" Grid.Column="1"  Margin="5,2"
-                                            SelectedTime="{Binding CreateTime.TimeOfDay,Mode=OneWay}" 
-                                                        Background="Transparent"/>
-                                        <mah:TimePicker Grid.Row="1" Grid.Column="1"  Margin="5,2"
-                                                        SelectedTime="{Binding StartTime}" Background="Transparent"/>
-                                        <mah:TimePicker Grid.Row="2" Grid.Column="1"  Margin="5,2"
-                                                        SelectedTime="{Binding StopTime}" Background="Transparent"/>
-                                    </Grid>
-
-
-                                 
-                                   
-                                </DockPanel>
-                            </Grid>
+                                        <Border></Border>
+                                    </DockPanel>
+                                </Grid>
+                            </DockPanel>
+                        
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
