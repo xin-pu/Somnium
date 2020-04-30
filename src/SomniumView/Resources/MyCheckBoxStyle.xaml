@@ -17,11 +17,39 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="TextBlock" Property="Text" 
-                                    Value="&#xe628;"/>
+                                    Value="&#xed4b;"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="False">
                             <Setter TargetName="TextBlock" Property="Text" 
-                                    Value="&#xe629;"/>
+                                    Value="&#xed4c;"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MyCheckBoxBasic" TargetType="CheckBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <TextBlock x:Name="TextBlock"
+                               Width="{TemplateBinding Width}"
+                               Height="{TemplateBinding Height}"
+                               Style="{DynamicResource FiConStyle}"
+                               Foreground="{TemplateBinding Foreground}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="{TemplateBinding FontWeight}"
+                               Text="{TemplateBinding Content}"
+                               ToolTip="{TemplateBinding ToolTip}"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="TextBlock" Property="Foreground" 
+                                    Value="{DynamicResource MyAccentBaseColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="TextBlock" Property="Foreground" 
+                                    Value="{DynamicResource MyAccentFontColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -55,7 +55,7 @@ namespace Console
             var train = new DeepLearner(trainDataManager, trainParameters);
 
             // 执行训练
-            train.ExecuteTrain(trainDataManager);
+            train.ExecuteTrain();
         }
 
 

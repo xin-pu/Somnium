@@ -21,7 +21,7 @@ namespace Somnium.Core
         private IEnumerable<string> _labelsOut;
         private string _workFolder;
         private int _fileCount;
-
+        public List<int> _labelCount;
 
         public Func<string, StreamData> GetStreamData { set; get; }
 
@@ -71,6 +71,12 @@ namespace Somnium.Core
         {
             set => UpdateProperty(ref _fileCount, value);
             get => _fileCount;
+        }
+
+        public List<int> LabelCount
+        {
+            set => UpdateProperty(ref _labelCount, value);
+            get => _labelCount;
         }
 
         public List<StreamData> StreamDatas
@@ -138,6 +144,7 @@ namespace Somnium.Core
 
             StreamDatas.ForEach(a => a.ExpectedOut = LabelMap.GetCorrectResult(a.ExpectedLabel));
             FileCount = StreamDatas.Count;
+            LabelCount = LabelMap.Dict.Keys.Select(label => StreamDatas.Count(a => a.ExpectedLabel == label)).ToList();
 
         }
 
@@ -145,7 +152,9 @@ namespace Somnium.Core
         {
             return new TrainDataManager
             {
-                StreamDatas = StreamDatas.Select(a => (StreamData) a.Clone()).ToList(),
+                StreamDatas = StreamDatas
+                    .Select(a => (StreamData) a.Clone())
+                    .ToList(),
                 LabelMap = LabelMap,
                 DataShapeIn = DataShapeIn,
                 DataShapeOut = DataShapeOut,

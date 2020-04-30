@@ -15,7 +15,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
                         <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" 
-                                BorderBrush="Gray">
+                                BorderBrush="{DynamicResource MyAccentBorderColor}">
                             <DockPanel  VerticalAlignment="Center">
                                 <Border Width="10" DockPanel.Dock="Left"
                                         Background="{DynamicResource MyAccentBaseColor}"/>
@@ -56,7 +56,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
                         <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" 
-                                Height="150"
+                                Height="120"
                                 BorderBrush="{DynamicResource MyAccentBorderColor}">
                             <DockPanel>
                                 <Grid DockPanel.Dock="Left"
@@ -83,8 +83,7 @@
                                                       Value="{Binding TrainCountCurrent}"/>
                                     <DockPanel>
 
-
-                                        <wpf:Gauge Margin="5" Height="120" Width="120"
+                                        <wpf:Gauge Margin="5" Height="100" Width="100"
                                                Uses360Mode="True"
                                                From="0"
                                                To="100"
@@ -96,41 +95,92 @@
                                                Value="{Binding CorrectRateCurrent}"
                                                ContentStringFormat=""/>
 
-                                        <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                    Orientation="Horizontal">
                                             <CheckBox Style="{DynamicResource MyCheckBox}"
-                                                BorderBrush="{DynamicResource MyAccentBaseColor}"
-                                                BorderThickness="10"
-                                                Command="{Binding TrainExecuteCmd}"
-                                                CommandParameter="{Binding}"
-                                                ToolTip="{Binding IsExecuting}"
-                                                Margin="20"
-                                                FontSize="45"
-                                                VerticalAlignment="Center"
-                                                Content="&#xe628;">
-                                            </CheckBox>
+                                                      Foreground="{DynamicResource PassColor}"
+                                                      BorderBrush="{DynamicResource MyAccentBaseColor}"
+                                                      BorderThickness="10"
+                                                      Command="{Binding TrainExecuteCmd}"
+                                                      CommandParameter="{Binding}"
+                                                      ToolTip="{Binding IsExecuting}"
+                                                      Margin="20"
+                                                      FontSize="80"
+                                                      VerticalAlignment="Center"/>
+                                            <StackPanel Orientation="Vertical">
+                                                <CheckBox Style="{DynamicResource MyCheckBoxBasic}"
+                                                        Foreground="{DynamicResource PassColor}"
+                                                        BorderBrush="{DynamicResource MyAccentBaseColor}"
+                                                        IsChecked="{Binding Selected}"
+                                                        ToolTip="{Binding Selected,StringFormat='{} Selected {0}'}"
+                                                        Margin="0"
+                                                        FontSize="24"
+                                                        Content="&#xed42;"/>
+                                                <CheckBox Style="{DynamicResource MyCheckBoxBasic}"
+                                                        Foreground="{DynamicResource PassColor}"
+                                                        BorderBrush="{DynamicResource MyAccentBaseColor}"
+                                                        IsChecked="{Binding ShowCurve,Mode=TwoWay}"
+                                                        ToolTip="Show Curve"
+                                                        Margin="0"
+                                                        FontSize="24"
+                                                        Content="&#xed3d;"/>
+                                            </StackPanel>
+                                            
                                         </StackPanel>
 
-                                        <Grid Margin="10" DockPanel.Dock="Right" Width="200"
+                                        <Grid Margin="10" DockPanel.Dock="Right" Width="150"
                                           HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition/>
                                                 <RowDefinition/>
                                                 <RowDefinition/>
                                             </Grid.RowDefinitions>
+                                            
                                             <TextBlock Grid.Row="0"
-                                                   FontWeight="DemiBold"
-                                                   TextAlignment="Left"
-                                                   FontSize="24"
-                                                   Text="{Binding CostTime,StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}"/>
+                                                       Style="{DynamicResource MyTextBlock}"
+                                                       FontWeight="DemiBold"
+                                                       TextAlignment="Left"
+                                                       FontSize="20"
+                                                       Text="{Binding CostTime,StringFormat='{}&#xed41; {0:hh}:{0:mm}:{0:ss}'}"/>
+                                            
+                                            <Separator Grid.Row="1" Height="2" Background="{DynamicResource Fail}"/>
 
                                             <TextBlock Grid.Row="2" 
-                                                   FontWeight="DemiBold"
-                                                   TextAlignment="Right"
-                                                   FontSize="24"
-                                                   Text="{Binding RemainTime,StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}"/>
+                                                       Style="{DynamicResource MyTextBlock}"
+                                                       FontWeight="DemiBold"
+                                                       TextAlignment="Left"
+                                                       FontSize="20"
+                                                       Text="{Binding RemainTime,StringFormat='{}&#xed40; {0:hh}:{0:mm}:{0:ss}'}"/>
                                         </Grid>
 
-                                        <Border></Border>
+                                        <wpf:CartesianChart BorderThickness="0" Margin="2"
+                                                            Visibility="{Binding ShowCurve,Converter={StaticResource bool2VisibilityConverter}}"
+                                                            Background="Transparent"
+                                                            Hoverable="False"
+                                                            DisableAnimations="True"
+                                                            SeriesColors="{DynamicResource ColorsCollection}">
+                                            <wpf:CartesianChart.Series>
+                                                <wpf:LineSeries Title="Correct rate"
+                                                                LineSmoothness="0"
+                                                                PointGeometrySize="0"
+                                                                PointForeground="{DynamicResource WhiteBrush}"
+                                                                Values="{Binding CorrectRates}"/>
+                                            </wpf:CartesianChart.Series>  
+                                            <wpf:CartesianChart.AxisX>
+                                                <wpf:Axis ShowLabels="False"/>
+                                            </wpf:CartesianChart.AxisX>
+                                            <wpf:CartesianChart.AxisY>
+                                                <wpf:Axis ShowLabels="True" Title="Correct"
+                                                          Foreground="{DynamicResource MyAccentBaseColor}"
+                                                          MaxValue="100">
+                                                    <wpf:Axis.Separator>
+                                                        <wpf:Separator StrokeThickness="1"
+                                                                       Stroke="{DynamicResource MyAccentBaseColor}"
+                                                                       StrokeDashArray="3"/>
+                                                    </wpf:Axis.Separator>
+                                                </wpf:Axis>
+                                            </wpf:CartesianChart.AxisY>
+                                        </wpf:CartesianChart>
                                     </DockPanel>
                                 </Grid>
                             </DockPanel>
@@ -144,28 +194,28 @@
     </UserControl.Resources>
     <DockPanel DataContext="{Binding AppTrainModel}">
         <DockPanel >
-            <StatusBar DockPanel.Dock="Bottom" Height="80" 
+            <StatusBar DockPanel.Dock="Bottom" Height="60" 
                        BorderThickness="0,1,00,0" BorderBrush="{DynamicResource GrayBrush1}"
                        Background="{DynamicResource WhiteBrush}"
                        HorizontalAlignment="Center">
 
                 <Button Style="{StaticResource MyTextButton}"
-                        Content="&#xe61d;" 
+                        Content="&#xedac;" 
                         Command="{Binding CreateLearnerCmd}"
-                        Foreground="{DynamicResource MyAccentBaseColor2}"
+                        Foreground="{DynamicResource MyAccentBaseColor}"
                         ToolTip="Create Learner"
-                        FontSize="25"/>
+                        FontSize="35"/>
 
             </StatusBar>
 
             <GroupBox DockPanel.Dock="Left" Width="300"
                       Margin="2" Padding="0" 
                       BorderThickness="1"
-                      BorderBrush="Gray"
-                      Background="Gray">
+                      BorderBrush="{DynamicResource MyAccentBaseColor}"
+                      Background="{DynamicResource MyAccentBarColor}">
                 <GroupBox.Header>
                     <StackPanel Height="25" Orientation="Horizontal">
-                        <TextBlock Style="{DynamicResource MyTextBlock}" Text="Train Data"/>
+                        <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xed46; Train Data"/>
                     </StackPanel>
                 </GroupBox.Header>
                 <DockPanel Margin="5">
@@ -180,9 +230,9 @@
                     <Grid VerticalAlignment="Top" DockPanel.Dock="Top"
                           Margin="2">
                         <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
 
                         <ComboBox Grid.Row="0" Height="28" Margin="0,3"
@@ -203,11 +253,11 @@
                         <StackPanel Grid.Row="2" Height="28" Margin="0,3"
                                     Orientation="Horizontal"
                                     HorizontalAlignment="Right">
-     
+
                             <Button Style="{StaticResource MyTextButton}"
-                                    Content="&#xe620;" 
+                                    Content="&#xed43;" 
                                     Command="{Binding LoadTrainDataSetsCmd}"
-                                    Foreground="{DynamicResource MyAccentBaseColor2}"
+                                    Foreground="{DynamicResource MyAccentBaseColor}"
                                     ToolTip="Load DataSets"
                                     FontSize="25"/>
 
@@ -298,8 +348,10 @@
 
                         </Grid>
 
-
-                        <ListView ItemsSource="{Binding LabelsOut}" BorderThickness="0"/>
+                        <Border>
+                          
+                        </Border>
+                      
                     </StackPanel>
                 </DockPanel>
             </GroupBox>
@@ -307,11 +359,11 @@
             <GroupBox DockPanel.Dock="Left" Width="300"
                       Margin="2" Padding="0" 
                       BorderThickness="1"
-                      BorderBrush="Gray"
-                      Background="Gray">
+                      BorderBrush="{DynamicResource MyAccentBaseColor}"
+                      Background="{DynamicResource MyAccentBarColor}">
                 <GroupBox.Header>
                     <StackPanel Height="25" Orientation="Horizontal">
-                        <TextBlock Style="{DynamicResource MyTextBlock}" Text="Train Parameters"/>
+                        <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xed47; Train Parameters"/>
                     </StackPanel>
                 </GroupBox.Header>
 
@@ -377,7 +429,7 @@
                                   ItemsSource="{Binding Source={StaticResource LikeliHoodTypeValues}}"
                                   SelectedValue="{Binding TrainParameters.LikeliHoodType}"/>
                     </Grid>
-                    
+
                     <TextBlock DockPanel.Dock="Top" 
                                Style="{DynamicResource MyTextBlock}" Text="Lay Nets"
                                FontSize="18"
@@ -388,28 +440,54 @@
 
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
                                 HorizontalAlignment="Right">
-                        <Button Content="Append Layer" Margin="2"
-                                Style="{DynamicResource MetroFlatButton}"
-                                Command="{Binding AddLayerCmd}"/>
-                        <Button Content="Clear" Margin="2"
-                                Style="{DynamicResource MetroFlatButton}"
+                        <Button Content="&#xed4a;" Margin="2"
+                                FontSize="26"
+                                Foreground="{DynamicResource MyAccentBaseColor}"
+                                Style="{DynamicResource MyTextButton}"
+                                Command="{Binding AddLayerCmd}"
+                                ToolTip="Append Layer"/>
+                        <Button Content="&#xed3c;" Margin="2"
+                                FontSize="26"
+                                Foreground="{DynamicResource MyAccentBaseColor}"
+                                Style="{DynamicResource MyTextButton}"
                                 CommandParameter="{Binding}"
-                                Command="{Binding ClearLayerCmd}"/>
+                                Command="{Binding ClearLayerCmd}"
+                                ToolTip="Clear Layer"/>
                     </StackPanel>
 
                     <ListView BorderThickness="0" Margin="2"
                               ItemContainerStyle="{DynamicResource LayStructView}"
                               SelectionMode="Single"
                               ItemsSource="{Binding TrainParameters.InterLayerStructs}"/>
-                  
+
                 </DockPanel>
             </GroupBox>
 
         </DockPanel>
-        <GroupBox Header="Learner" Margin="2" DataContext="{Binding DeepLearners}">
-            <ListView BorderThickness="0"
+        <GroupBox Margin="2" Padding="0" 
+                  BorderThickness="1"
+                  BorderBrush="{DynamicResource MyAccentBaseColor}"
+                  Background="{DynamicResource MyAccentBarColor}">
+                <GroupBox.Header>
+                <DockPanel>
+                    <StackPanel Height="25" Orientation="Horizontal" 
+                                DockPanel.Dock="Left">
+                        <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xedac; Learners"/>
+                    </StackPanel>
+                    <StackPanel Height="25" Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Button Style="{DynamicResource MyTextButton}"
+                                Command="{Binding DeleteLearnerCmd}"
+                                Content="&#xed3c;"
+                                FontSize="21"
+                                ToolTip="Delete Selected Learner."/>
+                    </StackPanel>
+                </DockPanel>
+
+            </GroupBox.Header>
+                <ListView BorderThickness="0"
                       ItemContainerStyle="{DynamicResource LearnerView}"
-                      ItemsSource="{Binding}"
+                      ItemsSource="{Binding DeepLearners}"
                       SelectionMode="Single">
                 <ListView.Template>
                     <ControlTemplate>

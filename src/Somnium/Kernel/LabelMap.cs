@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using Somnium.Utility;
 
@@ -9,7 +10,7 @@ namespace Somnium.Kernel
         public SerializeDictionary<string, int> Dict { set; get; }
 
         public int Count => Dict.Count;
-
+        public List<string> Labels => Dict.Keys.ToList();
         public LabelMap()
         {
 

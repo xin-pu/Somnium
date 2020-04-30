@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using JetBrains.Annotations;
+using LiveCharts;
 using Somnium.Core;
 using Somnium.Utility;
 
@@ -25,9 +25,11 @@ namespace Somnium.Learner
         private TimeSpan _remainTime;
         private double _learnSpeed;
         private double _correctRateCurrent;
-        private List<double> _correctRates;
+        private ChartValues<double> _correctRates;
         private uint _trainCountCurrent;
         private bool _isExecuting = false;
+        private bool _showCurve;
+        private bool _selected;
         private Stopwatch _stopwatch;
 
         public ICommand ExecuteTrainCmd { set; get; }
@@ -83,7 +85,7 @@ namespace Somnium.Learner
             get => _correctRateCurrent;
         }
 
-        public List<double> CorrectRates
+        public ChartValues<double> CorrectRates
         {
             set => UpdateProperty(ref _correctRates, value);
             get => _correctRates;
@@ -113,6 +115,18 @@ namespace Somnium.Learner
             get => _learnSpeed;
         }
 
+        public bool ShowCurve
+        {
+            set => UpdateProperty(ref _showCurve, value);
+            get => _showCurve;
+        }
+
+        public bool Selected
+        {
+            set => UpdateProperty(ref _selected, value);
+            get => _selected;
+        }
+
         public ICommand TrainExecuteCmd { set; get; }
 
 
@@ -126,7 +140,7 @@ namespace Somnium.Learner
             TrainParameters = trainParameters;
             LayerNetManager = new LayerNetManager(trainDataManager, trainParameters);
             CreateTime = DateTime.Now;
-            Name = $"Train_{CreateTime:HH_mm_SS}";
+            Name = $"Learner_{CreateTime:HH_mm_ss}";
             TrainExecuteCmd = new RelayCommand(() => Task.Run(ExecuteTrain));
         }
 
@@ -144,7 +158,7 @@ namespace Somnium.Learner
                 Stopwatch = new Stopwatch();
                 Stopwatch.Start();
                 TrainCountCurrent = 0;
-                CorrectRates = new List<double>();
+                CorrectRates = new ChartValues<double>();
                 IsExecuting = true;
                 for (TrainCountCurrent = 1; TrainCountCurrent <= TrainParameters.TrainCountLimit; TrainCountCurrent++)
                 {
@@ -156,8 +170,9 @@ namespace Somnium.Learner
 
                     CorrectRateCurrent =
                         Math.Round(inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count, 1);
+                    if(CorrectRates.Count>=100)
+                        CorrectRates.RemoveAt(0);
                     CorrectRates.Add(CorrectRateCurrent);
-                    Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent}");
 
                     //反向传播误差
                     inputStreams.AsParallel()

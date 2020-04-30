@@ -26,6 +26,8 @@ namespace SomniumView.Apps
         public ICommand DeleteLayerCmd { set; get; }
         public ICommand CreateLearnerCmd { set; get; }
 
+        public ICommand DeleteLearnerCmd { set; get; }
+
         #endregion
 
 
@@ -94,7 +96,8 @@ namespace SomniumView.Apps
             LoadTrainDataSetsCmd = new RelayCommand(LoadTrainDataSetsExecute);
             AddLayerCmd = new RelayCommand(AppendDefaultLayerExecute);
             ClearLayerCmd = new RelayCommand(ClearLayerExecute);
-            CreateLearnerCmd=new RelayCommand(CreateLeanerExecute);
+            CreateLearnerCmd = new RelayCommand(CreateLeanerExecute);
+            DeleteLearnerCmd = new RelayCommand(DeleteLearnerExecute);
         }
 
 
@@ -131,10 +134,20 @@ namespace SomniumView.Apps
 
             var deepLearner = new DeepLearner(trainDataManager, trainParameters);
 
-
             DeepLearners.Add(deepLearner);
             //deepLearner.ExecuteTrain(layNet, TrainDataManager);
         }
+
+        public void DeleteLearnerExecute()
+        {
+            DeepLearners.Where(a => a.Selected).ToList().ForEach(select =>
+            {
+                select.IsExecuting = false;
+                DeepLearners.Remove(select);
+            });
+        }
+
+
 
         #region
 

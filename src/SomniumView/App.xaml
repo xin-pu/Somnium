@@ -4,6 +4,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:func="clr-namespace:Somnium.Func;assembly=Somnium"
              xmlns:kernel="clr-namespace:Somnium.Kernel;assembly=Somnium"
+             xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -51,7 +52,11 @@
                 <GradientStop Color="#848589" Offset="3"/>
             </LinearGradientBrush>
 
-
+            <wpf:ColorsCollection x:Key="ColorsCollection">
+                <Color>#F8A1A4</Color>
+                <Color>#FFFA99</Color>
+                <Color>#94D8F6</Color>
+            </wpf:ColorsCollection>
 
             <ObjectDataProvider x:Key="CostTypeValues"
                                 MethodName="GetValues"

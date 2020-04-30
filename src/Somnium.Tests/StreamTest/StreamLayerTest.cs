@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Double;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Somnium.Core;
-using Somnium.Data;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Somnium.Tests.StreamTest
 {
