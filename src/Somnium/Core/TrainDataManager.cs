@@ -106,6 +106,8 @@ namespace Somnium.Core
 
         private void LoadStreamDatas()
         {
+            if (WorkFolder == null) return;
+            if (!Directory.Exists(WorkFolder)) return;
             var dir = new DirectoryInfo(WorkFolder);
             if (!dir.Exists) return;
             IsReading = true;

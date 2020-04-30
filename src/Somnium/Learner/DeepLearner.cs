@@ -131,7 +131,7 @@ namespace Somnium.Learner
 
                 CorrectRateCurrent =Math.Round(inputStreams.Count(a => a.IsMeetExpect) * 100.0 / inputStreams.Count,1);
                 CorrectRates.Add(CorrectRateCurrent);
-                Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent:P2}");
+                Console.WriteLine($"当前训练次数：{TrainCountCurrent}\t\t准确率：{CorrectRateCurrent}");
 
                 //反向传播误差
                 inputStreams.AsParallel().ForAll(singleStream => singleStream.ErrorBackPropagation(LayerNetManager));

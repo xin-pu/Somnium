@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\output\Somnium.DeepLearning\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,6 +33,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Somnium.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
@@ -141,9 +144,22 @@
       <Name>Somnium</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Somnium.ico" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="PNG\Somnium.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>md "$(TargetDir)library";
+md "$(TargetDir)exp";
+move /Y "$(TargetDir)*.dll" "$(TargetDir)library";
+move /Y "$(TargetDir)*.pdb" "$(TargetDir)library";
+move /Y "$(TargetDir)*.xml" "$(TargetDir)library";</PostBuildEvent>
+  </PropertyGroup>
 </Project>

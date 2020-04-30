@@ -19,7 +19,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="PresentationCore" />
+    <Content Update="C:\Users\puxin\.nuget\packages\opencvsharp4.runtime.win\4.3.0.20200421\build\net\..\..\runtimes\win-x64\native\OpenCvSharpExtern.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\puxin\.nuget\packages\opencvsharp4.runtime.win\4.3.0.20200421\build\net\..\..\runtimes\win-x64\native\opencv_videoio_ffmpeg430_64.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\puxin\.nuget\packages\opencvsharp4.runtime.win\4.3.0.20200421\build\net\..\..\runtimes\win-x86\native\OpenCvSharpExtern.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\puxin\.nuget\packages\opencvsharp4.runtime.win\4.3.0.20200421\build\net\..\..\runtimes\win-x86\native\opencv_videoio_ffmpeg430.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

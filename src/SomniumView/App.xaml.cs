@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace SomniumView
@@ -13,5 +10,15 @@ namespace SomniumView
     /// </summary>
     public partial class App : Application
     {
+
+        public App()
+        {
+            var name = Assembly.GetExecutingAssembly().Location;
+            var path = Path.GetDirectoryName(name);
+            var appDomain = AppDomain.CurrentDomain;
+            appDomain.AppendPrivatePath(Path.Combine(path, "library"));
+        }
+
+
     }
 }
