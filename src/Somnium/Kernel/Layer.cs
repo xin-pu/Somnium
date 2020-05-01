@@ -97,8 +97,10 @@ namespace Somnium.Kernel
         {
             LayerType = layerType;
             NeureCount = neureCount;
+            Selected = true;
         }
 
+        public bool Selected { set; get; }
         public LayerType LayerType { set; get; }
         public int NeureCount { set; get; }
         public int Index { set; get; }

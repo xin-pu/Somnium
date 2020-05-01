@@ -83,7 +83,9 @@ namespace Somnium.Core
 
         public void ClearLayer()
         {
-            InterLayerStructs.Clear();
+            InterLayerStructs
+                .Where(a => a.Selected).ToList()
+                .ForEach(a => InterLayerStructs.RemoveAt(a.Index));
         }
 
         public void AddLayer(LayerType layerType, int neureCount)

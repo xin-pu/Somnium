@@ -110,8 +110,10 @@ namespace SomniumView.Apps
 
         public void LoadTrainDataSetsExecute()
         {
-            TrainDataManager = new TrainDataManager(WorkFolder,
-                new ResizeDigitsDataReader().ReadStreamData);
+            if (SelectedDataReader == null) return;
+            var reader = (DataReader) SelectedDataReader.Assembly.CreateInstance(SelectedDataReader.FullName);
+            if (reader == null) return;
+            TrainDataManager = new TrainDataManager(WorkFolder, reader.ReadStreamData);
         }
 
         public void AppendDefaultLayerExecute()

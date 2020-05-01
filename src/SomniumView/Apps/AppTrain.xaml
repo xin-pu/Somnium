@@ -14,11 +14,25 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                        <Border x:Name="BD_Collector" BorderThickness="1" Margin="1" 
+                        <Border x:Name="BD_Collector" BorderThickness="1" Margin="0"
                                 BorderBrush="{DynamicResource MyAccentBorderColor}">
-                            <DockPanel  VerticalAlignment="Center">
-                                <Border Width="10" DockPanel.Dock="Left"
-                                        Background="{DynamicResource MyAccentBaseColor}"/>
+
+                            <DockPanel>
+                                
+
+                                <TextBlock Width="5" 
+                                           DockPanel.Dock="Left"
+                                           Background="{DynamicResource MyAccentBaseColor}"/>
+
+                                <CheckBox DockPanel.Dock="Right"
+                                          VerticalAlignment="Top"
+                                          Style="{DynamicResource MyCheckBoxBasic}"
+                                          Foreground="{DynamicResource PassColor}"
+                                          BorderBrush="{DynamicResource MyAccentBaseColor}"
+                                          IsChecked="{Binding Selected}"
+                                          Margin="0"
+                                          FontSize="24"
+                                          Content="&#xe672;"/>
 
                                 <TextBlock DockPanel.Dock="Left" Width="50"
                                            Style="{DynamicResource MyTextBlock}"
@@ -115,7 +129,7 @@
                                                         ToolTip="{Binding Selected,StringFormat='{} Selected {0}'}"
                                                         Margin="0"
                                                         FontSize="24"
-                                                        Content="&#xed42;"/>
+                                                        Content="&#xe672;"/>
                                                 <CheckBox Style="{DynamicResource MyCheckBoxBasic}"
                                                         Foreground="{DynamicResource PassColor}"
                                                         BorderBrush="{DynamicResource MyAccentBaseColor}"
@@ -124,6 +138,22 @@
                                                         Margin="0"
                                                         FontSize="24"
                                                         Content="&#xed3d;"/>
+                                                <Button Style="{DynamicResource MyTextButton}"
+                                                          Foreground="{DynamicResource PassColor}"
+                                                          BorderBrush="{DynamicResource MyAccentBaseColor}"
+                                                          ToolTip="Show Net"
+                                                          Margin="0"
+                                                          FontSize="20"
+                                                          Content="&#xe688;"/>
+
+                                                <Button Style="{DynamicResource MyTextButton}"
+                                                        Foreground="{DynamicResource PassColor}"
+                                                        BorderBrush="{DynamicResource MyAccentBaseColor}"
+                                                        ToolTip="Open Net File"
+                                                        Margin="0"
+                                                        FontSize="20"
+                                                        Content="&#xe61d;"/>
+
                                             </StackPanel>
                                             
                                         </StackPanel>
@@ -139,7 +169,7 @@
                                             <TextBlock Grid.Row="0"
                                                        Style="{DynamicResource MyTextBlock}"
                                                        FontWeight="DemiBold"
-                                                       TextAlignment="Left"
+                                                       TextAlignment="Right"
                                                        FontSize="20"
                                                        Text="{Binding CostTime,StringFormat='{}&#xed41; {0:hh}:{0:mm}:{0:ss}'}"/>
                                             
@@ -355,8 +385,9 @@
                     </StackPanel>
                 </DockPanel>
             </GroupBox>
-
-            <GroupBox DockPanel.Dock="Left" Width="300"
+            
+            <DockPanel>
+                <GroupBox DockPanel.Dock="Top" Width="300"
                       Margin="2" Padding="0" 
                       BorderThickness="1"
                       BorderBrush="{DynamicResource MyAccentBaseColor}"
@@ -366,8 +397,6 @@
                         <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xed47; Train Parameters"/>
                     </StackPanel>
                 </GroupBox.Header>
-
-                <DockPanel  Margin="5">
                     <Grid DockPanel.Dock="Top">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.6*"></ColumnDefinition>
@@ -429,39 +458,45 @@
                                   ItemsSource="{Binding Source={StaticResource LikeliHoodTypeValues}}"
                                   SelectedValue="{Binding TrainParameters.LikeliHoodType}"/>
                     </Grid>
+                </GroupBox>
 
-                    <TextBlock DockPanel.Dock="Top" 
-                               Style="{DynamicResource MyTextBlock}" Text="Lay Nets"
-                               FontSize="18"
-                               Foreground="{DynamicResource AccentBaseColorBrush}"/>
+                <GroupBox DockPanel.Dock="Top" Width="300"
+                          Padding="0" 
+                          BorderThickness="1"
+                          BorderBrush="{DynamicResource MyAccentBaseColor}"
+                          Background="{DynamicResource MyAccentBarColor}">
+                    <GroupBox.Header>
+                        <DockPanel Height="25">
+                            <StackPanel DockPanel.Dock="Left" 
+                                        Orientation="Horizontal">
+                                <TextBlock Style="{DynamicResource MyTextBlock}" Text="&#xe688; Lay Nets"/>
+                            </StackPanel>
+                            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
 
-                    <Separator Height="1" DockPanel.Dock="Top"
-                               BorderBrush="Gray"/>
+                                <Button Content="&#xe66c;" Margin="2"
+                                        FontSize="26"
+                                        Style="{DynamicResource MyTextButton}"
+                                        Command="{Binding AddLayerCmd}"
+                                        ToolTip="Append New Layer"/>
 
-                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-                        <Button Content="&#xed4a;" Margin="2"
-                                FontSize="26"
-                                Foreground="{DynamicResource MyAccentBaseColor}"
-                                Style="{DynamicResource MyTextButton}"
-                                Command="{Binding AddLayerCmd}"
-                                ToolTip="Append Layer"/>
-                        <Button Content="&#xed3c;" Margin="2"
-                                FontSize="26"
-                                Foreground="{DynamicResource MyAccentBaseColor}"
-                                Style="{DynamicResource MyTextButton}"
-                                CommandParameter="{Binding}"
-                                Command="{Binding ClearLayerCmd}"
-                                ToolTip="Clear Layer"/>
-                    </StackPanel>
+                                <Button Content="&#xed3c;" Margin="2"
+                                        FontSize="26"
+                                        Style="{DynamicResource MyTextButton}"
+                                        CommandParameter="{Binding}"
+                                        Command="{Binding ClearLayerCmd}"
+                                        ToolTip="Clear Selected Layer"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </GroupBox.Header>
 
                     <ListView BorderThickness="0" Margin="2"
                               ItemContainerStyle="{DynamicResource LayStructView}"
                               SelectionMode="Single"
                               ItemsSource="{Binding TrainParameters.InterLayerStructs}"/>
-
-                </DockPanel>
-            </GroupBox>
+                </GroupBox>
+            </DockPanel>
+         
 
         </DockPanel>
         <GroupBox Margin="2" Padding="0" 

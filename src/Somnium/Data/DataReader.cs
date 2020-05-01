@@ -23,7 +23,9 @@ namespace Somnium.Data
         {
             var types = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(a => a.BaseType == typeof(DataReader)&&
-                            a.IsPublic).ToList();
+                            a.IsPublic)
+                .OrderBy(a=>a.FullName)
+                .ToList();
             return types;
         }
 
