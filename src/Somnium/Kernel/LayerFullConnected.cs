@@ -61,7 +61,7 @@ namespace Somnium.Kernel
             ShapeIn = shape;
             ShapeOut = new DataShape(neureCount, 1);
             Perceptrons = Enumerable.Range(0, neureCount)
-                .Select(a => new NeurePerceptron(shape.Levels, 1)
+                .Select(a => new NeurePerceptron(shape.Rows, shape.Columns)
                 {
                     Order = a
                 })
