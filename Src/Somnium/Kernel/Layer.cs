@@ -110,6 +110,7 @@ namespace Somnium.Kernel
     public enum LayerType
     {
         FullConnectLayer,
+        PoolingLayer,
         EmptyLayer
     }
 }

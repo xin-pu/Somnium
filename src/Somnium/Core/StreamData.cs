@@ -104,7 +104,7 @@ namespace Somnium.Core
                 };
                 tempData = item1;
             });
-            EstimateOut = LayerDatas[LayerDatas.Count - 1].Activated.AsColumnMajorArray();
+            EstimateOut = LayerDatas[layerNet.LayerNet.Count - 1].Activated.AsColumnMajorArray();
             EstimateLabel = GetEstimateLabel.Invoke(GetLikelihoodRatio(EstimateOut));
             SquareError = GetCost.Invoke(ExpectedOut, EstimateOut);
         }

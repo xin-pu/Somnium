@@ -8,6 +8,9 @@ using Somnium.Core;
 namespace Somnium.Kernel
 {
 
+    /// <summary>
+    /// OutPut also means Activate Layer
+    /// </summary>
     public class LayerOutput : Layer
     {
         private NeurePerceptron[] _perceptrons;

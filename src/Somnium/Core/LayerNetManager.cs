@@ -9,6 +9,7 @@ namespace Somnium.Core
     [XmlInclude(typeof(LabelMap))]
     [XmlInclude(typeof(LayerInput))]
     [XmlInclude(typeof(LayerOutput))]
+    [XmlInclude(typeof(LayerPooling))]
     [XmlInclude(typeof(LayerFullConnected))]
     public class LayerNetManager
     {
@@ -44,15 +45,22 @@ namespace Somnium.Core
             LayerNet.Add(inputLayer);
             layNetParameter.InterLayerStructs.ToList().ForEach(a =>
             {
+                var dataShape = LayerNet.Last().ShapeOut;
                 switch (a.LayerType)
                 {
                     case LayerType.FullConnectLayer:
-                        var dataShape = LayerNet.Last().ShapeOut;
                         var fullConnectedLayer = new LayerFullConnected(dataShape, a.NeureCount)
                         {
                             LayerIndex = LayerNet.Count
                         };
                         LayerNet.Add(fullConnectedLayer);
+                        break;
+                    case LayerType.PoolingLayer:
+                        var poolingLayer = new LayerPooling(dataShape)
+                        {
+                            LayerIndex = LayerNet.Count
+                        };
+                        LayerNet.Add(poolingLayer);
                         break;
                 }
             });
