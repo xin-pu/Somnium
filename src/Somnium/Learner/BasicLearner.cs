@@ -14,7 +14,7 @@ using Somnium.Utility;
 
 namespace Somnium.Learner
 {
-    public class DeepLearner : ICloneable, INotifyPropertyChanged
+    public class BasicLearner : ICloneable, INotifyPropertyChanged
     {
         private TrainParameters _trainParameters;
         private TrainDataManager _trainDataManager;
@@ -134,7 +134,7 @@ namespace Somnium.Learner
         /// <summary>
         /// We will Create a Train with Default Value
         /// </summary>
-        public DeepLearner(TrainDataManager trainDataManager, TrainParameters trainParameters)
+        public BasicLearner(TrainDataManager trainDataManager, TrainParameters trainParameters)
         {
             TrainDataManager = trainDataManager;
             TrainParameters = trainParameters;

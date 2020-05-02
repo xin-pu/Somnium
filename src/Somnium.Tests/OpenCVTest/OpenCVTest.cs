@@ -14,17 +14,22 @@ namespace Somnium.Tests.OpenCVTest
 
         public List<byte> GetArrayStreamData(string path)
         {
-            using var streamRead = new StreamReader(path);
-            var allData = new List<byte>();
-            var allLine = streamRead.ReadToEnd();
-            var lines = allLine.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
-            lines.ForEach(line => { allData.AddRange(line.ToCharArray().Select(a =>
+            using (var streamRead = new StreamReader(path))
             {
-                var data= int.Parse(a.ToString());
-                return data == 1 ? (byte) 0 : (byte) 255;
-            })); });
-  
-            return allData;
+                var allData = new List<byte>();
+                var allLine = streamRead.ReadToEnd();
+                var lines = allLine.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
+                lines.ForEach(line =>
+                {
+                    allData.AddRange(line.ToCharArray().Select(a =>
+                    {
+                        var data = int.Parse(a.ToString());
+                        return data == 1 ? (byte) 0 : (byte) 255;
+                    }));
+                });
+
+                return allData;
+            }
         }
 
         [TestMethod]

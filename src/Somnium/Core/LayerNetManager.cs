@@ -80,7 +80,7 @@ namespace Somnium.Core
         public void Serializer(string path)
         {
             using var fs = new FileStream(path, FileMode.Create);
-            new XmlSerializer(typeof(LayerNetManager)).Serialize(fs, this);
+             new XmlSerializer(typeof(LayerNetManager)).Serialize(fs, this);
         }
 
         public static LayerNetManager Deserialize(string path)
