@@ -52,7 +52,7 @@ namespace Console
             trainDataManager.Binding(trainParameters);
 
             //// 创建训练
-            var train = new BasicLearner(trainDataManager, trainParameters);
+            var train = new FnnLearner(trainDataManager, trainParameters);
 
             // 执行训练
             train.ExecuteTrain();

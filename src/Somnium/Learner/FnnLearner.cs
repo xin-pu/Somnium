@@ -14,7 +14,10 @@ using Somnium.Utility;
 
 namespace Somnium.Learner
 {
-    public class BasicLearner : ICloneable, INotifyPropertyChanged
+    /// <summary>
+    /// Feedforward neural NetWork (Multi-Layer Perceptron) 
+    /// </summary>
+    public class FnnLearner : ICloneable, INotifyPropertyChanged
     {
         private TrainParameters _trainParameters;
         private TrainDataManager _trainDataManager;
@@ -134,7 +137,7 @@ namespace Somnium.Learner
         /// <summary>
         /// We will Create a Train with Default Value
         /// </summary>
-        public BasicLearner(TrainDataManager trainDataManager, TrainParameters trainParameters)
+        public FnnLearner(TrainDataManager trainDataManager, TrainParameters trainParameters)
         {
             TrainDataManager = trainDataManager;
             TrainParameters = trainParameters;

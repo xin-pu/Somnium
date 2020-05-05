@@ -12,8 +12,8 @@ namespace Somnium.Tests.Func
         public void ActivationTest()
         {
 
-            var res0 = Activate.Sigmoid(0);
-            var res1 = Activate.Max(0);
+            var res0 = Activate.Logistic(0);
+            var res1 = Activate.ReLU(0);
             var res2 = Activate.Tanh(0);
             Assert.AreEqual(0.5, res0, 1E-4);
             Assert.AreEqual(0, res1, 1E-4);

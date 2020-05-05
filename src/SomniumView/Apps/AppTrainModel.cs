@@ -34,7 +34,7 @@ namespace SomniumView.Apps
         private string _workFolder;
         private TrainDataManager _trainDataManager;
         private TrainParameters _trainParameters;
-        private AsyncObservableCollection<BasicLearner> _deepLearners;
+        private AsyncObservableCollection<FnnLearner> _deepLearners;
 
         private List<Type> _dataReaders;
 
@@ -76,7 +76,7 @@ namespace SomniumView.Apps
             get => _trainParameters;
         }
 
-        public AsyncObservableCollection<BasicLearner> DeepLearners
+        public AsyncObservableCollection<FnnLearner> DeepLearners
         {
             set => UpdateProperty(ref _deepLearners, value);
             get => _deepLearners;
@@ -87,7 +87,7 @@ namespace SomniumView.Apps
         {
             DataReaders = DataReader.GetDataReaders();
             TrainParameters = new TrainParameters();
-            DeepLearners = new AsyncObservableCollection<BasicLearner>();
+            DeepLearners = new AsyncObservableCollection<FnnLearner>();
         }
 
         private void LoadCommands()
@@ -134,7 +134,7 @@ namespace SomniumView.Apps
             var trainDataManager = (TrainDataManager) TrainDataManager.Clone();
             trainDataManager.Binding(trainParameters);
 
-            var deepLearner = new BasicLearner(trainDataManager, trainParameters);
+            var deepLearner = new FnnLearner(trainDataManager, trainParameters);
 
             DeepLearners.Add(deepLearner);
             //deepLearner.ExecuteTrain(layNet, TrainDataManager);

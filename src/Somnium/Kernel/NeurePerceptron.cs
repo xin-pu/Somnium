@@ -31,10 +31,10 @@ namespace Somnium.Kernel
                         ActivateFuc = Activate.Tanh;
                         break;
                     case ActivateType.Max:
-                        ActivateFuc = Activate.Max;
+                        ActivateFuc = Activate.ReLU;
                         break;
                     default:
-                        ActivateFuc = Activate.Sigmoid;
+                        ActivateFuc = Activate.Logistic;
                         break;
                 }
 
@@ -50,13 +50,13 @@ namespace Somnium.Kernel
 
         }
 
-        public NeurePerceptron(NeureShape shape, ActivateType activateType = ActivateType.Sigmoid)
+        public NeurePerceptron(NeureShape shape, ActivateType activateType = ActivateType.Logistic)
             : base(shape)
         {
             ActivateType = activateType;
         }
 
-        public NeurePerceptron(int rows, int columns, ActivateType activateType = ActivateType.Sigmoid)
+        public NeurePerceptron(int rows, int columns, ActivateType activateType = ActivateType.Logistic)
             : base(rows, columns)
         {
             ActivateType = activateType;
