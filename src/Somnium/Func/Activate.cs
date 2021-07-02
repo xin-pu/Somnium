@@ -67,6 +67,7 @@ namespace Somnium.Func
         ReLU,
         LeakyReLU, 
         ELU,
-        Softplus
+        Softplus,
+        Max
     }
 }
